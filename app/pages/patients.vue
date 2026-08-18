@@ -645,14 +645,17 @@ async function handleImport(event: Event) {
   <!-- Patient Medical History Quick Modal -->
   <UModal
     v-model:open="isHistoryModalOpen"
-    :title="`ប្រវត្តិចូលពិនិត្យ & ព្យាបាល: ${historyPatientName}`"
     :ui="{
-      title: 'font-bold text-primary-600'
+      content: 'sm:max-w-4xl'
     }"
   >
-    <template #body>
-      <div class="h-[600px] -m-4">
-        <OpdRoundHistoryTable :patient-id="historyPatientId" />
+    <template #content>
+      <div class="h-[720px] flex flex-col bg-white dark:bg-gray-900 rounded-xl overflow-hidden">
+        <OpdRoundHistoryTable
+          :patient-id="historyPatientId"
+          show-close-button
+          @close="isHistoryModalOpen = false"
+        />
       </div>
     </template>
   </UModal>
