@@ -86,8 +86,7 @@ const mainTabs = computed(() => [
   { label: t('common.prescription') || 'វេជ្ជបញ្ជា', slot: 'prescription', value: 0, icon: 'i-lucide-pill' },
   { label: t('common.lab') || 'ពិសោធន៍', slot: 'lab', value: 1, icon: 'i-lucide-flask-conical' },
   { label: t('common.echo') || 'អេកូ', slot: 'echo', value: 2, icon: 'i-lucide-activity' },
-  { label: t('common.payment') || 'ទូទាត់ប្រាក់', slot: 'payment', value: 3, icon: 'i-lucide-credit-card' },
-  { label: 'ប្រវត្តិចូលពេទ្យ & Round', slot: 'history', value: 4, icon: 'i-lucide-history' }
+  { label: t('common.payment') || 'ទូទាត់ប្រាក់', slot: 'payment', value: 3, icon: 'i-lucide-credit-card' }
 ])
 
 const activeTab = ref(props.dept === 'LAB' ? 1 : 0)
@@ -561,13 +560,6 @@ function handleCopyPastMedications(meds: any[]) {
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentTable :rows="rows" @remove-row="removeRow" />
           </div>
-
-          <div v-show="activeTab === 4" class="h-full flex flex-col">
-            <OpdRoundHistoryTable
-              :patient-id="internalPatientId"
-              @copy-medications="handleCopyPastMedications"
-            />
-          </div>
         </div>
       </div>
 
@@ -597,16 +589,6 @@ function handleCopyPastMedications(meds: any[]) {
 
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentControls v-model:payment-method="paymentMethod" :payment-methods="paymentMethods" />
-          </div>
-
-          <div v-show="activeTab === 4" class="h-full flex flex-col justify-center items-center p-4 text-center text-gray-500 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-            <UIcon name="i-lucide-clipboard-check" class="w-10 h-10 text-primary-500 mb-2" />
-            <span class="font-bold text-sm text-gray-800 dark:text-gray-200 mb-1">
-              សួរសុខទុក្ខ & ពិនិត្យតាមដាន (Round)
-            </span>
-            <p class="text-xs text-gray-500">
-              លោកអ្នកអាចពិនិត្យប្រវត្តិចូលពេទ្យ ការចេញថ្នាំ និងតេស្តពីមុនៗ រួចចុច "ចម្លងវេជ្ជបញ្ជា" ដើម្បីប្រើថ្នាំចាស់ឡើងវិញបានយ៉ាងរហ័ស។
-            </p>
           </div>
         </div>
       </div>
