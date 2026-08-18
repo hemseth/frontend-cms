@@ -1,0 +1,31 @@
+[
+  {
+    "id": "LAB-1001",
+    "patientId": "P-0002",
+    "patientName": "ជា ចន្ថា",
+    "testCode": "CBC-001",
+    "testName": "Complete Blood Count",
+    "requestedDate": "2026-01-02T10:35:00",
+    "resultDate": "2026-01-02T11:05:00",
+    "status": "completed",
+    "results": {
+      "WBC": "6.5 x10^9/L",
+      "RBC": "4.6 x10^12/L",
+      "Hemoglobin": "13.2 g/dL",
+      "Platelets": "220 x10^9/L"
+    },
+    "price": 10.0
+  },
+  {
+    "id": "LAB-1002",
+    "patientId": "P-0001",
+    "patientName": "សុខ សាន",
+    "testCode": "GLU-001",
+    "testName": "Fasting Glucose",
+    "requestedDate": "2026-01-02T09:12:00",
+    "resultDate": null,
+    "status": "pending",
+    "results": null,
+    "price": 5.0
+  }
+]

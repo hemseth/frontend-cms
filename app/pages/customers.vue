@@ -35,11 +35,19 @@ function getRowItems(row: Row<User>) {
       label: 'Copy customer ID',
       icon: 'i-lucide-copy',
       onSelect() {
-        navigator.clipboard.writeText(row.original.id.toString())
-        toast.add({
-          title: 'Copied to clipboard',
-          description: 'Customer ID copied to clipboard'
-        })
+        try {
+          navigator.clipboard.writeText(row.original.id.toString())
+          toast.add({
+            title: 'Copied to clipboard',
+            description: 'Customer ID copied to clipboard'
+          })
+        } catch (err) {
+          toast.add({
+            title: 'Failed to copy',
+            description: 'Could not access clipboard',
+            color: 'error'
+          })
+        }
       }
     },
     {
@@ -208,19 +216,13 @@ const pagination = ref({
 
 <template>
   <UDashboardPanel id="customers">
-    <template #header>
-      <UDashboardNavbar title="Customers">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
+    <UDashboardNavbar title="Customers">
+      <template #right>
+        <CustomersAddModal />
+      </template>
+    </UDashboardNavbar>
 
-        <template #right>
-          <CustomersAddModal />
-        </template>
-      </UDashboardNavbar>
-    </template>
-
-    <template #body>
+    <UDashboardPanelContent>
       <div class="flex flex-wrap items-center justify-between gap-1.5">
         <UInput
           v-model="email"
@@ -325,6 +327,6 @@ const pagination = ref({
           />
         </div>
       </div>
-    </template>
+    </UDashboardPanelContent>
   </UDashboardPanel>
 </template>

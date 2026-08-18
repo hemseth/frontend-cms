@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { useAuth } from '../composables/useAuth'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
+const auth = useAuth()
+const branch = useBranch()
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-const user = ref({
-  name: 'Benjamin Canac',
+const user = computed(() => ({
+  name: auth.user.value?.nameEn || auth.user.value?.name || auth.user.value?.email || 'Guest',
   avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
+    src: auth.user.value?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user.value?.nameEn || auth.user.value?.name || 'G')}&background=random`,
+    alt: auth.user.value?.nameEn || auth.user.value?.name || 'User'
   }
-})
+}))
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
@@ -147,7 +150,8 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   target: '_blank'
 }, {
   label: 'Log out',
-  icon: 'i-lucide-log-out'
+  icon: 'i-lucide-log-out',
+  onSelect: () => auth.logout()
 }]]))
 </script>
 

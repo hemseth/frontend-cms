@@ -25,3 +25,7 @@ logs
 
 # VSC
 .history
+
+# Archives & Windows artifacts
+*.zip
+nul

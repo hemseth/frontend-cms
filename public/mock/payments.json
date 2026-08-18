@@ -1,0 +1,45 @@
+[
+  {
+    "id": "PAY-0001",
+    "invoiceId": "INV-1001",
+    "patientId": "P-0001",
+    "patientName": "សុខ សាន",
+    "date": "2026-01-02T09:15:00",
+    "method": "Cash",
+    "items": [
+      { "code": "SVC-001", "name": "OPD Consultation", "qty": 1, "unitPrice": 5.0, "total": 5.0 },
+      { "code": "m1", "name": "Paracetamol 500mg", "qty": 2, "unitPrice": 0.25, "total": 0.5 }
+    ],
+    "amount": 5.5,
+    "status": "paid",
+    "notes": "Paid at counter"
+  },
+  {
+    "id": "PAY-0002",
+    "invoiceId": "INV-1002",
+    "patientId": "P-0002",
+    "patientName": "ជា ចន្ថា",
+    "date": "2026-01-02T10:40:00",
+    "method": "ABA QR",
+    "items": [
+      { "code": "LAB-001", "name": "CBC", "qty": 1, "unitPrice": 10.0, "total": 10.0 }
+    ],
+    "amount": 10.0,
+    "status": "paid",
+    "notes": "QR reference: 123456"
+  },
+  {
+    "id": "PAY-0003",
+    "invoiceId": "INV-1003",
+    "patientId": "P-0003",
+    "patientName": "ស៊ីម រ័ត្ន",
+    "date": "2026-01-02T14:05:00",
+    "method": "Cash",
+    "items": [
+      { "code": "ECHO-001", "name": "Echocardiogram", "qty": 1, "unitPrice": 25.0, "total": 25.0 }
+    ],
+    "amount": 25.0,
+    "status": "unpaid",
+    "notes": "Pending payment at discharge"
+  }
+]

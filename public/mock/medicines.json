@@ -1,0 +1,9 @@
+[
+  { "id": "m1", "name": "Paracetamol 500mg", "price": 0.25, "type": "Tablet", "stock": 120 },
+  { "id": "m2", "name": "Amoxicillin 250mg", "price": 0.5, "type": "Tablet", "stock": 60 },
+  { "id": "m3", "name": "Ibuprofen 200mg", "price": 0.3, "type": "Tablet", "stock": 80 },
+  { "id": "m4", "name": "Cough Syrup 100ml", "price": 1.2, "type": "Syrup", "stock": 40 },
+  { "id": "m5", "name": "Vitamin C 500mg", "price": 0.15, "type": "Tablet", "stock": 200 },
+  { "id": "m6", "name": "Insulin Injection 10ml", "price": 5.0, "type": "Injection", "stock": 10 },
+  { "id": "m7", "name": "Skin Ointment 20g", "price": 2.5, "type": "Ointment", "stock": 25 }
+]

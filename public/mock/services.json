@@ -1,0 +1,167 @@
+[
+  {
+    "_id": "m1",
+    "code": "MED001",
+    "name": "Paracetamol 500mg",
+    "category": "MEDICINE",
+    "unit_price": 0.25,
+    "unit_type": "TABLET"
+  },
+  {
+    "_id": "m2",
+    "code": "MED002",
+    "name": "Amoxicillin 250mg",
+    "category": "MEDICINE",
+    "unit_price": 0.5,
+    "unit_type": "TABLET"
+  },
+  {
+    "_id": "m3",
+    "code": "MED003",
+    "name": "Ibuprofen 200mg",
+    "category": "MEDICINE",
+    "unit_price": 0.3,
+    "unit_type": "TABLET"
+  },
+  {
+    "_id": "m4",
+    "code": "MED004",
+    "name": "Cough Syrup 100ml",
+    "category": "MEDICINE",
+    "unit_price": 1.2,
+    "unit_type": "BOTTLE"
+  },
+  {
+    "_id": "m5",
+    "code": "MED005",
+    "name": "Vitamin C 500mg",
+    "category": "MEDICINE",
+    "unit_price": 0.15,
+    "unit_type": "TABLET"
+  },
+  {
+    "_id": "l1",
+    "code": "LAB001",
+    "name": "Complete Blood Count (CBC) / ពិនិត្យឈាមទូទៅ",
+    "category": "LAB",
+    "unit_price": 10.0,
+    "unit_type": "SERVICE",
+    "template": "Test\tResult\tUnit\tNormal Range\nHemoglobin\t\tg/dL\t13 – 17\nWBC\t\t/µL\t4,000 – 11,000\nRBC\t\t/µL\t4.5 – 5.5\nMCV\t\tfL\t80 – 100\nPlatelets\t\t/µL\t150,000 – 450,000"
+  },
+  {
+    "_id": "l2",
+    "code": "LAB002",
+    "name": "Blood Sugar (FBS / RBS) / ជាតិស្ករក្នុងឈាម",
+    "category": "LAB",
+    "unit_price": 3.0,
+    "unit_type": "SERVICE",
+    "template": "Test: Blood Sugar\nResult: ___ mg/dL\nNormal Range: 70 – 110 mg/dL"
+  },
+  {
+    "_id": "l3",
+    "code": "LAB003",
+    "name": "Blood Group & Rh / ប្រភេទឈាម",
+    "category": "LAB",
+    "unit_price": 2.0,
+    "unit_type": "SERVICE",
+    "template": "Blood Group: ___\nRh Factor: ___"
+  },
+  {
+    "_id": "l4",
+    "code": "LAB004",
+    "name": "Hemoglobin (Hb) / ហេមូក្លូប៊ីន",
+    "category": "LAB",
+    "unit_price": 3.0,
+    "unit_type": "SERVICE",
+    "template": "Hemoglobin: ___ g/dL\nNormal Range: 13 – 17 g/dL"
+  },
+  {
+    "_id": "l5",
+    "code": "LAB005",
+    "name": "Cholesterol / ជាតិខ្លាញ់ក្នុងឈាម",
+    "category": "LAB",
+    "unit_price": 5.0,
+    "unit_type": "SERVICE",
+    "template": "Total Cholesterol: ___ mg/dL\nNormal Range: < 200 mg/dL"
+  },
+  {
+    "_id": "l6",
+    "code": "LAB006",
+    "name": "Triglycerides / ទ្រីគ្លីសេរីត",
+    "category": "LAB",
+    "unit_price": 5.0,
+    "unit_type": "SERVICE",
+    "template": "Triglycerides: ___ mg/dL\nNormal Range: < 150 mg/dL"
+  },
+  {
+    "_id": "l7",
+    "code": "LAB007",
+    "name": "Liver Function Test (LFT) / មុខងារថ្លើម",
+    "category": "LAB",
+    "unit_price": 15.0,
+    "unit_type": "SERVICE",
+    "template": "SGOT (AST): ___ U/L (0-35)\nSGPT (ALT): ___ U/L (0-35)\nAlkaline Phos: ___ U/L (30-120)\nBilirubin Total: ___ mg/dL (0.1-1.2)"
+  },
+  {
+    "_id": "l8",
+    "code": "LAB008",
+    "name": "Kidney Function Test (KFT) / មុខងារតម្រងនោម",
+    "category": "LAB",
+    "unit_price": 10.0,
+    "unit_type": "SERVICE",
+    "template": "Creatinine: ___ mg/dL (0.6-1.2)\nUrea: ___ mg/dL (10-50)"
+  },
+  {
+    "_id": "l9",
+    "code": "LAB009",
+    "name": "Uric Acid / អាស៊ីតយូរីក",
+    "category": "LAB",
+    "unit_price": 4.0,
+    "unit_type": "SERVICE",
+    "template": "Uric Acid: ___ mg/dL\nNormal Range: 3.4 – 7.0 mg/dL"
+  },
+  {
+    "_id": "l10",
+    "code": "LAB010",
+    "name": "HIV / HBsAg / Syphilis / ជំងឺឆ្លង",
+    "category": "LAB",
+    "unit_price": 8.0,
+    "unit_type": "SERVICE",
+    "template": "HIV: Non-Reactive\nHBsAg: Non-Reactive\nVDRL (Syphilis): Non-Reactive"
+  },
+  {
+    "_id": "s5",
+    "code": "ECHO001",
+    "name": "Echocardiogram",
+    "category": "ECHO",
+    "unit_price": 25.0,
+    "unit_type": "SERVICE",
+    "template": "Findings:\n\nConclusion:"
+  },
+  {
+    "_id": "s6",
+    "code": "ECHO002",
+    "name": "Abdominal Ultrasound",
+    "category": "ECHO",
+    "unit_price": 20.0,
+    "unit_type": "SERVICE",
+    "template": "Liver: Normal size and echotexture.\nGallbladder: Normal.\nKidneys: Normal size and echogenicity.\nSpleen: Normal.\nPancreas: Normal.\n\nConclusion: Normal Abdominal Ultrasound."
+  },
+  {
+    "_id": "s7",
+    "code": "ECHO003",
+    "name": "ECG",
+    "category": "ECHO",
+    "unit_price": 10.0,
+    "unit_type": "SERVICE",
+    "template": "Rate: ___ bpm\nRhythm: Sinus\nAxis: Normal\n\nInterpretation: Normal ECG"
+  },
+  {
+    "_id": "s9",
+    "code": "SRV001",
+    "name": "General Consultation",
+    "category": "SERVICE",
+    "unit_price": 10.0,
+    "unit_type": "SERVICE"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "VST-1001",
+    "visitNo": "C-002688",
+    "patientId": "P-0001",
+    "patientName": "សុខ សាន",
+    "date": "2026-01-02T09:10:00",
+    "department": "OPD",
+    "doctor": "Dr. Kim",
+    "vitals": { "ta": "120/80", "pulse": 78, "rr": 18, "temp": 36.6 },
+    "reason": "Fever and cough",
+    "notes": "Prescribed symptomatic treatment"
+  },
+  {
+    "id": "VST-1002",
+    "visitNo": "L-01001",
+    "patientId": "P-0002",
+    "patientName": "ជា ចន្ថា",
+    "date": "2026-01-02T10:35:00",
+    "department": "Lab",
+    "doctor": "Lab Tech",
+    "vitals": {},
+    "reason": "Blood test requested",
+    "notes": "Fasting"
+  },
+  {
+    "id": "VST-1003",
+    "visitNo": "E-02001",
+    "patientId": "P-0003",
+    "patientName": "ស៊ីម រ័ត្ន",
+    "date": "2026-01-02T13:50:00",
+    "department": "Echo",
+    "doctor": "Dr. Sok",
+    "vitals": {},
+    "reason": "Cardiac evaluation",
+    "notes": "Bring prior ECG"
+  }
+]

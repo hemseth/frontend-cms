@@ -1,0 +1,5 @@
+[
+  { "id": "P-0001", "name": "សុខ សាន", "dob": "1985-04-12", "sex": "Male", "phone": "012345678", "address": "Phnom Penh" },
+  { "id": "P-0002", "name": "ជា ចន្ថា", "dob": "1992-08-03", "sex": "Female", "phone": "017223344", "address": "Kandal" },
+  { "id": "P-0003", "name": "ស៊ីម រ័ត្ន", "dob": "1978-11-20", "sex": "Male", "phone": "015998877", "address": "Takeo" }
+]

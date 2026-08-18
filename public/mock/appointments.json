@@ -1,0 +1,5 @@
+[
+  { "id": "AP-001", "patientId": "P-0002", "name": "ជា ចន្ថា", "datetime": "2026-01-02T09:00:00", "dept": "OPD", "status": "scheduled" },
+  { "id": "AP-002", "patientId": "P-0003", "name": "ស៊ីម រ័ត្ន", "datetime": "2026-01-02T10:30:00", "dept": "Lab", "status": "scheduled" },
+  { "id": "AP-003", "patientId": "P-0001", "name": "សុខ សាន", "datetime": "2026-01-02T14:00:00", "dept": "Echo", "status": "confirmed" }
+]

@@ -1,0 +1,5 @@
+[
+  { "id": "IPD-001", "name": "សុខ សាន", "bed": "A-12", "admitted": "2026-01-01T11:00:00", "doctor": "Dr. Kim" },
+  { "id": "IPD-002", "name": "ជា ចន្ថា", "bed": "B-05", "admitted": "2025-12-30T09:30:00", "doctor": "Dr. Heng" },
+  { "id": "IPD-003", "name": "ស៊ីម រ័ត្ន", "bed": "C-02", "admitted": "2025-12-28T14:15:00", "doctor": "Dr. Sok" }
+]

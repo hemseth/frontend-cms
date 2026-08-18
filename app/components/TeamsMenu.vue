@@ -5,40 +5,78 @@ defineProps<{
   collapsed?: boolean
 }>()
 
-const teams = ref([{
-  label: 'Nuxt',
-  avatar: {
-    src: 'https://github.com/nuxt.png',
-    alt: 'Nuxt'
+const auth = useAuth()
+const branch = useBranch()
+const clinicContext = useClinicContext()
+const isDeveloper = computed(() => auth.user.value?.role === 'developer')
+
+const { data: clinicsResult } = await useAsyncData('developer-clinic-context-options', () =>
+  isDeveloper.value ? $api('/clinics', { params: { limit: 1000 } }) : Promise.resolve({ data: [] }),
+{ default: () => ({ data: [] }), getCachedData: () => undefined })
+
+const clinics = computed(() => (clinicsResult.value as any)?.data || [])
+const selectedClinic = computed(() => clinics.value.find((item: any) => item._id === clinicContext.selectedClinicId.value))
+
+const selectedBranch = computed(() => {
+  if (branch.currentBranch.value) {
+    return {
+      label: `${selectedClinic.value?.nameKh || selectedClinic.value?.name || ''} / ${branch.currentBranch.value.nameKh || branch.currentBranch.value.name || 'Select Branch'}`,
+      icon: 'i-lucide-git-branch'
+    }
   }
-}, {
-  label: 'NuxtHub',
-  avatar: {
-    src: 'https://github.com/nuxt-hub.png',
-    alt: 'NuxtHub'
+  return {
+    label: selectedClinic.value?.nameKh || selectedClinic.value?.name || (isDeveloper.value ? 'Select Clinic' : 'All Branches'),
+    icon: selectedClinic.value ? 'i-lucide-hospital' : 'i-lucide-building-2'
   }
-}, {
-  label: 'NuxtLabs',
-  avatar: {
-    src: 'https://github.com/nuxtlabs.png',
-    alt: 'NuxtLabs'
-  }
-}])
-const selectedTeam = ref(teams.value[0])
+})
+
+async function selectClinic(clinicId: string | null) {
+  clinicContext.setSelectedClinicId(clinicId)
+  branch.setCurrentBranchId(null)
+  await branch.fetchBranches(clinicId, auth.accessToken.value)
+  await refreshNuxtData()
+}
 
 const items = computed<DropdownMenuItem[][]>(() => {
-  return [teams.value.map(team => ({
-    ...team,
+  const clinicItems = isDeveloper.value
+    ? [
+        {
+          label: 'All Clinics (view only)',
+          icon: 'i-lucide-layout-grid',
+          onSelect: () => selectClinic(null)
+        },
+        ...clinics.value.map((clinic: any) => ({
+          label: clinic.nameKh || clinic.name,
+          icon: clinic._id === clinicContext.selectedClinicId.value ? 'i-lucide-circle-check' : 'i-lucide-hospital',
+          onSelect: () => selectClinic(clinic._id)
+        }))
+      ]
+    : []
+
+  const branchItems = branch.branches.value.map(b => ({
+    label: b.nameKh || b.name || b.code,
+    icon: b.isMain ? 'i-lucide-star' : 'i-lucide-git-branch',
+    chip: b.isMain ? 'yellow' : undefined,
     onSelect() {
-      selectedTeam.value = team
+      branch.setCurrentBranchId(b._id)
+      refreshNuxtData()
     }
-  })), [{
-    label: 'Create team',
-    icon: 'i-lucide-circle-plus'
-  }, {
-    label: 'Manage teams',
-    icon: 'i-lucide-cog'
-  }]]
+  }))
+
+  return [
+    clinicItems,
+    branchItems,
+    [{
+      label: 'View All Branches',
+      icon: 'i-lucide-layout-grid',
+      to: '/settings/branches'
+    }]
+  ]
+})
+
+onMounted(() => {
+  const activeClinicId = isDeveloper.value ? clinicContext.selectedClinicId.value : auth.clinicId.value
+  branch.fetchBranches(activeClinicId, auth.accessToken.value)
 })
 </script>
 
@@ -50,8 +88,8 @@ const items = computed<DropdownMenuItem[][]>(() => {
   >
     <UButton
       v-bind="{
-        ...selectedTeam,
-        label: collapsed ? undefined : selectedTeam?.label,
+        ...selectedBranch,
+        label: collapsed ? undefined : selectedBranch?.label,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
       color="neutral"
@@ -61,7 +99,8 @@ const items = computed<DropdownMenuItem[][]>(() => {
       class="data-[state=open]:bg-elevated"
       :class="[!collapsed && 'py-2']"
       :ui="{
-        trailingIcon: 'text-dimmed'
+        trailingIcon: 'text-dimmed',
+        leadingIcon: 'text-primary'
       }"
     />
   </UDropdownMenu>

@@ -56,9 +56,9 @@ const isMobile = breakpoints.smaller('lg')
     resizable
   >
     <UDashboardNavbar title="Inbox">
-      <template #leading>
+      <!-- <template #leading>
         <UDashboardSidebarCollapse />
-      </template>
+      </template> -->
       <template #trailing>
         <UBadge :label="filteredMails.length" variant="subtle" />
       </template>
