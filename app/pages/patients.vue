@@ -2,6 +2,7 @@
 import { useAsyncData } from '#app'
 import type { TableColumn } from '@nuxt/ui'
 import { h, resolveComponent } from 'vue'
+import OpdRoundHistoryTable from '~/components/opd/partials/OpdRoundHistoryTable.vue'
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -157,6 +158,11 @@ function getRowItems(row: any) {
       label: 'Actions'
     },
     {
+      label: 'ប្រវត្តិចូលពេទ្យ (Medical History)',
+      icon: 'i-lucide-history',
+      onSelect: () => viewHistory(row)
+    },
+    {
       label: 'View Details',
       icon: 'i-lucide-eye',
       onSelect: () => viewPatient(row)
@@ -180,7 +186,16 @@ function getRowItems(row: any) {
 
 const isAddModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
+const isHistoryModalOpen = ref(false)
+const historyPatientId = ref<string>('')
+const historyPatientName = ref<string>('')
 const selectedPatient = ref<any>(null)
+
+function viewHistory(row: any) {
+  historyPatientId.value = row._id || row.id
+  historyPatientName.value = row.nameKh || row.nameEn || row.name || ''
+  isHistoryModalOpen.value = true
+}
 
 function openAddModal() {
   selectedPatient.value = null
@@ -626,4 +641,19 @@ async function handleImport(event: Event) {
   />
 
   <PatientsDeleteModal v-model:open="isDeleteModalOpen" :patient="selectedPatient" @delete="refresh" />
+
+  <!-- Patient Medical History Quick Modal -->
+  <UModal
+    v-model:open="isHistoryModalOpen"
+    :title="`ប្រវត្តិចូលពិនិត្យ & ព្យាបាល: ${historyPatientName}`"
+    :ui="{
+      title: 'font-bold text-primary-600'
+    }"
+  >
+    <template #body>
+      <div class="h-[600px] -m-4">
+        <OpdRoundHistoryTable :patient-id="historyPatientId" />
+      </div>
+    </template>
+  </UModal>
 </template>
