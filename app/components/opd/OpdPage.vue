@@ -19,6 +19,7 @@ import OpdInvoiceFooter from './partials/OpdInvoiceFooter.vue'
 import ResultEntryModal from './partials/ResultEntryModal.vue'
 import ParameterSelectionModal from './partials/ParameterSelectionModal.vue'
 import OpdDiagnosisControls from './partials/OpdDiagnosisControls.vue'
+import OpdRoundHistoryTable from './partials/OpdRoundHistoryTable.vue'
 import AddModal from '~/components/patients/AddModals.vue'
 
 // Composables
@@ -81,12 +82,13 @@ const {
   confirmAddServiceWithParams
 } = useOpdServiceSelection(addServiceRow)
 
-const mainTabs = [
-  { label: t('common.prescription'), slot: 'prescription', value: 0, icon: 'i-lucide-pill' },
-  { label: t('common.lab'), slot: 'lab', value: 1, icon: 'i-lucide-flask-conical' },
-  { label: t('common.echo'), slot: 'echo', value: 2, icon: 'i-lucide-activity' },
-  { label: t('common.payment'), slot: 'payment', value: 3, icon: 'i-lucide-credit-card' }
-]
+const mainTabs = computed(() => [
+  { label: t('common.prescription') || 'វេជ្ជបញ្ជា', slot: 'prescription', value: 0, icon: 'i-lucide-pill' },
+  { label: t('common.lab') || 'ពិសោធន៍', slot: 'lab', value: 1, icon: 'i-lucide-flask-conical' },
+  { label: t('common.echo') || 'អេកូ', slot: 'echo', value: 2, icon: 'i-lucide-activity' },
+  { label: t('common.payment') || 'ទូទាត់ប្រាក់', slot: 'payment', value: 3, icon: 'i-lucide-credit-card' },
+  { label: 'ប្រវត្តិចូលពេទ្យ & Round', slot: 'history', value: 4, icon: 'i-lucide-history' }
+])
 
 const activeTab = ref(props.dept === 'LAB' ? 1 : 0)
 const paymentMethod = ref<string>('Cash')
@@ -440,6 +442,46 @@ function handleConfirmDelete() {
     saveInvoiceWrapper()
   }
 }
+
+function handleCopyPastMedications(meds: any[]) {
+  if (!meds || meds.length === 0) return
+
+  let count = 0
+  meds.forEach((m: any) => {
+    const med = findMedicineById(m.medicineId || m._id || m.id)
+    const rowMed = med || {
+      _id: m.medicineId || m._id || m.id,
+      nameEn: m.nameEn || m.name || '',
+      nameKh: m.nameKh || '',
+      price: m.unitPrice || m.price || 0,
+      dosageForm: m.dosageForm || '',
+      category: m.category || ''
+    }
+
+    addMedicine(rowMed, m.quantity || m.qty || 1, undefined, m.isWholesale || false)
+
+    // Set dosage fields on newly added row (last row)
+    if (rows.value.length > 0) {
+      const lastRow = rows.value[rows.value.length - 1]
+      lastRow.morning = m.morningDose ?? m.morning ?? m.qmor ?? 0
+      lastRow.afternoon = m.afternoonDose ?? m.afternoon ?? m.qaft ?? 0
+      lastRow.evening = m.eveningDose ?? m.evening ?? m.qeve ?? 0
+      lastRow.night = m.nightDose ?? m.night ?? m.qngt ?? 0
+      lastRow.days = m.days || m.duration || 1
+      lastRow.qty = m.quantity || m.qty || 1
+      lastRow.instructions = m.usage || m.instructions || ''
+    }
+    count++
+  })
+
+  // Switch to prescription tab
+  activeTab.value = 0
+  toast.add({
+    title: 'ជោគជ័យ',
+    description: `បានចម្លងមុខថ្នាំចំនួន ${count} មុខពីប្រវត្តិពិនិត្យមុនចូលវេជ្ជបញ្ជា`,
+    color: 'success'
+  })
+}
 </script>
 
 <template>
@@ -481,15 +523,15 @@ function handleConfirmDelete() {
         <!-- Diagnosis Control (Left Side) -->
         <OpdDiagnosisControls v-model="diagnosis" />
 
-        <!-- Custom Tab Header -->
-        <div class="flex border-b border-gray-200 dark:border-gray-800">
+        <!-- Custom Rounded Tab Header -->
+        <div class="flex items-center gap-1.5 p-2 bg-gray-50/80 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
           <button
             v-for="(tab, index) in mainTabs"
             :key="tab.value"
-            class="px-6 py-3 text-sm font-medium transition-colors border-b-2 outline-none focus:outline-none flex items-center gap-2"
+            class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all outline-none focus:outline-none flex items-center gap-2 shrink-0"
             :class="activeTab === tab.value
-              ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+              ? 'bg-primary-500 text-white shadow-sm font-bold'
+              : 'bg-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-200/60 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
             @click="activeTab = tab.value"
           >
             <UIcon :name="tab.icon" class="w-4 h-4" />
@@ -518,6 +560,13 @@ function handleConfirmDelete() {
 
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentTable :rows="rows" @remove-row="removeRow" />
+          </div>
+
+          <div v-show="activeTab === 4" class="h-full flex flex-col">
+            <OpdRoundHistoryTable
+              :patient-id="internalPatientId"
+              @copy-medications="handleCopyPastMedications"
+            />
           </div>
         </div>
       </div>
@@ -548,6 +597,16 @@ function handleConfirmDelete() {
 
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentControls v-model:payment-method="paymentMethod" :payment-methods="paymentMethods" />
+          </div>
+
+          <div v-show="activeTab === 4" class="h-full flex flex-col justify-center items-center p-4 text-center text-gray-500 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+            <UIcon name="i-lucide-clipboard-check" class="w-10 h-10 text-primary-500 mb-2" />
+            <span class="font-bold text-sm text-gray-800 dark:text-gray-200 mb-1">
+              សួរសុខទុក្ខ & ពិនិត្យតាមដាន (Round)
+            </span>
+            <p class="text-xs text-gray-500">
+              លោកអ្នកអាចពិនិត្យប្រវត្តិចូលពេទ្យ ការចេញថ្នាំ និងតេស្តពីមុនៗ រួចចុច "ចម្លងវេជ្ជបញ្ជា" ដើម្បីប្រើថ្នាំចាស់ឡើងវិញបានយ៉ាងរហ័ស។
+            </p>
           </div>
         </div>
       </div>
