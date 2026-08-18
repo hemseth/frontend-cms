@@ -55,7 +55,9 @@ const schema = z.object({
   disCode: z.string().optional(),
   comCode: z.string().optional(),
   vilCode: z.string().optional(),
-  photo: z.string().optional()
+  photo: z.string().optional(),
+  bloodGroup: z.string().optional(),
+  allergies: z.array(z.string()).optional()
 })
 
 type Schema = z.output<typeof schema>
@@ -72,8 +74,47 @@ const state = ref<any>({
   disCode: '',
   comCode: '',
   vilCode: '',
-  photo: ''
+  photo: '',
+  bloodGroup: '',
+  allergies: []
 })
+
+const customAllergy = ref('')
+const commonAllergies = [
+  'Penicillin',
+  'Amoxicillin',
+  'Aspirin',
+  'Ibuprofen',
+  'Sulfa (Sulfonamides)',
+  'Paracetamol',
+  'Ceftriaxone',
+  'Ciprofloxacin',
+  'Seafood / គ្រឿងសមុទ្រ'
+]
+
+function toggleAllergy(allergy: string) {
+  if (!state.value.allergies) state.value.allergies = []
+  const idx = state.value.allergies.indexOf(allergy)
+  if (idx > -1) {
+    state.value.allergies.splice(idx, 1)
+  } else {
+    state.value.allergies.push(allergy)
+  }
+}
+
+function addCustomAllergy() {
+  const val = customAllergy.value.trim()
+  if (val && !state.value.allergies.includes(val)) {
+    state.value.allergies.push(val)
+    customAllergy.value = ''
+  }
+}
+
+function removeAllergy(index: number) {
+  state.value.allergies.splice(index, 1)
+}
+
+const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 
 // Location Data
 const provinces = ref<any[]>([])
@@ -184,7 +225,9 @@ watch(isOpen, (val) => {
         ...props.patient,
         dob: props.patient.dob ? new Date(props.patient.dob).toISOString().split('T')[0] : '',
         gender: String(props.patient.gender || '1'),
-        photo: props.patient.photo || ''
+        photo: props.patient.photo || '',
+        bloodGroup: props.patient.bloodGroup || '',
+        allergies: Array.isArray(props.patient.allergies) ? [...props.patient.allergies] : []
       }
       if (state.value.proCode) fetchDistricts(state.value.proCode)
       if (state.value.disCode) fetchCommunes(state.value.disCode)
@@ -222,8 +265,10 @@ function resetForm() {
   state.value = {
     nameKh: '', nameEn: '', dob: '', gender: '1',
     phone: '', email: '', address: '',
-    proCode: '', disCode: '', comCode: '', vilCode: '', photo: ''
+    proCode: '', disCode: '', comCode: '', vilCode: '', photo: '',
+    bloodGroup: '', allergies: []
   }
+  customAllergy.value = ''
 }
 
 async function onSubmit() {
@@ -367,6 +412,82 @@ async function onSubmit() {
                   :placeholder="t('common.select_village') || 'ជ្រើសរើសភូមិ'"
                 />
               </UFormField>
+            </div>
+
+            <!-- Clinical Safety & Allergies Section -->
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-shield-alert" class="w-5 h-5 text-rose-500" />
+                  <span class="font-bold text-sm text-gray-800 dark:text-gray-200">
+                    ព័ត៌មានសុវត្ថិភាព និងប្រតិកម្មថ្នាំ (Drug Allergies)
+                  </span>
+                </div>
+                <div class="w-32">
+                  <USelectMenu
+                    v-model="state.bloodGroup"
+                    :items="bloodGroups"
+                    class="w-full"
+                    placeholder="ក្រុមឈាម (Blood)"
+                  />
+                </div>
+              </div>
+
+              <!-- Selected Allergies Badges -->
+              <div class="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/50 rounded-lg items-center">
+                <span v-if="!state.allergies || state.allergies.length === 0" class="text-xs text-gray-400 italic">
+                  គ្មានប្រវត្តិប្រតិកម្មថ្នាំ (No known allergies recorded)
+                </span>
+                <span
+                  v-for="(alg, idx) in state.allergies"
+                  :key="idx"
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white shadow-sm"
+                >
+                  <UIcon name="i-lucide-alert-triangle" class="w-3 h-3" />
+                  {{ alg }}
+                  <button type="button" class="hover:text-rose-200 ml-0.5" @click="removeAllergy(idx)">
+                    <UIcon name="i-lucide-x" class="w-3 h-3" />
+                  </button>
+                </span>
+              </div>
+
+              <!-- Quick Select Presets & Custom Input -->
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <UInput
+                    v-model="customAllergy"
+                    placeholder="បញ្ចូលឈ្មោះប្រតិកម្មផ្សេងទៀត (Type allergy & press Enter)..."
+                    size="sm"
+                    class="flex-1"
+                    icon="i-lucide-plus-circle"
+                    @keydown.enter.prevent="addCustomAllergy"
+                  />
+                  <UButton
+                    label="បន្ថែម"
+                    size="xs"
+                    color="error"
+                    variant="soft"
+                    icon="i-lucide-plus"
+                    @click="addCustomAllergy"
+                  />
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">ថ្នាំប្រតិកម្មញឹកញាប់:</span>
+                  <button
+                    v-for="item in commonAllergies"
+                    :key="item"
+                    type="button"
+                    class="text-[11px] px-2 py-0.5 rounded border transition-all"
+                    :class="state.allergies?.includes(item)
+                      ? 'bg-rose-500 border-rose-500 text-white font-bold'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:border-rose-400'"
+                    @click="toggleAllergy(item)"
+                  >
+                    {{ item }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

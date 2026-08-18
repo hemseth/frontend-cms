@@ -8,13 +8,20 @@ export interface Medicine {
 
 export interface Patient {
   id: string
+  _id?: string
   pId?: number
   nameEn: string
   nameKh?: string
   dob?: string
   sex?: string
+  gender?: string | number
   phone?: string
   email?: string
+  allergies?: string[]
+  bloodGroup?: string
+  chronicConditions?: string[]
+  emergencyContactName?: string
+  emergencyContactPhone?: string
   address?: string
   proCode?: string
   disCode?: string

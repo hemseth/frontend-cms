@@ -14,7 +14,7 @@
         +
       </div>
       <div class="text-center">
-        <h1 class="text-[14pt]  text-blue-800 font-khmer-moul tracking-wide mb-1">
+        <h1 class="text-[14pt] text-blue-800 font-khmer-moul tracking-wide mb-1">
           មន្ទីរសម្រាកព្យាបាលជំងឺ ញឹម ពីង
         </h1>
         <h2 class="text-lg md:text-xl font-bold text-blue-800 uppercase tracking-wider">
@@ -27,16 +27,13 @@
     </div>
 
     <!-- Row 2: Contact, Date & Title -->
-    <div class="flex justify-between items-start text-[11pt]text-blue-800 mb-2 px-2 font-bold relative">
+    <div class="flex justify-between items-start text-[11pt] text-blue-800 mb-2 px-2 font-bold relative">
       <!-- Left: Services/Contact -->
       <div class="space-y-1 w-1/3">
         <p>- ពិនិត្យ និងព្យាបាលជំងឺទូទៅ</p>
         <p>- វះកាត់តូច</p>
         <p>- ឆែករកសិរី X ឆ្លុះអេក ពណ៌</p>
       </div>
-
-      <!-- Center: Title (Absolute centered or just flex column) -->
-      <!-- We can put the title in the next row or absolute if we want exact layout -->
 
       <!-- Right: Dates -->
       <div class="text-right w-1/3 pt-2">
@@ -49,14 +46,13 @@
 
     <!-- Title Centered -->
     <div class="text-center mb-4 mt-2">
-      <h3 class="text-[14pt]  text-blue-800 font-khmer-moul">
+      <h3 class="text-[14pt] text-blue-800 font-khmer-moul">
         {{ title || 'ប័ណ្ណវិភាគ' }}
       </h3>
     </div>
 
     <!-- Row 4: Patient Info Grid -->
-    <!-- Mimic the background color if possible, though printing usually removes bg -->
-    <div class="p-2 font-bold text-[11pt] leading-none">
+    <div class="p-2 font-bold text-[11pt] leading-none border-b border-gray-200 pb-3">
       <div class="grid grid-cols-12 gap-y-[8pt]">
         <!-- Line 1 -->
         <div class="col-span-4 flex">
@@ -88,12 +84,17 @@
           <span class="min-w-[100px]">រោគវិនិច្ឆ័យ :</span>
           <span class="font-bold ml-2">{{ diagnosis }}</span>
         </div>
+        <!-- Line 4: Allergies & Blood Group -->
+        <div v-if="allergiesList" class="col-span-12 flex mt-1 text-red-600 font-bold">
+          <span class="min-w-[100px]">⚠️ ប្រតិកម្មថ្នាំ :</span>
+          <span class="ml-2 underline">{{ allergiesList }}</span>
+          <span v-if="patient?.bloodGroup" class="ml-4 text-blue-900 font-bold">| ក្រុមឈាម: {{ patient.bloodGroup }}</span>
+        </div>
       </div>
     </div>
 
     <!-- Row 5: Vitals -->
-    <!-- T.A: 125/83 mmHg  RR: /mn  T: 37 C  Poids: 71 Kg  Height: cm  SpO2: 95 % -->
-    <div v-if="!hideVitals" class="font-bold text-[11pt] flex flex-wrap justify-between px-2  print:bg-transparent">
+    <div v-if="!hideVitals" class="font-bold text-[11pt] flex flex-wrap justify-between px-2 pt-2 print:bg-transparent">
       <div>T.A: <span class="text-blue-800">{{ vitals?.bp || '___/___' }}</span> mmHg</div>
       <div>RR: <span class="text-blue-800">{{ vitals?.rr || '___' }}</span> /mn</div>
       <div>T: <span class="text-blue-800">{{ vitals?.temp || '___' }}</span> °C</div>
@@ -117,7 +118,7 @@ const props = defineProps<{
 }>()
 
 const patientCode = computed(() => props.patient?.pId ? `P-${String(props.patient.pId).padStart(6, '0')}` : 'P-000000')
-// Prefer Khmer name, fallback to English
+
 const patientNameKh = computed(() => {
   if (props.patient?.nameKh && props.patient?.nameEn) {
     return `${props.patient.nameKh} - ${props.patient.nameEn}`
@@ -128,7 +129,7 @@ const patientNameKh = computed(() => {
 const patientPhone = computed(() => props.patient?.phone || '..................')
 const gender = computed(() => {
   const g = props.patient?.gender || props.patient?.sex || 'M'
-  return (g === 'M' || g === 'Male') ? 'ប្រុស' : 'ស្រី'
+  return (g === 'M' || g === 'Male' || g === 1 || g === '1') ? 'ប្រុស' : 'ស្រី'
 })
 
 const age = computed(() => {
@@ -143,12 +144,7 @@ const address = computed(() => {
   const parts = []
   if (props.patient?.villageName) parts.push(`ភូមិ${props.patient.villageName}`)
   if (props.patient?.communeName) parts.push(`ឃុំ${props.patient.communeName}`)
-  // if (props.patient?.districtName) parts.push(`ស្រុក${props.patient.districtName}`)
-  // if (props.patient?.provinceName) parts.push(`ខេត្ត${props.patient.provinceName}`)
-
-  // If we have full address strings, use them.
   if (parts.length > 0) return parts.join(' - ') + ` - ខេត្ត${props.patient?.provinceName || '...'}`
-
   return props.patient?.address || '...................................................................'
 })
 
@@ -157,6 +153,13 @@ const diagnosis = computed(() => {
     return props.visit.diagnosis.map((d: any) => d.nameEn || d.nameKh || d.name).join(', ')
   }
   return props.visit?.notes || '...................................................................'
+})
+
+const allergiesList = computed(() => {
+  if (props.patient?.allergies && Array.isArray(props.patient.allergies) && props.patient.allergies.length > 0) {
+    return props.patient.allergies.join(', ')
+  }
+  return ''
 })
 
 const dateIn = computed(() => props.visit?.dateIn || new Date())
@@ -190,8 +193,6 @@ watch(() => props.patient, async () => {
 </script>
 
 <style scoped>
-/* Local fonts defined in main.css */
-
 .font-khmer {
     font-family: 'Battambang', 'Noto Sans Khmer', serif;
 }

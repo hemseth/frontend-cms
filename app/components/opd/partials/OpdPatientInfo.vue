@@ -78,6 +78,42 @@
         />
       </div>
     </div>
+
+    <!-- Clinical Safety & Drug Allergy Alert Bar -->
+    <div v-if="patientId" class="mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-800">
+      <div v-if="allergies && allergies.length > 0" class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 flex items-start gap-2 animate-pulse">
+        <UIcon name="i-lucide-shield-alert" class="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wide">
+              ⚠️ ប្រតិកម្មថ្នាំ (Allergies):
+            </span>
+            <span v-if="bloodGroup" class="text-[11px] font-semibold px-1.5 py-0.2 rounded bg-rose-200/60 dark:bg-rose-900 text-rose-800 dark:text-rose-200">
+              🩸 {{ bloodGroup }}
+            </span>
+          </div>
+          <div class="flex flex-wrap gap-1 mt-1">
+            <span
+              v-for="(alg, idx) in allergies"
+              :key="idx"
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-rose-600 text-white shadow-xs"
+            >
+              <UIcon name="i-lucide-alert-triangle" class="w-3 h-3" />
+              {{ alg }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div v-else class="px-2 py-1.5 rounded-md bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40 flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+          <UIcon name="i-lucide-shield-check" class="w-4 h-4 text-emerald-500" />
+          <span>គ្មានប្រវត្តិប្រតិកម្មថ្នាំ (No known allergies)</span>
+        </div>
+        <span v-if="bloodGroup" class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200">
+          🩸 ក្រុមឈាម: {{ bloodGroup }}
+        </span>
+      </div>
+    </div>
   </UCard>
 </template>
 
@@ -94,6 +130,8 @@ defineProps<{
   patientGender: string
   patientDob?: string
   patientAge?: string | number
+  allergies?: string[]
+  bloodGroup?: string
   patientSearchOpen: boolean
   genderOptions: { value: string, label: string }[]
 }>()

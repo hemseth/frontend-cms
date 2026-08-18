@@ -98,9 +98,78 @@ const internalPatientId = ref<string>(props.patient?.id ?? '')
 const patientName = ref<string>(props.patient?.name ?? '')
 const patientGender = ref<string>('Male')
 const patientDob = ref<string>('')
+const patientAllergies = ref<string[]>([])
+const patientBloodGroup = ref<string>('')
 const patientSearchOpen = ref(false)
 const isAddPatientModalOpen = ref(false)
 const genderOptions = [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }]
+
+// Drug Allergy Safety Warning State
+const isAllergyModalOpen = ref(false)
+const pendingAllergicMed = ref<any>(null)
+const allergyConflictReason = ref('')
+
+function checkDrugAllergy(medName: string, allergies: string[]): string | null {
+  if (!allergies || allergies.length === 0 || !medName) return null
+  const m = medName.toLowerCase().trim()
+  for (const allergy of allergies) {
+    const a = allergy.toLowerCase().trim()
+    if (!a) continue
+
+    // Direct match
+    if (m.includes(a) || a.includes(m)) return allergy
+
+    // Penicillin family
+    if (a.includes('penicillin') || a.includes('amox') || a.includes('ampic')) {
+      if (
+        m.includes('penicillin') || m.includes('amox') || m.includes('ampic')
+        || m.includes('augmentin') || m.includes('cloxacillin') || m.includes('piperacillin')
+      ) {
+        return `${allergy} (ក្រុមប៉េនីស៊ីលីន / Penicillin Family)`
+      }
+    }
+
+    // Cephalosporins
+    if (a.includes('cef') || a.includes('ceph')) {
+      if (m.includes('cef') || m.includes('ceph')) {
+        return `${allergy} (ក្រុមសេហ្វាឡូស្ប៉ូរីន / Cephalosporin Family)`
+      }
+    }
+
+    // NSAIDs
+    if (a.includes('aspirin') || a.includes('ibuprofen') || a.includes('nsaid')) {
+      if (
+        m.includes('aspirin') || m.includes('ibuprofen') || m.includes('diclofenac')
+        || m.includes('naproxen') || m.includes('ketoprofen') || m.includes('meloxicam')
+        || m.includes('mefenamic')
+      ) {
+        return `${allergy} (ក្រុមបំបាត់ការឈឺចាប់ NSAID)`
+      }
+    }
+
+    // Sulfa
+    if (a.includes('sulfa')) {
+      if (m.includes('sulfa') || m.includes('bactrim') || m.includes('cotrimoxazole') || m.includes('septra')) {
+        return `${allergy} (ក្រុមស៊ុលហ្វា / Sulfonamide Family)`
+      }
+    }
+
+    // Quinolones
+    if (a.includes('cipro') || a.includes('quinolone')) {
+      if (m.includes('cipro') || m.includes('levofloxacin') || m.includes('ofloxacin') || m.includes('norfloxacin')) {
+        return `${allergy} (ក្រុម Fluoroquinolone)`
+      }
+    }
+
+    // Paracetamol
+    if (a.includes('paracetamol') || a.includes('acetaminophen')) {
+      if (m.includes('paracetamol') || m.includes('acetaminophen') || m.includes('panadol') || m.includes('tylenol')) {
+        return `${allergy} (ប៉ារ៉ាសេតាមុល / Paracetamol)`
+      }
+    }
+  }
+  return null
+}
 
 const patientAge = computed(() => {
   if (!patientDob.value) return ''
@@ -117,8 +186,6 @@ const patientAge = computed(() => {
 // Doctor State
 const doctorId = ref<string>('')
 
-// Diagnosis State
-// Diagnosis State
 // Diagnosis State
 const diagnosis = ref<any[]>([])
 const prescriptionTable = ref<any>(null)
@@ -275,6 +342,9 @@ function onPatientSelected(p: Patient) {
     patientDob.value = ''
   }
 
+  patientAllergies.value = Array.isArray(patient.allergies) ? [...patient.allergies] : []
+  patientBloodGroup.value = patient.bloodGroup || ''
+
   patientSearchOpen.value = false
 
   // Reset form data
@@ -291,11 +361,30 @@ function focusPrescriptionTable() {
   }
 }
 
-// Wrapper for addMedicine to find object and handle focus
+// Wrapper for addMedicine to find object, check drug allergies, and handle focus
 function handleAddMedicineWrapper(id: string, qty = 1, isWholesale = false) {
   const med = findMedicineById(id)
   if (!med) return
+
+  const medSearchStr = `${med.nameEn || ''} ${med.nameKh || ''} ${med.genericName || ''}`
+  const conflict = checkDrugAllergy(medSearchStr, patientAllergies.value)
+  if (conflict) {
+    pendingAllergicMed.value = { med, qty, isWholesale }
+    allergyConflictReason.value = conflict
+    isAllergyModalOpen.value = true
+    return
+  }
+
   addMedicine(med, qty, focusPrescriptionTable, isWholesale)
+}
+
+function confirmAddAllergicMedicine() {
+  if (pendingAllergicMed.value) {
+    const { med, qty, isWholesale } = pendingAllergicMed.value
+    addMedicine(med, qty, focusPrescriptionTable, isWholesale)
+    pendingAllergicMed.value = null
+  }
+  isAllergyModalOpen.value = false
 }
 
 // Print State
@@ -366,6 +455,8 @@ function handleConfirmDelete() {
         v-model:patient-search-open="patientSearchOpen"
         v-model:patient-dob="patientDob"
         :patient-age="patientAge"
+        :allergies="patientAllergies"
+        :blood-group="patientBloodGroup"
         :gender-options="genderOptions"
         @patient-selected="onPatientSelected"
         @add-patient="isAddPatientModalOpen = true"
@@ -515,6 +606,55 @@ function handleConfirmDelete() {
             @click="isDeleteModalOpen = false"
           />
           <UButton label="Remove" color="error" @click="handleConfirmDelete" />
+        </div>
+      </template>
+    </UModal>
+
+    <!-- High-Risk Drug Allergy Alert Modal -->
+    <UModal
+      v-model:open="isAllergyModalOpen"
+      title="⚠️ ការព្រមានសុវត្ថិភាពប្រតិកម្មថ្នាំ (High-Risk Allergy Alert)"
+      :ui="{
+        title: 'text-rose-600 font-bold flex items-center gap-2'
+      }"
+    >
+      <template #body>
+        <div class="space-y-4 p-1">
+          <div class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg flex items-start gap-3">
+            <UIcon name="i-lucide-shield-alert" class="w-8 h-8 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+            <div class="text-sm space-y-1.5 text-gray-800 dark:text-gray-200">
+              <div class="font-bold text-rose-600 dark:text-rose-400 text-base">
+                អ្នកជំងឺមានប្រវត្តិប្រតិកម្មជាមួយ: {{ allergyConflictReason }}
+              </div>
+              <div>
+                ថ្នាំដែលអ្នករៀបនឹងចេញ: <span class="font-bold text-gray-900 dark:text-white">{{ pendingAllergicMed?.med?.nameEn }} ({{ pendingAllergicMed?.med?.nameKh || 'N/A' }})</span>
+              </div>
+              <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">
+                ការចេញវេជ្ជបញ្ជាប៉ះចំថ្នាំដែលអ្នកជំងឺមានប្រតិកម្ម អាចបណ្តាលឱ្យមានគ្រោះថ្នាក់ធ្ងន់ធ្ងរ (Severe Allergic Reaction / Anaphylaxis)!
+              </p>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            តើលោកអ្នកពិតជាចង់បន្តចេញវេជ្ជបញ្ជាថ្នាំនេះដោយមានការត្រួតពិនិត្យជាពិសេស (Clinical Override) មែនទេ?
+          </p>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2.5">
+          <UButton
+            label="បោះបង់ (Cancel)"
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-x"
+            @click="isAllergyModalOpen = false"
+          />
+          <UButton
+            label="បន្តចេញវេជ្ជបញ្ជា (Clinical Override)"
+            color="error"
+            variant="solid"
+            icon="i-lucide-alert-triangle"
+            @click="confirmAddAllergicMedicine"
+          />
         </div>
       </template>
     </UModal>
