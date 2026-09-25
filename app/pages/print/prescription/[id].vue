@@ -7,6 +7,7 @@ const rxData = ref<any[]>([])
 const visitData = ref<any>(null)
 const patientData = ref<any>(null)
 const errorMsg = ref('')
+const { profile, load: loadProfile } = useClinicProfile()
 
 // Font Size Control
 const fontSize = ref(16)
@@ -35,7 +36,8 @@ onMounted(async () => {
     const [rxRes, visitRes, patientRes]: any = await Promise.all([
       $api(`/patients/${patientId}/visits/${visitId}/prescriptions`),
       $api(`/patients/${patientId}/visits/${visitId}`),
-      $api(`/patients/${patientId}`)
+      $api(`/patients/${patientId}`),
+      loadProfile()
     ])
 
     rxData.value = rxRes.data || []
@@ -103,7 +105,12 @@ const { formatKhmerDate } = useKhmerUtils()
       :class="paperSize === 'A5' ? 'w-[148mm] min-h-[210mm]' : 'w-[210mm] min-h-[297mm]'"
     >
       <!-- Header (Reusing Lab/Clinical Layout) -->
-      <PrintLabHeader :patient="patientData" :visit="visitData" title="វេជ្ជបញ្ជា" />
+      <PrintLabHeader
+        :patient="patientData"
+        :visit="visitData"
+        :profile="profile"
+        title="វេជ្ជបញ្ជា"
+      />
 
       <!-- Medicines Table -->
       <div class="flex-grow">
@@ -207,9 +214,6 @@ const { formatKhmerDate } = useKhmerUtils()
             គ្រូពេទ្យព្យាបាល
           </p>
           <div class="h-16" />
-          <p class="font-bold text-lg">
-            ដុំ ទៀន
-          </p>
         </div>
       </div>
 

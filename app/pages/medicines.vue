@@ -216,6 +216,11 @@ const columns: TableColumn<any>[] = [
     cell: ({ row }) => {
       const items = [
         {
+          label: 'គ្រប់គ្រង Batch & Expiry (FEFO)',
+          icon: 'i-lucide-boxes',
+          onSelect: () => openBatchModal(row.original)
+        },
+        {
           label: 'Edit',
           icon: 'i-lucide-pencil',
           onSelect: () => editMedicine(row.original)
@@ -247,8 +252,14 @@ const columns: TableColumn<any>[] = [
 
 const isAddModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
+const isBatchModalOpen = ref(false)
 const isDeleting = ref(false)
 const selectedMedicine = ref<any>(null)
+
+function openBatchModal(medicine: any) {
+  selectedMedicine.value = medicine
+  isBatchModalOpen.value = true
+}
 
 function editMedicine(medicine: any) {
   selectedMedicine.value = medicine
@@ -593,5 +604,21 @@ async function handleImport(event: Event) {
         </div>
       </template>
     </UModal>
+
+    <!-- Batch / Lot & FEFO Expiry Management Modal -->
+    <BatchModal
+      v-model:open="isBatchModalOpen"
+      :medicine="selectedMedicine"
+      @saved="refresh"
+    />
   </div>
 </template>
+
+<script lang="ts">
+import BatchModal from '~/components/medicines/BatchModal.vue'
+export default {
+  components: {
+    BatchModal
+  }
+}
+</script>

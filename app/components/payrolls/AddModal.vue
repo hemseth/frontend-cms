@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { PayrollForm } from '~/utils/payrollForm'
+
 const props = defineProps<{
   payroll?: any
   period?: string
@@ -26,27 +28,7 @@ const staffOptions = computed(() => {
   }))
 })
 
-const currentYear = new Date().getFullYear()
-const currentMonth = new Date().getMonth() + 1
-
-const form = ref({
-  staffId: '',
-  staffName: '',
-  period: props.period || `${currentYear}-${String(currentMonth).padStart(2, '0')}`,
-  year: currentYear,
-  month: currentMonth,
-  baseSalary: 0,
-  positionAllowance: 0,
-  transportAllowance: 0,
-  housingAllowance: 0,
-  otherAllowances: 0,
-  overtime: 0,
-  bonus: 0,
-  absenceDeduction: 0,
-  lateDeduction: 0,
-  otherDeductions: 0,
-  notes: ''
-})
+const form = ref<PayrollForm>(blankPayrollForm(props.period))
 
 const grossSalary = computed(() => {
   return form.value.baseSalary
@@ -98,11 +80,8 @@ function calculateTax(monthlyIncome: number): number {
 }
 
 watch(() => open.value, (isOpen) => {
-  if (isOpen && props.payroll) {
-    form.value = { ...props.payroll }
-  } else if (isOpen && !props.payroll) {
-    resetForm()
-  }
+  if (!isOpen) return
+  form.value = props.payroll ? payrollFormFrom(props.payroll, props.period) : blankPayrollForm(props.period)
 })
 
 watch(() => form.value.staffId, (id) => {
@@ -123,24 +102,7 @@ watch(() => form.value.period, (period) => {
 })
 
 function resetForm() {
-  form.value = {
-    staffId: '',
-    staffName: '',
-    period: props.period || `${currentYear}-${String(currentMonth).padStart(2, '0')}`,
-    year: currentYear,
-    month: currentMonth,
-    baseSalary: 0,
-    positionAllowance: 0,
-    transportAllowance: 0,
-    housingAllowance: 0,
-    otherAllowances: 0,
-    overtime: 0,
-    bonus: 0,
-    absenceDeduction: 0,
-    lateDeduction: 0,
-    otherDeductions: 0,
-    notes: ''
-  }
+  form.value = blankPayrollForm(props.period)
 }
 
 async function handleSubmit() {
@@ -174,7 +136,7 @@ async function handleSubmit() {
     open.value = false
     resetForm()
   } catch (error: any) {
-    toast.add({ title: 'Error', description: error.data?.message || 'Failed to save payroll', color: 'error' })
+    toast.add({ title: 'Error', description: getApiErrorMessage(error, 'Failed to save payroll'), color: 'error' })
   } finally {
     submitting.value = false
   }

@@ -123,8 +123,12 @@
     <!-- Empty / No Patient State -->
     <div v-if="!patientId" class="flex-1 flex flex-col items-center justify-center p-8 text-dimmed">
       <UIcon name="i-lucide-user-x" class="w-12 h-12 mb-2 stroke-1" />
-      <p class="text-sm font-medium">សូមជ្រើសរើសអ្នកជំងឺជាមុនសិន</p>
-      <p class="text-xs text-muted mt-1">Please select a patient to view clinical history</p>
+      <p class="text-sm font-medium">
+        សូមជ្រើសរើសអ្នកជំងឺជាមុនសិន
+      </p>
+      <p class="text-xs text-muted mt-1">
+        Please select a patient to view clinical history
+      </p>
     </div>
 
     <!-- Loading State -->
@@ -138,8 +142,12 @@
     <!-- No Records Found -->
     <div v-else-if="filteredVisits.length === 0" class="flex-1 flex flex-col items-center justify-center p-8 text-dimmed">
       <UIcon name="i-lucide-folder-open" class="w-12 h-12 mb-2 stroke-1 text-emerald-500" />
-      <p class="text-sm font-bold text-default">មិនមានទិន្នន័យពិនិត្យស្របតាមលក្ខខណ្ឌស្វែងរកទេ</p>
-      <p class="text-xs text-muted mt-1">No visit records matching your filter criteria</p>
+      <p class="text-sm font-bold text-default">
+        មិនមានទិន្នន័យពិនិត្យស្របតាមលក្ខខណ្ឌស្វែងរកទេ
+      </p>
+      <p class="text-xs text-muted mt-1">
+        No visit records matching your filter criteria
+      </p>
     </div>
 
     <!-- Timeline List Content -->
@@ -164,11 +172,11 @@
             <div class="flex items-center gap-2">
               <span
                 class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
-                :class="v.dept === 'IPD' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300' :
-                  v.dept === 'ER' ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-300' :
-                  'bg-primary-50 text-primary-700 border border-primary-200 dark:bg-primary-950/50 dark:text-primary-300'"
+                :class="deptOf(v) === 'IPD' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300'
+                  : deptOf(v) === 'ER' ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-300'
+                    : 'bg-primary-50 text-primary-700 border border-primary-200 dark:bg-primary-950/50 dark:text-primary-300'"
               >
-                {{ v.dept || 'OPD' }}
+                {{ deptOf(v) }}
               </span>
               <span class="font-bold text-sm text-highlighted">
                 {{ v.visitId || v.visitNo || 'VIS-' + (v._id?.substring(18) || '000001') }}
@@ -428,12 +436,17 @@ watch(() => props.patientId, (newId) => {
   }
 }, { immediate: true })
 
+// Visits store their department as `type` ('opd' | 'ipd'); older rows may carry `dept`.
+function deptOf(v: any): string {
+  return String(v.dept || v.type || 'opd').toUpperCase()
+}
+
 // Filtered visits computation
 const filteredVisits = computed(() => {
   return visits.value.filter((v: any) => {
     // Dept filter
     if (selectedDept.value !== 'ALL') {
-      const vDept = (v.dept || 'OPD').toUpperCase()
+      const vDept = deptOf(v)
       if (selectedDept.value === 'FOLLOWUP' && !v.isFollowUp) return false
       if (selectedDept.value !== 'FOLLOWUP' && vDept !== selectedDept.value) return false
     }
@@ -498,13 +511,14 @@ function formatDateTime(dateStr: string | Date | undefined) {
 }
 
 function viewVisitDetail(v: any) {
-  const dept = (v.dept || 'opd').toLowerCase()
-  navigateTo(`/${dept}?visitId=${v._id}&patientId=${props.patientId}`)
+  editVisit(v)
 }
 
 function editVisit(v: any) {
-  const dept = (v.dept || 'opd').toLowerCase()
-  navigateTo(`/${dept}?visitId=${v._id}&patientId=${props.patientId}`)
+  // Visits store their department as `type` ('opd' | 'ipd'); there is no `dept` field.
+  const dept = deptOf(v) === 'IPD' ? 'ipd' : 'opd'
+  emit('close')
+  navigateTo({ path: `/${dept}`, query: { visitId: v._id, patientId: props.patientId } })
 }
 
 function printVisit(v: any) {

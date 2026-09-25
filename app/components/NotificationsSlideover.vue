@@ -4,7 +4,7 @@ import type { Notification } from '~/types'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
 
-const { data: notifications } = await useFetch<Notification[]>('/api/notifications')
+const notifications = ref<Notification[]>([]) // no notifications backend yet; the API's /api/notifications is a mock
 </script>
 
 <template>

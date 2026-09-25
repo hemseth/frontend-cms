@@ -8,9 +8,9 @@ import OpdPrescriptionTable from '~/components/opd/partials/OpdPrescriptionTable
 import OpdPrescriptionControls from '~/components/opd/partials/OpdPrescriptionControls.vue'
 import OpdDiagnosisControls from '~/components/opd/partials/OpdDiagnosisControls.vue'
 
-import { useOpdData } from '~/composables/useOpdData'
-import { useOpdInvoice } from '~/composables/useOpdInvoice'
-import { useDiagnosis } from '~/composables/useDiagnosis'
+import { useOpdData } from '~/composables/opd/useOpdData'
+import { useOpdInvoice } from '~/composables/opd/useOpdInvoice'
+import { useDiagnosis } from '~/composables/diagnosis/useDiagnosis'
 
 const { t } = useI18n()
 
@@ -176,7 +176,7 @@ function clearPatient() {
   patientDob.value = ''
   rows.value = []
   diagnosis.value = []
-  vitals.value = { bp: '', heartRate: '', respRate: '', temp: '', weight: '', oxygen: '', height: '', bsl: '' }
+  vitals.value = { bp: '', heartRate: '', respRate: '', temp: '', weight: '', oxygen: '', height: '', bsl: '', painScore: '' }
 }
 
 function onPatientSelected(p: Patient) {

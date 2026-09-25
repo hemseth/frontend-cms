@@ -2,7 +2,7 @@
 import { ref, computed, watch, onActivated, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast, useAsyncData } from '#imports'
-import { useAuth } from '~/composables/useAuth'
+import { useAuth } from '~/composables/auth/useAuth'
 import type { TableColumn } from '@nuxt/ui'
 
 const { t } = useI18n()

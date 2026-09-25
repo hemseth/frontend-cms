@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import QRCode from 'qrcode'
 
 const { formatKhmerDate, formatNumericKhmerDate } = useKhmerUtils()
@@ -8,6 +8,7 @@ const isLoading = ref(true)
 const invoiceData = ref<any>(null)
 const errorMsg = ref('')
 const qrCodeUrl = ref('')
+const profile = computed(() => toPrintProfile(invoiceData.value?.clinic, invoiceData.value?.branch))
 
 function formatMoney(value: unknown) {
   const amount = Number(value || 0)
@@ -104,8 +105,7 @@ onMounted(async () => {
       <PrintInvoiceHeader
         :patient="invoiceData.patient"
         :visit="invoiceData.visit"
-        :clinic="invoiceData.clinic"
-        :branch="invoiceData.branch"
+        :profile="profile"
         :invoice-no="invoiceData.invoiceNumber"
         :pay-date="invoiceData.payment.payDate || invoiceData.payment.createdAt"
         hide-vitals
@@ -200,10 +200,7 @@ onMounted(async () => {
       <div
         class="absolute bottom-[10mm] left-0 w-full text-center text-[10px] text-gray-400 print:fixed print:bottom-2 print:left-0 print:bg-white"
       >
-        <p class="border-t pt-2 mx-auto border-gray-200">
-          អាសយដ្ឋាន៖ ភូមិ ត្រពាំងស្វាយ - ឃុំ បង្កង - ស្រុក បាធាយ - ខេត្ត កំពង់ចាម ទូរស័ព្ទទំនាក់ទំនង៖
-          06266 25 858 / 077 923 983
-        </p>
+        <PrintClinicFooter :profile="profile" class="border-t pt-2 mx-auto border-gray-200" />
       </div>
     </div>
   </div>

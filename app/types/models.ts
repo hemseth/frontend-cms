@@ -33,6 +33,34 @@ export interface Patient {
   villageName?: string
 }
 
+export interface BodyMarker {
+  markerId?: string
+  regionCode?: string
+  subRegionCode?: string
+  regionNameKh?: string
+  regionNameEn?: string
+  markerType:
+    | 'pain'
+    | 'wound'
+    | 'burn'
+    | 'rash'
+    | 'fracture'
+    | 'swelling'
+    | 'injection_site'
+    | 'surgical_incision'
+    | 'drain_tube'
+    | 'other'
+  severity?: number
+  burnPercentage?: number
+  status: 'active' | 'healing' | 'resolved' | 'deteriorating'
+  coordinates3D?: { x: number; y: number; z: number }
+  coordinates2D?: { view: 'anterior' | 'posterior'; xPercent: number; yPercent: number }
+  notesKh?: string
+  notesEn?: string
+  photoAttachmentUrl?: string
+  snapshotImageUrl?: string
+}
+
 export interface Visit {
   id: string
   visitNo?: string
@@ -42,6 +70,8 @@ export interface Visit {
   department?: string
   doctor?: string
   vitals?: Record<string, any>
+  bodyMarkers?: BodyMarker[]
+  bodyChartSnapshot?: string
   reason?: string
   notes?: string
 }
@@ -160,4 +190,6 @@ export interface OpdRow {
   wholesalePrice?: number
   baseUnit?: string
   saleUnit?: string
+  usage?: string
+  instructions?: string
 }

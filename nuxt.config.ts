@@ -22,7 +22,10 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      link: []
+      link: [],
+      script: [
+        { src: 'https://accounts.google.com/gsi/client', async: true, defer: true }
+      ]
     }
   },
 
@@ -30,7 +33,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api',
+      googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '35029038689-imi2e24d90vjici54dibhjehahiv8fea.apps.googleusercontent.com'
     }
   },
   srcDir: 'app',

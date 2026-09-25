@@ -11,6 +11,12 @@ export default defineAppConfig({
       error: 'red',
       neutral: 'slate'
     },
+    modal: {
+      dismissible: false,
+      defaultVariants: {
+        dismissible: false
+      }
+    },
     breadcrumb: {
       slots: {
         root: 'relative min-w-0 bg-elevated rounded-md px-3 py-2',

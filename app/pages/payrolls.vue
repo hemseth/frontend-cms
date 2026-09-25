@@ -197,6 +197,11 @@ const columns: TableColumn<any>[] = [
           onSelect: () => editPayroll(row.original)
         },
         {
+          label: t('hr.payslip'),
+          icon: 'i-lucide-file-text',
+          onSelect: () => window.open(`/print/payslip/${row.original._id}`, '_blank')
+        },
+        {
           type: 'separator'
         },
         {

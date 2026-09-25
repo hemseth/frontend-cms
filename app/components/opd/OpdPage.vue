@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import type { Patient } from '~/types/models'
+import { ref, computed, onMounted, watch } from 'vue'
+import type { Patient, OpdMedicine, BodyMarker } from '~/types/models'
 import { useI18n } from 'vue-i18n'
+import BodyMapClinical from '~/components/clinical/BodyMapClinical.vue'
 // Partials
 import OpdPatientInfo from './partials/OpdPatientInfo.vue'
 import OpdVisitInfo from './partials/OpdVisitInfo.vue'
@@ -13,7 +14,6 @@ import OpdPrescriptionControls from './partials/OpdPrescriptionControls.vue'
 import OpdLabControls from './partials/OpdLabControls.vue'
 import OpdEchoControls from './partials/OpdEchoControls.vue'
 import OpdPaymentControls from './partials/OpdPaymentControls.vue'
-const { t } = useI18n()
 import OpdPaymentTable from './partials/OpdPaymentTable.vue'
 import OpdInvoiceFooter from './partials/OpdInvoiceFooter.vue'
 import ResultEntryModal from './partials/ResultEntryModal.vue'
@@ -23,9 +23,12 @@ import OpdRoundHistoryTable from './partials/OpdRoundHistoryTable.vue'
 import AddModal from '~/components/patients/AddModals.vue'
 
 // Composables
-import { useOpdData } from '~/composables/useOpdData'
-import { useOpdInvoice } from '~/composables/useOpdInvoice'
-import { useOpdServiceSelection } from '~/composables/useOpdServiceSelection'
+import { useOpdData } from '~/composables/opd/useOpdData'
+import { useOpdInvoice } from '~/composables/opd/useOpdInvoice'
+import { useOpdServiceSelection } from '~/composables/opd/useOpdServiceSelection'
+
+const { t } = useI18n()
+const toast = useToast()
 
 const props = defineProps<{
   dept?: string
@@ -86,7 +89,8 @@ const mainTabs = computed(() => [
   { label: t('common.prescription') || 'វេជ្ជបញ្ជា', slot: 'prescription', value: 0, icon: 'i-lucide-pill' },
   { label: t('common.lab') || 'ពិសោធន៍', slot: 'lab', value: 1, icon: 'i-lucide-flask-conical' },
   { label: t('common.echo') || 'អេកូ', slot: 'echo', value: 2, icon: 'i-lucide-activity' },
-  { label: t('common.payment') || 'ទូទាត់ប្រាក់', slot: 'payment', value: 3, icon: 'i-lucide-credit-card' }
+  { label: t('common.payment') || 'ទូទាត់ប្រាក់', slot: 'payment', value: 3, icon: 'i-lucide-credit-card' },
+  { label: 'គំនូសរាងកាយ 3D/2D', slot: 'bodymap', value: 4, icon: 'i-lucide-user' }
 ])
 
 const activeTab = ref(props.dept === 'LAB' ? 1 : 0)
@@ -105,72 +109,46 @@ const patientSearchOpen = ref(false)
 const isAddPatientModalOpen = ref(false)
 const genderOptions = [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }]
 
+// Visual Body Charting State (3D / 2D)
+const bodyMarkers = ref<BodyMarker[]>([])
+const bodyChartSnapshot = ref<string | null>(null)
+const selectedBodyRegion = ref<string>('')
+
+function onBodyRegionSelected(regionCode: string) {
+  selectedBodyRegion.value = regionCode
+  toast.add({
+    title: 'បានជ្រើសរើសតំបន់រាងកាយ',
+    description: `តម្រងស្វែងរករោគវិនិច្ឆ័យ: ${regionCode}`,
+    color: 'primary'
+  })
+}
+
+function onBodySnapshot(dataUrl: string) {
+  bodyChartSnapshot.value = dataUrl
+  toast.add({
+    title: 'បានថតរូបគំនូសរាងកាយ',
+    description: 'រូបភាពត្រូវបានភ្ជាប់ជាមួយកំណត់ត្រាពិនិត្យជំងឺ',
+    color: 'success'
+  })
+}
+
+// Auto-sync max pain score from markers to vitals
+watch(bodyMarkers, (newMarkers) => {
+  const painMarkers = newMarkers.filter(m => m.markerType === 'pain' && m.severity !== undefined)
+  if (painMarkers.length > 0) {
+    const maxPain = Math.max(...painMarkers.map(m => m.severity || 0))
+    if (!vitals.value.painScore || Number(vitals.value.painScore) < maxPain) {
+      vitals.value.painScore = String(maxPain)
+    }
+  }
+}, { deep: true })
+
 // Drug Allergy Safety Warning State
 const isAllergyModalOpen = ref(false)
 const pendingAllergicMed = ref<any>(null)
 const allergyConflictReason = ref('')
 
-function checkDrugAllergy(medName: string, allergies: string[]): string | null {
-  if (!allergies || allergies.length === 0 || !medName) return null
-  const m = medName.toLowerCase().trim()
-  for (const allergy of allergies) {
-    const a = allergy.toLowerCase().trim()
-    if (!a) continue
-
-    // Direct match
-    if (m.includes(a) || a.includes(m)) return allergy
-
-    // Penicillin family
-    if (a.includes('penicillin') || a.includes('amox') || a.includes('ampic')) {
-      if (
-        m.includes('penicillin') || m.includes('amox') || m.includes('ampic')
-        || m.includes('augmentin') || m.includes('cloxacillin') || m.includes('piperacillin')
-      ) {
-        return `${allergy} (ក្រុមប៉េនីស៊ីលីន / Penicillin Family)`
-      }
-    }
-
-    // Cephalosporins
-    if (a.includes('cef') || a.includes('ceph')) {
-      if (m.includes('cef') || m.includes('ceph')) {
-        return `${allergy} (ក្រុមសេហ្វាឡូស្ប៉ូរីន / Cephalosporin Family)`
-      }
-    }
-
-    // NSAIDs
-    if (a.includes('aspirin') || a.includes('ibuprofen') || a.includes('nsaid')) {
-      if (
-        m.includes('aspirin') || m.includes('ibuprofen') || m.includes('diclofenac')
-        || m.includes('naproxen') || m.includes('ketoprofen') || m.includes('meloxicam')
-        || m.includes('mefenamic')
-      ) {
-        return `${allergy} (ក្រុមបំបាត់ការឈឺចាប់ NSAID)`
-      }
-    }
-
-    // Sulfa
-    if (a.includes('sulfa')) {
-      if (m.includes('sulfa') || m.includes('bactrim') || m.includes('cotrimoxazole') || m.includes('septra')) {
-        return `${allergy} (ក្រុមស៊ុលហ្វា / Sulfonamide Family)`
-      }
-    }
-
-    // Quinolones
-    if (a.includes('cipro') || a.includes('quinolone')) {
-      if (m.includes('cipro') || m.includes('levofloxacin') || m.includes('ofloxacin') || m.includes('norfloxacin')) {
-        return `${allergy} (ក្រុម Fluoroquinolone)`
-      }
-    }
-
-    // Paracetamol
-    if (a.includes('paracetamol') || a.includes('acetaminophen')) {
-      if (m.includes('paracetamol') || m.includes('acetaminophen') || m.includes('panadol') || m.includes('tylenol')) {
-        return `${allergy} (ប៉ារ៉ាសេតាមុល / Paracetamol)`
-      }
-    }
-  }
-  return null
-}
+// checkDrugAllergy is shared from utils/drugAllergy.ts (auto-imported).
 
 const patientAge = computed(() => {
   if (!patientDob.value) return ''
@@ -199,7 +177,7 @@ const breadcrumbItems = computed(() => [
 
 const currentTabIndex = computed(() => {
   if (typeof activeTab.value === 'number') return activeTab.value
-  const idx = mainTabs.findIndex(t => t.value === activeTab.value)
+  const idx = mainTabs.value.findIndex((t: any) => t.value === activeTab.value)
   return idx !== -1 ? idx : 0
 })
 
@@ -234,12 +212,8 @@ async function loadVisitData(vId: string) {
     const v = res.data
     if (!v) return
 
-    lastVisitId.value = v._id
-    lastVisitNo.value = v.visitId || v._id
-    diagnosis.value = v.diagnosis || []
-    doctorId.value = v.doctorId || ''
-
-    // Load Patient
+    // Load the patient first: onPatientSelected resets the form (diagnosis, rows, visit and
+    // payment ids), so anything set before it would be wiped and the save would create a new visit.
     if (v.patient) {
       onPatientSelected(v.patient)
     } else if (v.patientId) {
@@ -247,9 +221,24 @@ async function loadVisitData(vId: string) {
       if (pRes.data) onPatientSelected(pRes.data)
     }
 
+    lastVisitId.value = v._id
+    lastVisitNo.value = v.visitId || v._id
+    diagnosis.value = v.diagnosis || []
+    doctorId.value = v.doctorId || ''
+
     // Load Vitals
     if (v.vitals) {
       vitals.value = { ...v.vitals }
+    }
+
+    // Load Body Charting
+    if (v.bodyMarkers && Array.isArray(v.bodyMarkers)) {
+      bodyMarkers.value = v.bodyMarkers
+    } else {
+      bodyMarkers.value = []
+    }
+    if (v.bodyChartSnapshot) {
+      bodyChartSnapshot.value = v.bodyChartSnapshot
     }
 
     // Load Medications and Lab Requests into Rows
@@ -306,9 +295,16 @@ async function loadVisitData(vId: string) {
 
     toast.add({ title: 'Success', description: 'Visit data loaded', color: 'success' })
   } catch (e: any) {
-    toast.add({ title: 'Error', description: 'Failed to load visit data', color: 'error' })
+    toast.add({ title: 'Error', description: getApiErrorMessage(e, 'Failed to load visit data'), color: 'error' })
   }
 }
+
+// "Amend" from the history table navigates to this same page with a new ?visitId=. The component
+// is reused, so onMounted does not run again; reload whenever the visit in the URL changes.
+const currentRoute = useRoute()
+watch(() => currentRoute.query.visitId, (vId, oldId) => {
+  if (vId && vId !== oldId) loadVisitData(String(vId))
+})
 
 // --- Functions ---
 function onPatientSelected(p: Patient) {
@@ -367,7 +363,7 @@ function handleAddMedicineWrapper(id: string, qty = 1, isWholesale = false) {
   const med = findMedicineById(id)
   if (!med) return
 
-  const medSearchStr = `${med.nameEn || ''} ${med.nameKh || ''} ${med.genericName || ''}`
+  const medSearchStr = `${med.nameEn || ''} ${med.nameKh || ''} ${(med as any).genericName || ''}`
   const conflict = checkDrugAllergy(medSearchStr, patientAllergies.value)
   if (conflict) {
     pendingAllergicMed.value = { med, qty, isWholesale }
@@ -394,7 +390,16 @@ const lastVisitId = ref<string | null>(null)
 const lastVisitNo = ref<string>('')
 
 async function saveInvoiceWrapper() {
-  const res: any = await saveOpdTransaction(internalPatientId.value, paymentMethod.value, lastVisitId.value, '', diagnosis.value, doctorId.value)
+  const res: any = await saveOpdTransaction(
+    internalPatientId.value,
+    paymentMethod.value,
+    lastVisitId.value,
+    '',
+    diagnosis.value,
+    doctorId.value,
+    bodyMarkers.value,
+    bodyChartSnapshot.value
+  )
   if (res && res.data) {
     lastPaymentId.value = res.data._id || res.data.paymentId
     lastVisitId.value = res.data.visit?._id || res.data.visitId
@@ -448,13 +453,18 @@ function handleCopyPastMedications(meds: any[]) {
   let count = 0
   meds.forEach((m: any) => {
     const med = findMedicineById(m.medicineId || m._id || m.id)
-    const rowMed = med || {
+    const rowMed: OpdMedicine = med || {
       _id: m.medicineId || m._id || m.id,
+      code: m.code || '',
       nameEn: m.nameEn || m.name || '',
       nameKh: m.nameKh || '',
       price: m.unitPrice || m.price || 0,
+      dosage: m.dosage || '',
       dosageForm: m.dosageForm || '',
-      category: m.category || ''
+      category: m.category || '',
+      unit: m.unit || '',
+      stock: m.stock || 0,
+      status: 'active'
     }
 
     addMedicine(rowMed, m.quantity || m.qty || 1, undefined, m.isWholesale || false)
@@ -462,13 +472,15 @@ function handleCopyPastMedications(meds: any[]) {
     // Set dosage fields on newly added row (last row)
     if (rows.value.length > 0) {
       const lastRow = rows.value[rows.value.length - 1]
-      lastRow.morning = m.morningDose ?? m.morning ?? m.qmor ?? 0
-      lastRow.afternoon = m.afternoonDose ?? m.afternoon ?? m.qaft ?? 0
-      lastRow.evening = m.eveningDose ?? m.evening ?? m.qeve ?? 0
-      lastRow.night = m.nightDose ?? m.night ?? m.qngt ?? 0
-      lastRow.days = m.days || m.duration || 1
-      lastRow.qty = m.quantity || m.qty || 1
-      lastRow.instructions = m.usage || m.instructions || ''
+      if (lastRow) {
+        lastRow.qmor = Number(m.morningDose ?? m.morning ?? m.qmor ?? 0)
+        lastRow.qaft = Number(m.afternoonDose ?? m.afternoon ?? m.qaft ?? 0)
+        lastRow.qeve = Number(m.eveningDose ?? m.evening ?? m.qeve ?? 0)
+        lastRow.qngt = Number(m.nightDose ?? m.night ?? m.qngt ?? 0)
+        lastRow.days = Number(m.days || m.duration || 1)
+        lastRow.qty = Number(m.quantity || m.qty || 1)
+        lastRow.usage = m.usage || m.instructions || ''
+      }
     }
     count++
   })
@@ -480,6 +492,15 @@ function handleCopyPastMedications(meds: any[]) {
     description: `បានចម្លងមុខថ្នាំចំនួន ${count} មុខពីប្រវត្តិពិនិត្យមុនចូលវេជ្ជបញ្ជា`,
     color: 'success'
   })
+}
+
+function handleAdmitToIpd() {
+  const targetId = internalPatientId.value || patientId.value
+  if (!targetId) {
+    toast.add({ title: 'Warning', description: 'សូមជ្រើសរើសអ្នកជំងឺជាមុនសិន', color: 'warning' })
+    return
+  }
+  navigateTo(`/inpatient/bed-board?patientId=${targetId}`)
 }
 </script>
 
@@ -501,6 +522,7 @@ function handleCopyPastMedications(meds: any[]) {
         :gender-options="genderOptions"
         @patient-selected="onPatientSelected"
         @add-patient="isAddPatientModalOpen = true"
+        @admit-ipd="handleAdmitToIpd"
       />
       <OpdVitals :vitals="vitals" />
       <OpdVisitInfo
@@ -520,7 +542,11 @@ function handleCopyPastMedications(meds: any[]) {
         class="col-span-1 md:col-span-9 flex flex-col h-full bg-default rounded-lg shadow-sm border border-default overflow-hidden"
       >
         <!-- Diagnosis Control (Left Side) -->
-        <OpdDiagnosisControls v-model="diagnosis" />
+        <OpdDiagnosisControls
+          v-model="diagnosis"
+          :region-filter="selectedBodyRegion"
+          @clear-region-filter="selectedBodyRegion = ''"
+        />
 
         <!-- Custom Rounded Tab Header -->
         <div class="flex items-center gap-1.5 p-2 bg-muted/80 border-b border-default overflow-x-auto">
@@ -560,6 +586,14 @@ function handleCopyPastMedications(meds: any[]) {
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentTable :rows="rows" @remove-row="removeRow" />
           </div>
+
+          <div v-show="activeTab === 4" class="h-full flex flex-col p-2 overflow-y-auto max-h-[calc(100vh-200px)] min-h-[560px]">
+            <BodyMapClinical
+              v-model="bodyMarkers"
+              @region-selected="onBodyRegionSelected"
+              @snapshot="onBodySnapshot"
+            />
+          </div>
         </div>
       </div>
 
@@ -589,6 +623,28 @@ function handleCopyPastMedications(meds: any[]) {
 
           <div v-show="activeTab === 3" class="h-full flex flex-col">
             <OpdPaymentControls v-model:payment-method="paymentMethod" :payment-methods="paymentMethods" />
+          </div>
+
+          <div v-show="activeTab === 4" class="h-full flex flex-col p-4 bg-default rounded-lg border border-default text-xs">
+            <div class="font-bold text-highlighted mb-2 flex items-center gap-1.5">
+              <UIcon name="i-lucide-activity" class="w-4 h-4 text-primary-500" />
+              <span>សេចក្តីសង្ខេបគំនូសរាងកាយ (Body Map)</span>
+            </div>
+            <p class="text-toned mb-3 text-[11px] leading-relaxed">
+              ចុចលើរូបរាងកាយ 3D ឬ 2D ដើម្បីសម្គាល់ចំណុចឈឺចាប់ របួស ឬរលាក។ ប្រព័ន្ធនឹងស្វែងរក និងផ្ដល់អនុសាសន៍រោគវិនិច្ឆ័យ (Diagnosis) ស្របតាមផ្នែករាងកាយដែលបានជ្រើសរើសដោយស្វ័យប្រវត្តិ។
+            </p>
+            <div class="p-3 rounded-lg bg-muted border border-default mb-3">
+              <div class="text-[11px] text-muted">
+                ចំណុចសម្គាល់សរុប (Total Markers):
+              </div>
+              <div class="text-base font-bold text-primary mt-0.5">
+                {{ bodyMarkers.length }} ចំណុច
+              </div>
+            </div>
+            <div v-if="bodyChartSnapshot" class="mt-auto pt-2 border-t border-default">
+              <span class="text-[11px] font-semibold text-default block mb-1">រូបភាពថតចុងក្រោយ (Snapshot):</span>
+              <img :src="bodyChartSnapshot" class="w-full h-32 object-contain rounded-lg border border-default bg-muted">
+            </div>
           </div>
         </div>
       </div>

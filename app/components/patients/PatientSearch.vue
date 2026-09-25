@@ -192,23 +192,7 @@ watch(isOpen, async (newVal) => {
 // New patient modal state
 const newPatientOpen = ref(false)
 
-const schema = z.object({
-  name: z.string().min(2, 'Too short'),
-  email: z.string().email('Invalid email')
-})
 
-type Schema = z.output<typeof schema>
-
-const newState = reactive<Partial<Schema>>({
-  name: undefined,
-  email: undefined
-})
-
-const toast = useToast()
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: `New patient ${event.data.name} added`, color: 'success' })
-  newPatientOpen.value = false
-}
 
 // pagination
 const page = ref(1)
@@ -477,37 +461,11 @@ function formatGender(p: any) {
   </UModal>
 
   <!-- New patient modal -->
-  <UModal v-model:open="newPatientOpen" title="New patient" description="Add a new patient to the database">
-    <template #body>
-      <UForm
-        :schema="schema"
-        :state="newState"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormField label="Name" placeholder="ឈ្មោះ" name="name">
-          <UInput v-model="newState.name" class="w-full" />
-        </UFormField>
-        <UFormField label="Email" placeholder="example@domain.com" name="email">
-          <UInput v-model="newState.email" class="w-full" />
-        </UFormField>
-        <div class="flex justify-end gap-2">
-          <UButton
-            label="Cancel"
-            color="neutral"
-            variant="subtle"
-            @click="newPatientOpen = false"
-          />
-          <UButton
-            label="Create"
-            color="primary"
-            variant="solid"
-            type="submit"
-          />
-        </div>
-      </UForm>
-    </template>
-  </UModal>
+  <PatientsAddModals
+    v-model:open="newPatientOpen"
+    hide-button
+    @success="performSearch"
+  />
 </template>
 
 <style scoped>

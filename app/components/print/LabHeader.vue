@@ -9,31 +9,12 @@
       >
     </div>
     <!-- Row 1: Logo & Clinic Name -->
-    <div class="flex justify-center items-center gap-8 mb-2 px-4">
-      <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-        +
-      </div>
-      <div class="text-center">
-        <h1 class="text-[14pt] text-blue-800 font-khmer-moul tracking-wide mb-1">
-          មន្ទីរសម្រាកព្យាបាលជំងឺ ញឹម ពីង
-        </h1>
-        <h2 class="text-lg md:text-xl font-bold text-blue-800 uppercase tracking-wider">
-          CLINIC NHEM PING
-        </h2>
-      </div>
-      <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-        +
-      </div>
-    </div>
+    <PrintLetterhead :profile="profile" class="mb-2" />
 
     <!-- Row 2: Contact, Date & Title -->
     <div class="flex justify-between items-start text-[11pt] text-blue-800 mb-2 px-2 font-bold relative">
-      <!-- Left: Services/Contact -->
-      <div class="space-y-1 w-1/3">
-        <p>- ពិនិត្យ និងព្យាបាលជំងឺទូទៅ</p>
-        <p>- វះកាត់តូច</p>
-        <p>- ឆែករកសិរី X ឆ្លុះអេក ពណ៌</p>
-      </div>
+      <!-- Left: header lines from the clinic settings -->
+      <PrintHeaderLines :lines="profile.headerLines" class="w-1/3" />
 
       <!-- Right: Dates -->
       <div class="text-right w-1/3 pt-2">
@@ -108,11 +89,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import QRCode from 'qrcode'
+import type { PrintProfile } from '~/composables/clinic/useClinicProfile'
 
 const props = defineProps<{
   patient?: any
   visit?: any
   title?: string
+  profile: PrintProfile
   hideVitals?: boolean
   hideDiagnosis?: boolean
 }>()

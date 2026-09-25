@@ -1,9 +1,20 @@
 <template>
   <UCard class="col-span-1 md:col-span-4 h-full">
     <template #header>
-      <div class="font-semibold flex items-center">
-        <UIcon name="i-lucide-user" size="30" class="text-primary-500" />
-        <span class="ml-2"> {{ t('patient.info') }}</span>
+      <div class="font-semibold flex items-center justify-between">
+        <div class="flex items-center">
+          <UIcon name="i-lucide-user" size="30" class="text-primary-500" />
+          <span class="ml-2"> {{ t('patient.info') }}</span>
+        </div>
+        <UButton
+          v-if="patientId"
+          label="សម្រាកពេទ្យ (Admit to Ward)"
+          icon="i-lucide-bed"
+          color="error"
+          size="xs"
+          variant="soft"
+          @click="emit('admit-ipd')"
+        />
       </div>
     </template>
     <div class="flex items-end gap-2 mb-3">
@@ -136,7 +147,7 @@ defineProps<{
   genderOptions: { value: string, label: string }[]
 }>()
 
-const emit = defineEmits(['update:patientId', 'update:patientName', 'update:patientGender', 'update:patientDob', 'update:patientSearchOpen', 'patient-selected', 'add-patient'])
+const emit = defineEmits(['update:patientId', 'update:patientName', 'update:patientGender', 'update:patientDob', 'update:patientSearchOpen', 'patient-selected', 'add-patient', 'admit-ipd'])
 </script>
 
 <style scoped>

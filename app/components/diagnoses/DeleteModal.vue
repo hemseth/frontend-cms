@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDiagnosis } from '~/composables/useDiagnosis'
+import { useDiagnosis } from '~/composables/diagnosis/useDiagnosis'
 
 const props = defineProps<{
   diagnosis?: any

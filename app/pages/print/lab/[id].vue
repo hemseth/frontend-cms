@@ -7,6 +7,7 @@ const labData = ref<any[]>([])
 const patient = ref<any>(null)
 const visit = ref<any>(null)
 const errorMsg = ref('')
+const { profile, load: loadProfile } = useClinicProfile()
 
 // Font Size Control
 const fontSize = ref(16)
@@ -35,7 +36,8 @@ onMounted(async () => {
     const [labRes, patientRes, visitRes]: any[] = await Promise.all([
       $api(`/patients/${patientId}/visits/${visitId}/labs`),
       $api(`/patients/${patientId}`),
-      $api(`/patients/${patientId}/visits/${visitId}`)
+      $api(`/patients/${patientId}/visits/${visitId}`),
+      loadProfile()
     ])
 
     labData.value = labRes.data || []
@@ -80,7 +82,7 @@ onMounted(async () => {
     :class="paperSize === 'A5' ? 'w-[148mm]' : 'w-[210mm]'"
   >
     <!-- New Lab Header Component -->
-    <PrintLabHeader :patient="patient" :visit="visit" />
+    <PrintLabHeader :patient="patient" :visit="visit" :profile="profile" />
 
     <!-- Results List -->
     <!-- Main Results Table -->
@@ -196,11 +198,7 @@ onMounted(async () => {
       </div>
 
       <div class="text-center text-[10px] text-gray-400 mt-12 border-t pt-2">
-        <p>
-          អាសយដ្ឋាន៖ ភូមិ​ ត្រពាំងស្វាយ - ឃុំ​ បង្កង - ស្រុក​ បាធាយ - ខេត្ត​ កំពង់ចាម ទូរស័ព្ទទំនាក់ទំនង៖ 062
-          66 25
-          858 / 077 923 983
-        </p>
+        <PrintClinicFooter :profile="profile" />
       </div>
     </div>
   </div>

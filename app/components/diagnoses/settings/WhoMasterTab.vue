@@ -2,8 +2,8 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { DiagnosisMaster, DiagnosisMasterMetaText } from '~/types/diagnosis'
-import { useDiagnosisMaster } from '~/composables/useDiagnosisMaster'
-import { useDiagnosisMetadata } from '~/composables/useDiagnosisMetadata'
+import { useDiagnosisMaster } from '~/composables/diagnosis/useDiagnosisMaster'
+import { useDiagnosisMetadata } from '~/composables/diagnosis/useDiagnosisMetadata'
 
 const { t } = useI18n()
 

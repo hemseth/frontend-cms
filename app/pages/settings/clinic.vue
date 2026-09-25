@@ -4,7 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 const { t } = useI18n()
 const toast = useToast()
-const { clinicId, user } = useAuth()
+const { clinicId, user, setUser, fetchUser } = useAuth()
 
 const isLoading = ref(true)
 const isSaving = ref(false)
@@ -16,7 +16,10 @@ const schema = z.object({
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   website: z.string().url().optional().or(z.literal('')),
-  description: z.string().optional()
+  description: z.string().optional(),
+  logo: z.string().max(500).optional(),
+  headerLines: z.array(z.string().max(100)).optional(),
+  footerNote: z.string().max(200).optional()
 })
 
 type Schema = z.output<typeof schema>
@@ -28,7 +31,42 @@ const state = reactive({
   phone: '',
   email: '',
   website: '',
-  description: ''
+  description: '',
+  logo: '',
+  headerLines: ['', '', '', ''] as string[],
+  footerNote: ''
+})
+
+const config = useRuntimeConfig()
+const logoUrl = computed(() => resolveAssetUrl(state.logo, String(config.public.apiBase)))
+const isUploadingLogo = ref(false)
+
+async function onLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  isUploadingLogo.value = true
+  try {
+    const body = new FormData()
+    body.append('file', file)
+    const res = await $api<{ data: { url: string } }>('/uploads', { method: 'POST', body })
+    state.logo = res.data.url
+  } catch (error) {
+    toast.add({ title: 'Error', description: getApiErrorMessage(error, 'Failed to upload logo'), color: 'error' })
+  } finally {
+    isUploadingLogo.value = false
+    input.value = ''
+  }
+}
+
+// On mount, if clinicId is missing in cookie, attempt to sync latest user data from /auth/me
+onMounted(async () => {
+  if (!clinicId.value && fetchUser) {
+    const updated = await fetchUser()
+    if (updated?.clinicId) {
+      await refresh()
+    }
+  }
 })
 
 // Fetch clinic data
@@ -45,7 +83,7 @@ const { data: clinicData, refresh } = await useAsyncData('clinic', async () => {
   immediate: true
 })
 
-// Populate form when data loads
+// Populate form when data loads or pre-fill defaults for new clinic
 watch(clinicData, (val) => {
   if (val) {
     state.name = val.name || ''
@@ -55,28 +93,59 @@ watch(clinicData, (val) => {
     state.email = val.email || ''
     state.website = val.website || ''
     state.description = val.description || ''
+    state.logo = val.logo || ''
+    state.headerLines = Array.from({ length: 4 }, (_, i) => val.headerLines?.[i] || '')
+    state.footerNote = val.footerNote || ''
+  } else if (!clinicId.value) {
+    if (!state.name && user.value?.username) {
+      state.name = `${user.value.username}'s Clinic`
+    }
+    if (!state.email && user.value?.email) {
+      state.email = user.value.email
+    }
   }
   isLoading.value = false
 }, { immediate: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  if (!clinicId.value) {
-    toast.add({ title: 'Error', description: 'No clinic found', color: 'error' })
-    return
-  }
-
   isSaving.value = true
   try {
+    const body = { ...event.data, headerLines: (event.data.headerLines ?? []).map(line => line.trim()).filter(Boolean) }
+    if (!clinicId.value) {
+      // Create new clinic
+      const res = await $api<{ message: string; data: any; user?: any }>('/clinics', {
+        method: 'POST',
+        body
+      })
+      if (res.user) {
+        setUser(res.user)
+      } else if (res.data?._id) {
+        setUser({
+          ...user.value,
+          clinicId: res.data._id
+        })
+      }
+      toast.add({
+        title: 'Success',
+        description: 'Clinic created successfully! Setting up your workspace...',
+        color: 'success'
+      })
+      setTimeout(() => {
+        window.location.reload()
+      }, 600)
+      return
+    }
+
     await $api(`/clinics/${clinicId.value}`, {
       method: 'PUT',
-      body: event.data
+      body
     })
     toast.add({ title: 'Success', description: 'Clinic information updated', color: 'success' })
     refresh()
   } catch (error: any) {
     toast.add({
       title: 'Error',
-      description: error.data?.message || 'Failed to update clinic',
+      description: getApiErrorMessage(error, 'Failed to save clinic information'),
       color: 'error'
     })
   } finally {
@@ -93,6 +162,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       />
     </div>
 
+    <!-- Banner when clinic does not exist yet -->
+    <div
+      v-if="!clinicId && !isLoading"
+      class="p-4 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 flex items-start gap-3"
+    >
+      <UIcon name="i-lucide-sparkles" class="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+      <div>
+        <h3 class="text-sm font-semibold text-amber-800 dark:text-amber-300">
+          Welcome! Complete your clinic setup
+        </h3>
+        <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+          Please enter your clinic information below to create your clinic profile. A 14-day free trial on Pro tier and default branch will be created automatically.
+        </p>
+      </div>
+    </div>
+
     <UCard>
       <template #header>
         <div class="flex items-center gap-3">
@@ -101,10 +186,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </div>
           <div>
             <h2 class="text-xl font-semibold">
-              Clinic Information
+              {{ clinicId ? 'Clinic Information' : 'Create Your Clinic' }}
             </h2>
             <p class="text-sm text-muted">
-              Manage your clinic details
+              {{ clinicId ? 'Manage your clinic details' : 'Fill in the information below to set up your clinic profile' }}
             </p>
           </div>
         </div>
@@ -181,21 +266,79 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           />
         </UFormField>
 
+        <div class="space-y-4 pt-4 border-t">
+          <div>
+            <h3 class="text-sm font-semibold">
+              Printed documents
+            </h3>
+            <p class="text-xs text-muted">
+              Shown in the header and footer of invoices, prescriptions, lab results and reports.
+            </p>
+          </div>
+
+          <UFormField label="Logo" name="logo" help="PNG, JPG or WebP, up to 5 MB">
+            <div class="flex items-center gap-4">
+              <img
+                v-if="logoUrl"
+                :src="logoUrl"
+                alt="Clinic logo"
+                class="h-16 w-16 object-contain rounded border border-default"
+              >
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                :disabled="isUploadingLogo"
+                class="text-sm"
+                @change="onLogoSelected"
+              >
+              <UButton
+                v-if="state.logo"
+                label="Remove"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click="state.logo = ''"
+              />
+            </div>
+          </UFormField>
+
+          <UFormField
+            label="Header lines"
+            name="headerLines"
+            help="Up to 4 short lines beside the clinic name, for example the doctor's name or the services offered"
+          >
+            <div class="space-y-2">
+              <UInput
+                v-for="i in 4"
+                :key="i"
+                v-model="state.headerLines[i - 1]"
+                :placeholder="`Line ${i}`"
+                maxlength="100"
+                class="w-full"
+              />
+            </div>
+          </UFormField>
+
+          <UFormField label="Footer note" name="footerNote" help="Printed under the address and phone">
+            <UInput v-model="state.footerNote" maxlength="200" class="w-full" />
+          </UFormField>
+        </div>
+
         <div class="flex justify-end pt-4 border-t">
           <UButton
             type="submit"
-            label="Save Changes"
+            :label="clinicId ? 'Save Changes' : 'Create Clinic'"
             color="primary"
             :loading="isSaving"
-            icon="i-lucide-save"
+            :icon="clinicId ? 'i-lucide-save' : 'i-lucide-plus'"
             size="lg"
           />
         </div>
       </UForm>
     </UCard>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Quick Stats (only shown when clinic is created) -->
+    <div v-if="clinicId" class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <UCard>
         <div class="flex items-center gap-4">
           <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">

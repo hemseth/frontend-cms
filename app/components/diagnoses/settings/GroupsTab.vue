@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { ClinicDiagnosisGroup } from '~/types/diagnosis'
-import { useDiagnosisGroups } from '~/composables/useDiagnosisGroups'
+import { useDiagnosisGroups } from '~/composables/diagnosis/useDiagnosisGroups'
 import GroupModal from '~/components/diagnoses/settings/GroupModal.vue'
 
 const { t } = useI18n()

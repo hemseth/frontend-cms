@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSidebar } from '~/composables/useSidebar'
+import { useSidebar } from '~/composables/shared/useSidebar'
 import { useRouter } from 'vue-router'
 
 const { t } = useI18n()

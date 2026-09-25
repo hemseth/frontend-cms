@@ -1,29 +1,19 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title: string
   showSignature?: boolean
-  clinicName?: string
-  clinicPhone?: string
-  clinicAddress?: string
 }>()
 
 const { t } = useI18n()
+const { profile, load: loadProfile } = useClinicProfile()
+onMounted(loadProfile)
 </script>
 
 <template>
   <div class="report-container">
     <div class="report-header print-only">
-      <div class="clinic-header">
-        <h1 class="clinic-name">
-          {{ clinicName || 'Clinic Management System' }}
-        </h1>
-        <p v-if="clinicPhone" class="clinic-contact">
-          {{ clinicPhone }}
-        </p>
-        <p v-if="clinicAddress" class="clinic-address">
-          {{ clinicAddress }}
-        </p>
-      </div>
+      <PrintLetterhead :profile="profile" class="clinic-header" />
+      <PrintClinicFooter :profile="profile" :show-note="false" class="clinic-contact" />
       <div class="report-title-section">
         <h2 class="report-title">
           {{ title }}
@@ -82,14 +72,7 @@ const { t } = useI18n()
     margin-bottom: 15px;
   }
 
-  .clinic-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .clinic-contact,
-  .clinic-address {
+  .clinic-contact {
     font-size: 12px;
     margin: 5px 0;
     color: #666;

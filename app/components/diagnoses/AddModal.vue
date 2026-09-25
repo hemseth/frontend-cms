@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import type { Diagnosis } from '~/composables/useDiagnosis'
+import type { Diagnosis } from '~/composables/diagnosis/useDiagnosis'
 
 const { t } = useI18n()
 

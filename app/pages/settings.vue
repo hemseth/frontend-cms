@@ -13,3 +13,4 @@ const links = [[]] satisfies NavigationMenuItem[][]
     </template>
   </UDashboardPanel>
 </template>
+

@@ -15,15 +15,20 @@ export function useDiagnosisSearch() {
   const recents = ref<DiagnosisSearchResult[]>([])
   const loading = ref(false)
   const searched = ref(false)
+  const bodyRegion = ref<string>('')
 
   let requestId = 0
 
-  async function runSearch(q: string) {
+  async function runSearch(q: string, region?: string) {
     const current = ++requestId
     loading.value = true
     try {
+      const activeRegion = region !== undefined ? region : bodyRegion.value
+      const params: Record<string, any> = { q, limit: 30 }
+      if (activeRegion) params.bodyRegion = activeRegion
+
       const res = await $api<{ data: DiagnosisSearchResult[] }>('/diagnosis-master/search', {
-        params: { q, limit: 30 }
+        params
       })
       if (current === requestId) {
         results.value = res.data
@@ -39,7 +44,7 @@ export function useDiagnosisSearch() {
 
   const debouncedSearch = useDebounceFn((q: string) => {
     query.value = q
-    if (!q.trim()) {
+    if (!q.trim() && !bodyRegion.value) {
       results.value = []
       searched.value = false
       return
@@ -47,12 +52,28 @@ export function useDiagnosisSearch() {
     runSearch(q)
   }, 300)
 
-  function search(q: string, immediate = false) {
+  function search(q: string, immediate = false, region?: string) {
+    if (region !== undefined) bodyRegion.value = region
     if (immediate) {
       query.value = q
-      runSearch(q)
+      runSearch(q, region)
     } else {
       debouncedSearch(q)
+    }
+  }
+
+  function setBodyRegion(region: string) {
+    bodyRegion.value = region
+    runSearch(query.value, region)
+  }
+
+  function clearBodyRegion() {
+    bodyRegion.value = ''
+    if (query.value.trim()) {
+      runSearch(query.value, '')
+    } else {
+      results.value = []
+      searched.value = false
     }
   }
 
@@ -99,6 +120,9 @@ export function useDiagnosisSearch() {
     loading,
     searched,
     search,
+    bodyRegion,
+    setBodyRegion,
+    clearBodyRegion,
     loadFavorites,
     loadRecents,
     toggleUserFavorite,

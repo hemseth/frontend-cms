@@ -13,6 +13,7 @@ const isLoading = ref(true)
 const expenses = ref<any[]>([])
 const summaryData = ref<ExpenseSummary | null>(null)
 const errorMsg = ref('')
+const { profile, load: loadProfile } = useClinicProfile()
 
 // Font Size Control
 const fontSize = ref(16)
@@ -32,6 +33,7 @@ onMounted(async () => {
   document.documentElement.style.fontSize = `${fontSize.value}px`
 
   try {
+    await loadProfile()
     const { category, startDate, endDate, q } = route.query
 
     // Fetch all matching expenses (no limit for report)
@@ -98,22 +100,7 @@ onMounted(async () => {
     >
       <!-- Clinic Header -->
       <div class="w-full pt-2 mb-4 font-khmer text-blue-900 print:text-blue-900 relative">
-        <div class="flex justify-center items-center gap-4 mb-4 px-4">
-          <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-            +
-          </div>
-          <div class="text-center">
-            <h1 class="text-[14pt] font-weight=[700] font-khmer-moul tracking-wide mb-1 leading-tight">
-              មន្ទីរសម្រាកព្យាបាលជំងឺ ញ៉ែម ពីង
-            </h1>
-            <h2 class="text-xl font-bold uppercase tracking-wider">
-              CLINIC NHEM PING
-            </h2>
-          </div>
-          <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-            +
-          </div>
-        </div>
+        <PrintLetterhead :profile="profile" class="mb-4" />
 
         <div class="text-center mt-2">
           <h3 class="text-[16pt] font-khmer-moul tracking-wide">
@@ -230,10 +217,7 @@ onMounted(async () => {
       <div
         class="absolute bottom-[10mm] left-0 w-full text-center text-[10px] text-gray-400 print:fixed print:bottom-2 print:left-0 print:bg-white px-10"
       >
-        <p class="border-t pt-2 mx-auto border-gray-200">
-          អាសយដ្ឋាន៖ ភូមិ ត្រពាំងស្វាយ - ឃុំ បង្កង - ស្រុក បាធាយ - ខេត្ត កំពង់ចាម ទូរស័ព្ទទំនាក់ទំនង៖
-          06266 25 858 / 077 923 983
-        </p>
+        <PrintClinicFooter :profile="profile" class="border-t pt-2 mx-auto border-gray-200" />
       </div>
     </div>
   </div>

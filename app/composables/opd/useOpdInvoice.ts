@@ -28,7 +28,7 @@ export const useOpdInvoice = (
     const qeve = Number(r.qeve) || 0
     const qngt = Number(r.qngt) || 0
     const perDay = qmor + qaft + qeve + qngt
-    const days = (r.days !== undefined && r.days !== null && r.days !== '' && !isNaN(Number(r.days)))
+    const days = (r.days !== undefined && r.days !== null && !isNaN(Number(r.days)))
       ? Math.max(1, Number(r.days))
       : 1
 
@@ -272,35 +272,42 @@ export const useOpdInvoice = (
       status = row.result && String(row.result).trim() ? 'completed' : 'pending'
     }
 
-    // Persist to backend if item is saved in database
-    if (row._id) {
-      try {
-        await $api(`/labs/${row._id}`, {
-          method: 'PUT',
-          body: {
-            result: row.result,
-            parameters: row.parameters,
-            status
-          }
-        })
-      } catch (err: any) {
-        console.error('Failed to persist lab result:', err)
-      }
+    // A row without an id is not in the database yet; its results are stored with the visit.
+    if (!row._id) {
+      toast.add({
+        title: 'Not saved yet',
+        description: `Results for ${row.name} will be saved when the visit is saved`,
+        color: 'warning'
+      })
+      return
     }
 
-    toast.add({
-      title: 'Saved',
-      description: `Results for ${row.name} saved successfully (Status: ${status})`,
-      color: 'success'
-    })
+    try {
+      await $api(`/labs/${row._id}`, {
+        method: 'PUT',
+        body: {
+          result: row.result,
+          parameters: row.parameters,
+          status
+        }
+      })
+      toast.add({
+        title: 'Saved',
+        description: `Results for ${row.name} saved successfully (Status: ${status})`,
+        color: 'success'
+      })
+    } catch (err: any) {
+      // Never report success here: a lab result that did not reach the server is not saved.
+      toast.add({
+        title: 'Error',
+        description: getApiErrorMessage(err, `Results for ${row.name} were not saved`),
+        color: 'error'
+      })
+    }
   }
 
   function saveResultEntry() {
-    toast.add({
-      title: 'Saved',
-      description: 'Results saved successfully',
-      color: 'success'
-    })
+    if (selectedServiceForResults.value) return saveLabResult(selectedServiceForResults.value, selectedServiceResultIndex.value)
   }
 
   // Vitals State
@@ -312,7 +319,8 @@ export const useOpdInvoice = (
     weight: '',
     oxygen: '',
     height: '',
-    bsl: ''
+    bsl: '',
+    painScore: ''
   })
 
   async function saveOpdTransaction(
@@ -321,7 +329,9 @@ export const useOpdInvoice = (
     visitId?: string | null,
     note?: string,
     diagnoses?: string[],
-    doctorId?: string
+    doctorId?: string,
+    bodyMarkers?: any[],
+    bodyChartSnapshot?: string | null
   ) {
     if (!patientId) {
       toast.add({
@@ -419,7 +429,8 @@ export const useOpdInvoice = (
         tax: 0,
         currency: 'USD',
         method: paymentMethod || 'cash',
-        status: totalReceived.value >= grandTotal.value ? 'paid'
+        status: totalReceived.value >= grandTotal.value
+          ? 'paid'
           : totalReceived.value > 0 ? 'partially_paid' : 'pending',
         items,
         payDate: payDate.value,
@@ -438,6 +449,8 @@ export const useOpdInvoice = (
             typeof d === 'string' ? { nameEn: d } : d
           ),
           vitals: vitals.value,
+          bodyMarkers: bodyMarkers || [],
+          bodyChartSnapshot: bodyChartSnapshot || undefined,
           paymentMethod,
           medications,
           labRequests,

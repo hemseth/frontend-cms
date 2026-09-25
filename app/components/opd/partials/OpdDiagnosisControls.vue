@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import type { DiagnosisSearchResult } from '~/types/diagnosis'
-import { useDiagnosisSearch } from '~/composables/useDiagnosisSearch'
+import { useDiagnosisSearch } from '~/composables/diagnosis/useDiagnosisSearch'
 
 const { t } = useI18n()
 
 const props = defineProps<{
   modelValue: any[]
+  regionFilter?: string
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: any[]): void
+  (e: 'clearRegionFilter'): void
 }>()
 
 const selected = computed({
@@ -25,6 +27,9 @@ const {
   recents,
   loading,
   search,
+  bodyRegion,
+  setBodyRegion,
+  clearBodyRegion,
   toggleUserFavorite,
   loadInitial
 } = useDiagnosisSearch()
@@ -33,12 +38,24 @@ const showResults = ref(false)
 
 onMounted(async () => {
   await loadInitial()
+  if (props.regionFilter) {
+    setBodyRegion(props.regionFilter)
+  }
+})
+
+watch(() => props.regionFilter, (newRegion) => {
+  if (newRegion) {
+    setBodyRegion(newRegion)
+    showResults.value = true
+  } else {
+    clearBodyRegion()
+  }
 })
 
 watch(query, () => {
   const q = query.value
-  showResults.value = !!q.trim()
-  if (q.trim()) {
+  showResults.value = !!q.trim() || !!bodyRegion.value
+  if (q.trim() || bodyRegion.value) {
     search(q)
   } else {
     results.value = []
@@ -108,9 +125,23 @@ async function handleFavorite(item: DiagnosisSearchResult) {
 
 <template>
   <div class="p-4 border-b border-default bg-default">
-    <label class="khmer-label block text-sm mb-1 font-bold text-default">
-      {{ $t('visit.diagnosis') }}
-    </label>
+    <div class="flex items-center justify-between mb-1.5">
+      <label class="khmer-label block text-sm font-bold text-default">
+        {{ $t('visit.diagnosis') }}
+      </label>
+      <div v-if="bodyRegion" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800 text-[11px] font-medium shadow-2xs">
+        <UIcon name="i-lucide-activity" class="w-3 h-3 text-primary-500" />
+        <span>តម្រងតំបន់: {{ bodyRegion }}</span>
+        <button
+          type="button"
+          class="ml-0.5 text-dimmed hover:text-red-500 transition-colors"
+          title="លុបតម្រងតំបន់រាងកាយ"
+          @click="emit('clearRegionFilter'); clearBodyRegion()"
+        >
+          <UIcon name="i-lucide-x" class="w-3 h-3" />
+        </button>
+      </div>
+    </div>
 
     <!-- Async search -->
     <div class="relative">
@@ -130,7 +161,7 @@ async function handleFavorite(item: DiagnosisSearchResult) {
           {{ $t('common.loading') }}
         </div>
 
-        <template v-else-if="query.trim() && results.length > 0">
+        <template v-else-if="(query.trim() || bodyRegion) && results.length > 0">
           <button
             v-for="item in results"
             :key="item.id"

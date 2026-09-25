@@ -1,5 +1,5 @@
 import { useCookie, useRuntimeConfig } from '#app'
-import { useAuth, authCookieOptions } from '~/composables/useAuth'
+import { useAuth, authCookieOptions } from '~/composables/auth/useAuth'
 import type { FetchOptions } from 'ofetch'
 
 interface RefreshResponse {
@@ -80,8 +80,14 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
   if (typeof error === 'object' && error !== null) {
     const err = error as { data?: unknown, message?: unknown }
     if (typeof err.data === 'object' && err.data !== null) {
-      const data = err.data as { message?: unknown }
+      const data = err.data as { message?: unknown, error?: string | { issues?: Array<{ path?: unknown[], message?: string }> } }
       if (typeof data.message === 'string' && data.message.trim()) return data.message
+      // Older routes answer { error: "..." }; Zod validator failures answer { error: { issues } }.
+      if (typeof data.error === 'string' && data.error.trim()) return data.error
+      const issues = typeof data.error === 'object' ? data.error?.issues : undefined
+      if (Array.isArray(issues) && issues.length > 0) {
+        return issues.slice(0, 3).map(i => `${(i.path ?? []).join('.')}: ${i.message}`).join('; ')
+      }
     }
     if (typeof err.message === 'string' && err.message.trim()) return err.message
   }

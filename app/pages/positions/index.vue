@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
-import { usePositions } from '~/composables/usePositions'
+import { usePositions } from '~/composables/hr/usePositions'
 import * as z from 'zod'
 import type { TableColumn } from '@nuxt/ui'
 

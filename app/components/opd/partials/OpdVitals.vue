@@ -36,7 +36,8 @@ const fields = computed(() => [
   { label: t('vitals.respRate'), key: 'respRate', placeholder: '20' },
   { label: t('vitals.temp'), key: 'temp', placeholder: '36.5' },
   { label: t('vitals.weight'), key: 'weight', placeholder: '60' },
-  { label: t('vitals.oxygen'), key: 'oxygen', placeholder: '98' }
+  { label: t('vitals.oxygen'), key: 'oxygen', placeholder: '98' },
+  { label: 'កម្រិតឈឺចាប់ (Pain 0-10)', key: 'painScore', placeholder: '0-10' }
 ])
 </script>
 

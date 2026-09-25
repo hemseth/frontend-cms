@@ -13,9 +13,80 @@ definePageMeta({
 const { t } = useI18n()
 const router = useRouter()
 const config = useRuntimeConfig()
-const apiBase = config.public.apiBase as string
+const { accessToken, refreshToken, setUser } = useAuth()
+const googleClientId = (config.public.googleClientId as string) || '35029038689-imi2e24d90vjici54dibhjehahiv8fea.apps.googleusercontent.com'
+const googleLoading = ref(false)
 const loading = ref(false)
 const activeTab = ref(0)
+
+async function handleGoogleCredentialResponse(response: any) {
+  if (!response?.credential) return
+  googleLoading.value = true
+  try {
+    const res = await $api<any>('/auth/google', {
+      method: 'POST',
+      body: {
+        credential: response.credential
+      }
+    })
+
+    accessToken.value = res.data.access_token
+    refreshToken.value = res.data.refresh_token
+    if (res.data.user) {
+      setUser(res.data.user)
+    }
+
+    useToast().add({
+      title: 'ជោគជ័យ',
+      description: 'ចុះឈ្មោះ និងចូលប្រើតាម Google បានជោគជ័យ!',
+      color: 'success'
+    })
+
+    if (!res.data.user?.clinicId && res.data.user?.role !== 'developer') {
+      await router.push('/setup-clinic')
+    } else {
+      await router.push('/')
+    }
+  } catch (err: any) {
+    console.error('Google registration error:', err)
+    useToast().add({
+      title: 'Google Registration Failed',
+      description: err.data?.message || err.message || 'ការចុះឈ្មោះតាម Google មិនបានសម្រេច',
+      color: 'error'
+    })
+  } finally {
+    googleLoading.value = false
+  }
+}
+
+function promptGoogleSignUp() {
+  if (typeof window === 'undefined') return
+  const google = (window as any).google
+  if (google?.accounts?.id) {
+    google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleGoogleCredentialResponse,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    })
+    google.accounts.id.prompt()
+  } else {
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      const g = (window as any).google
+      g?.accounts?.id?.initialize({
+        client_id: googleClientId,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+      })
+      g?.accounts?.id?.prompt()
+    }
+    document.head.appendChild(script)
+  }
+}
 
 // Form state
 const state = reactive({
@@ -23,11 +94,41 @@ const state = reactive({
   email: '',
   password: '',
   confirmPassword: '',
+  hp_website: '', // Bot honeypot field
   clinicName: '',
   clinicNameKh: '',
   clinicAddress: '',
   clinicPhone: '',
   clinicEmail: ''
+})
+
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
+
+// OWASP-compliant username whitelist: letters, numbers, underscores, dashes, dots
+const USERNAME_REGEX = /^[a-zA-Z0-9_.-]{3,30}$/
+
+// Password strength calculation (entropy score from 0 to 5)
+const passwordScore = computed(() => {
+  const p = state.password || ''
+  if (!p) return 0
+  let score = 0
+  if (p.length >= 8) score++
+  if (p.length >= 12) score++
+  if (/[a-z]/.test(p) && /[A-Z]/.test(p)) score++
+  if (/\d/.test(p)) score++
+  if (/[^A-Za-z0-9]/.test(p)) score++
+  return score
+})
+
+const passwordStrength = computed(() => {
+  if (!state.password) return null
+  const s = passwordScore.value
+  if (s <= 1) return { label: 'Very Weak', color: 'text-red-500', barColor: 'bg-red-500', percent: 20 }
+  if (s === 2) return { label: 'Weak', color: 'text-orange-500', barColor: 'bg-orange-500', percent: 40 }
+  if (s === 3) return { label: 'Medium', color: 'text-amber-500', barColor: 'bg-amber-500', percent: 60 }
+  if (s === 4) return { label: 'Strong', color: 'text-blue-500', barColor: 'bg-blue-500', percent: 80 }
+  return { label: 'Very Strong', color: 'text-emerald-500', barColor: 'bg-emerald-500', percent: 100 }
 })
 
 const tabs = [
@@ -38,14 +139,36 @@ const tabs = [
 async function onSubmit() {
   loading.value = true
   try {
+    // Bot Honeypot: silently drop if filled
+    if (state.hp_website && state.hp_website.trim().length > 0) {
+      loading.value = false
+      return
+    }
+
+    const trimmedUsername = state.username.trim()
+    const trimmedEmail = state.email.trim()
+
     // Validate user tab
-    if (!state.username || state.username.length < 3) {
+    if (!trimmedUsername || trimmedUsername.length < 3) {
       useToast().add({ title: 'Error', description: 'Username must be at least 3 characters', color: 'error' })
       activeTab.value = 0
       return
     }
-    if (!state.password || state.password.length < 6) {
-      useToast().add({ title: 'Error', description: 'Password must be at least 6 characters', color: 'error' })
+    if (!USERNAME_REGEX.test(trimmedUsername)) {
+      useToast().add({
+        title: 'Validation Error',
+        description: 'Username may only contain letters, numbers, underscores, dashes, and periods',
+        color: 'error'
+      })
+      activeTab.value = 0
+      return
+    }
+    if (!state.password || state.password.length < 8) {
+      useToast().add({
+        title: 'Weak Password',
+        description: 'Password must be at least 8 characters long for security compliance',
+        color: 'error'
+      })
       activeTab.value = 0
       return
     }
@@ -56,30 +179,32 @@ async function onSubmit() {
     }
 
     // Validate email format if provided
-    if (state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       useToast().add({ title: 'Error', description: 'Invalid email format', color: 'error' })
       activeTab.value = 0
       return
     }
 
     // Validate clinic tab
-    if (!state.clinicName) {
+    const trimmedClinicName = state.clinicName.trim()
+    if (!trimmedClinicName) {
       useToast().add({ title: 'Error', description: 'Clinic name is required', color: 'error' })
       activeTab.value = 1
       return
     }
 
-    await $fetch(`${apiBase}/auth/register`, {
+    await $api('/auth/register', {
       method: 'POST',
       body: {
-        username: state.username,
+        username: trimmedUsername,
         password: state.password,
-        email: state.email || undefined,
-        clinicName: state.clinicName,
-        clinicNameKh: state.clinicNameKh || undefined,
-        clinicAddress: state.clinicAddress || undefined,
-        clinicPhone: state.clinicPhone || undefined,
-        clinicEmail: state.clinicEmail || undefined
+        email: trimmedEmail || undefined,
+        hp_website: state.hp_website || undefined,
+        clinicName: trimmedClinicName,
+        clinicNameKh: state.clinicNameKh.trim() || undefined,
+        clinicAddress: state.clinicAddress.trim() || undefined,
+        clinicPhone: state.clinicPhone.trim() || undefined,
+        clinicEmail: state.clinicEmail.trim() || undefined
       }
     })
     useToast().add({ title: t('auth.register'), description: t('auth.registerSuccess'), color: 'success' })
@@ -97,12 +222,25 @@ async function onSubmit() {
 function nextTab() {
   // Validate before moving to next tab
   if (activeTab.value === 0) {
-    if (!state.username || state.username.length < 3) {
+    const trimmedUsername = state.username.trim()
+    if (!trimmedUsername || trimmedUsername.length < 3) {
       useToast().add({ title: 'Validation', description: 'Username must be at least 3 characters', color: 'warning' })
       return
     }
-    if (!state.password || state.password.length < 6) {
-      useToast().add({ title: 'Validation', description: 'Password must be at least 6 characters', color: 'warning' })
+    if (!USERNAME_REGEX.test(trimmedUsername)) {
+      useToast().add({
+        title: 'Validation',
+        description: 'Username may only contain letters, numbers, underscores, dashes, and periods',
+        color: 'warning'
+      })
+      return
+    }
+    if (!state.password || state.password.length < 8) {
+      useToast().add({
+        title: 'Validation',
+        description: 'Password must be at least 8 characters (OWASP security standard)',
+        color: 'warning'
+      })
       return
     }
     if (state.password !== state.confirmPassword) {
@@ -125,16 +263,18 @@ function selectTab(index: number) {
   activeTab.value = index
 }
 
-// Check if user tab is complete
+// Check if user tab is complete with 8+ char password & valid username
 const isUserTabComplete = computed(() => {
-  return state.username.length >= 3
-    && state.password.length >= 6
+  const trimmedUsername = state.username.trim()
+  return trimmedUsername.length >= 3
+    && USERNAME_REGEX.test(trimmedUsername)
+    && state.password.length >= 8
     && state.password === state.confirmPassword
 })
 
 // Check if clinic tab is complete
 const isClinicTabComplete = computed(() => {
-  return state.clinicName.length > 0
+  return state.clinicName.trim().length > 0
 })
 </script>
 
@@ -157,6 +297,33 @@ const isClinicTabComplete = computed(() => {
             </p>
           </div>
         </template>
+
+        <!-- Quick Google Sign Up -->
+        <div class="mb-6">
+          <button
+            type="button"
+            class="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-accented rounded-lg bg-default hover:bg-muted text-default text-sm font-medium transition shadow-sm cursor-pointer disabled:opacity-50"
+            :disabled="googleLoading"
+            @click="promptGoogleSignUp"
+          >
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+            </svg>
+            <span>{{ googleLoading ? 'កំពុងភ្ជាប់ Google...' : 'ចុះឈ្មោះភ្លាមៗតាម Google (Sign up with Google)' }}</span>
+          </button>
+
+          <div class="relative my-5">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-default" />
+            </div>
+            <div class="relative flex justify-center text-xs uppercase">
+              <span class="bg-default px-2 text-muted font-medium">ឬ បង្កើតគណនីដោយដៃ (Or register manually)</span>
+            </div>
+          </div>
+        </div>
 
         <!-- Tab Navigation -->
         <div class="mb-6">
@@ -190,14 +357,26 @@ const isClinicTabComplete = computed(() => {
           </div>
         </div>
 
+        <!-- Anti-Bot Honeypot (hidden from human users) -->
+        <div class="hidden" aria-hidden="true">
+          <input
+            v-model="state.hp_website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+            name="hp_website"
+          />
+        </div>
+
         <!-- User Info Tab -->
         <div v-show="activeTab === 0" class="space-y-4">
           <UFormField label="Username" name="username" required>
             <UInput
               v-model="state.username"
-              placeholder="Enter username (min 3 chars)"
+              placeholder="Username (letters, numbers, underscores)"
               icon="i-lucide-user"
               class="w-full"
+              autocomplete="username"
             />
           </UFormField>
 
@@ -208,27 +387,70 @@ const isClinicTabComplete = computed(() => {
               placeholder="your@email.com"
               icon="i-lucide-mail"
               class="w-full"
+              autocomplete="email"
             />
           </UFormField>
 
           <UFormField label="Password" name="password" required>
             <UInput
               v-model="state.password"
-              type="password"
-              placeholder="Min 6 characters"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Min 8 characters"
               icon="i-lucide-lock"
               class="w-full"
-            />
+              autocomplete="new-password"
+            >
+              <template #trailing>
+                <UButton
+                  color="neutral"
+                  variant="link"
+                  size="xs"
+                  :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                  aria-label="Toggle password visibility"
+                  class="cursor-pointer text-dimmed hover:text-toned"
+                  @click="showPassword = !showPassword"
+                />
+              </template>
+            </UInput>
+            <!-- Real-time Password Strength Meter -->
+            <div v-if="passwordStrength" class="mt-2 space-y-1">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-muted">Password Strength:</span>
+                <span :class="['font-semibold', passwordStrength.color]">{{ passwordStrength.label }}</span>
+              </div>
+              <div class="h-1.5 w-full bg-accented rounded-full overflow-hidden">
+                <div
+                  :class="['h-full transition-all duration-300', passwordStrength.barColor]"
+                  :style="{ width: `${passwordStrength.percent}%` }"
+                />
+              </div>
+              <p class="text-[11px] text-muted">
+                Minimum 8 characters. Mix uppercase, lowercase, numbers & symbols for best security.
+              </p>
+            </div>
           </UFormField>
 
           <UFormField label="Confirm Password" name="confirmPassword" required>
             <UInput
               v-model="state.confirmPassword"
-              type="password"
+              :type="showConfirmPassword ? 'text' : 'password'"
               placeholder="Confirm password"
               icon="i-lucide-lock"
               class="w-full"
-            />
+              autocomplete="new-password"
+            >
+              <template #trailing>
+                <UButton
+                  color="neutral"
+                  variant="link"
+                  size="xs"
+                  :icon="showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                  aria-label="Toggle confirm password visibility"
+                  class="cursor-pointer text-dimmed hover:text-toned"
+                  @click="showConfirmPassword = !showConfirmPassword"
+                />
+              </template>
+            </UInput>
           </UFormField>
 
           <div class="flex justify-end pt-4">

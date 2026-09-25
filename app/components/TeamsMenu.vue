@@ -37,6 +37,16 @@ async function selectClinic(clinicId: string | null) {
   await refreshNuxtData()
 }
 
+// Auto-select active clinic for developer so API endpoints never fail with 'Select a clinic first'
+watch(clinics, (list) => {
+  if (isDeveloper.value && !clinicContext.selectedClinicId.value && list && list.length > 0) {
+    const active = list.find((c: any) => c.isActive !== false) || list[0]
+    if (active?._id) {
+      selectClinic(active._id)
+    }
+  }
+}, { immediate: true })
+
 const items = computed<DropdownMenuItem[][]>(() => {
   const clinicItems = isDeveloper.value
     ? [

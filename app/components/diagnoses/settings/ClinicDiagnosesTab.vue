@@ -2,9 +2,9 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { ClinicDiagnosis, ClinicDiagnosisGroup, DiagnosisMasterMetaText } from '~/types/diagnosis'
-import { useClinicDiagnoses } from '~/composables/useClinicDiagnoses'
-import { useDiagnosisGroups } from '~/composables/useDiagnosisGroups'
-import { useDiagnosisMetadata } from '~/composables/useDiagnosisMetadata'
+import { useClinicDiagnoses } from '~/composables/diagnosis/useClinicDiagnoses'
+import { useDiagnosisGroups } from '~/composables/diagnosis/useDiagnosisGroups'
+import { useDiagnosisMetadata } from '~/composables/diagnosis/useDiagnosisMetadata'
 import ClinicDiagnosisEditModal from '~/components/diagnoses/settings/ClinicDiagnosisEditModal.vue'
 
 const { t } = useI18n()

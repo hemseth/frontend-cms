@@ -9,46 +9,12 @@
       >
     </div>
     <!-- Row 1: Logo & Clinic Name -->
-    <div class="flex justify-center items-center gap-4 mb-4 px-4">
-      <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-        +
-      </div>
-      <div class="text-center">
-        <h1 class="text-[13pt] font-weight=[700] font-khmer-moul tracking-wide mb-1 leading-tight">
-          មន្ទីរសម្រាកព្យាបាលជំងឺ ញ៉ែម ពីង
-        </h1>
-        <h2 class="text-xl font-bold uppercase tracking-wider">
-          {{ clinicNameEn }}
-        </h2>
-      </div>
-      <div class="text-blue-900 text-6xl font-bold leading-none select-none">
-        +
-      </div>
-    </div>
+    <PrintLetterhead :profile="profile" class="mb-4" />
 
-    <!-- Row 2: 3 Columns (Doctor Info, Title, Invoice Details) -->
+    <!-- Row 2: 3 Columns (Header lines, Title, Invoice Details) -->
     <div class="flex justify-between items-start text-sm  relative px-2">
-      <!-- Left: Doctor/Services -->
-      <div class="space-y-1 w-1/3">
-        <div class="flex">
-          <span class="mr-2">•</span>
-          <p class="font-khmer-moul text-[11pt]">
-            វេជ្ជបណ្ឌិត ញ៉ែម ពីង
-          </p>
-        </div>
-        <div class="flex">
-          <span class="mr-2">•</span>
-          <p class="font-khmer-moul text-[11pt]">
-            ឆ្លុះអេកូពណ៍
-          </p>
-        </div>
-        <div class="flex">
-          <span class="mr-2">•</span>
-          <p class="font-khmer-moul text-[11pt]">
-            ថតកាំរស្មីអ៊ិច
-          </p>
-        </div>
-      </div>
+      <!-- Left: header lines from the clinic settings -->
+      <PrintHeaderLines :lines="profile.headerLines" class="w-1/3" />
 
       <!-- Center: Title -->
       <div class="w-1/3 text-center pt-2">
@@ -151,12 +117,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import QRCode from 'qrcode'
+import type { PrintProfile } from '~/composables/clinic/useClinicProfile'
 
 const props = defineProps<{
   patient?: any
   visit?: any
-  clinic?: any
-  branch?: any
+  profile: PrintProfile
   invoiceNo?: string
   payDate?: string
   title?: string
@@ -165,8 +131,6 @@ const props = defineProps<{
 }>()
 
 const { toKhmerNumber, formatKhmerDate, formatNumericKhmerDate } = useKhmerUtils()
-
-const clinicNameEn = computed(() => props.branch?.name || props.clinic?.name || 'CLINIC')
 
 const patientCode = computed(() => props.patient?.pId ? `P-${String(props.patient.pId).padStart(6, '0')}` : 'P-......')
 // ...

@@ -26,6 +26,15 @@ interface Patient {
   provinceName?: string
   allergies?: string[] | string
   bloodGroup?: string
+  coverageType?: string
+  nssfMemberNumber?: string
+  hefBeneficiaryNumber?: string
+  idPoorNumber?: string
+  insurerName?: string
+  referralSourceFacility?: string
+  referralReason?: string
+  consentToCare?: boolean
+  consentRecordedAt?: string
 }
 
 interface Payment {
@@ -70,6 +79,22 @@ const allergyList = computed(() => {
   if (!patient.value?.allergies) return []
   if (Array.isArray(patient.value.allergies)) return patient.value.allergies
   return [patient.value.allergies]
+})
+
+const coverageLabels: Record<string, string> = {
+  self_pay: 'បង់ប្រាក់ផ្ទាល់ខ្លួន (Self-pay)',
+  nssf: 'NSSF',
+  hef: 'ធានារ៉ាប់រង HEF',
+  idpoor: 'IDPoor',
+  private_insurance: 'ធានារ៉ាប់រងឯកជន',
+  other: 'ផ្សេងៗ'
+}
+
+const coverageDisplay = computed(() => {
+  const type = patient.value?.coverageType
+  const label = type ? coverageLabels[type] || type : 'បង់ប្រាក់ផ្ទាល់ខ្លួន (Self-pay)'
+  const idNumber = patient.value?.nssfMemberNumber || patient.value?.hefBeneficiaryNumber || patient.value?.idPoorNumber || patient.value?.insurerName
+  return idNumber ? `${label} — ${idNumber}` : label
 })
 
 function formatDate(date: string) {
@@ -149,6 +174,20 @@ function createNewVisit() {
             <div class="flex justify-between border-b border-default pb-2">
               <span class="text-muted">{{ t('patient.email') || 'អ៊ីមែល' }}</span>
               <span class="font-medium">{{ patient.email || '-' }}</span>
+            </div>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">ការធានារ៉ាប់រង (Coverage)</span>
+              <span class="font-medium text-right">{{ coverageDisplay }}</span>
+            </div>
+            <div v-if="patient.referralSourceFacility" class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">មណ្ឌលបញ្ជូន (Referral)</span>
+              <span class="font-medium text-right">{{ patient.referralSourceFacility }}</span>
+            </div>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">ការយល់ព្រមព្យាបាល (Consent)</span>
+              <UBadge :color="patient.consentToCare ? 'success' : 'neutral'" variant="subtle">
+                {{ patient.consentToCare ? 'បានយល់ព្រម (Given)' : 'មិនទាន់កត់ត្រា (Not recorded)' }}
+              </UBadge>
             </div>
             <div class="space-y-1 pt-1">
               <span class="text-muted text-xs">{{ t('patient.address') || 'អាសយដ្ឋានបច្ចុប្បន្ន' }}</span>

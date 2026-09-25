@@ -6,6 +6,7 @@ const breadcrumbItems = computed(() => [
   { label: t('report.title') }
 ])
 
+// Only reports that have a page. Links to planned-but-unbuilt reports used to 404 from here.
 const reportCategories = [
   {
     title: t('report.patientReports'),
@@ -13,12 +14,7 @@ const reportCategories = [
     color: 'primary',
     reports: [
       { title: t('report.patientProfile'), description: 'Patient profile and details', icon: 'i-lucide-user', link: '/reports/patient-profile' },
-      { title: t('report.visitReport'), description: 'Visit history and details', icon: 'i-lucide-stethoscope', link: '/reports/visit' },
-      { title: t('report.diagnosisReport'), description: 'Diagnosis records', icon: 'i-lucide-clipboard-list', link: '/reports/diagnosis' },
-      { title: t('report.treatmentReport'), description: 'Treatment plans and outcomes', icon: 'i-lucide-activity', link: '/reports/treatment' },
-      { title: t('report.labReport'), description: 'Lab and test results', icon: 'i-lucide-test-tube', link: '/reports/lab' },
-      { title: t('report.followupReport'), description: 'Follow-up schedules', icon: 'i-lucide-calendar-check', link: '/reports/followup' },
-      { title: t('report.criticalReport'), description: 'Critical patients', icon: 'i-lucide-alert-triangle', link: '/reports/critical' },
+      { title: t('report.patientAnalysis'), description: 'Patient registrations and visits', icon: 'i-lucide-users', link: '/reports/patients' },
       { title: t('report.historyReport'), description: 'Complete patient history', icon: 'i-lucide-history', link: '/reports/history' }
     ]
   },
@@ -28,10 +24,11 @@ const reportCategories = [
     color: 'green',
     reports: [
       { title: t('report.invoiceReport'), description: 'Patient invoices', icon: 'i-lucide-file-text', link: '/reports/invoice' },
-      { title: t('report.receiptReport'), description: 'Payment receipts', icon: 'i-lucide-receipt', link: '/reports/receipt' },
       { title: t('report.outstandingReport'), description: 'Outstanding balances', icon: 'i-lucide-credit-card', link: '/reports/outstanding' },
       { title: t('report.dailyRevenueReport'), description: 'Daily revenue summary', icon: 'i-lucide-calendar', link: '/reports/daily' },
-      { title: t('report.monthlyRevenueReport'), description: 'Monthly revenue summary', icon: 'i-lucide-bar-chart-2', link: '/reports/monthly' }
+      { title: t('report.financialReport'), description: 'Revenue, expenses and cash flow', icon: 'i-lucide-bar-chart-2', link: '/reports/financial' },
+      { title: t('report.financeAnalysis'), description: 'Revenue by service, profitability and cash flow', icon: 'i-lucide-chart-pie', link: '/reports/finance-analysis' },
+      { title: t('report.pharmacyReports'), description: 'Stock value, expiry, movement and price variance', icon: 'i-lucide-pill', link: '/reports/pharmacy' }
     ]
   },
   {
@@ -40,22 +37,7 @@ const reportCategories = [
     color: 'blue',
     reports: [
       { title: t('report.employeeList'), description: 'Staff directory', icon: 'i-lucide-user-check', link: '/reports/employees' },
-      { title: t('report.attendanceReport'), description: 'Attendance records', icon: 'i-lucide-clock', link: '/reports/attendance' },
-      { title: t('report.leaveReport'), description: 'Leave management', icon: 'i-lucide-calendar-off', link: '/reports/leave' },
-      { title: t('report.performanceReport'), description: 'Staff performance', icon: 'i-lucide-trending-up', link: '/reports/performance' },
-      { title: t('report.doctorActivity'), description: 'Doctor activities', icon: 'i-lucide-user-md', link: '/reports/doctor-activity' }
-    ]
-  },
-  {
-    title: t('report.payrollReports'),
-    icon: 'i-lucide-wallet',
-    color: 'amber',
-    reports: [
-      { title: t('report.payrollSummary'), description: 'Payroll overview', icon: 'i-lucide-list', link: '/reports/payroll-summary' },
-      { title: t('report.payslip'), description: 'Individual payslips', icon: 'i-lucide-file-check', link: '/reports/payslip' },
-      { title: t('report.salaryStructure'), description: 'Salary structure', icon: 'i-lucide-table', link: '/reports/salary-structure' },
-      { title: t('report.allowanceReport'), description: 'Allowances and deductions', icon: 'i-lucide-calculator', link: '/reports/allowances' },
-      { title: t('report.loanReport'), description: 'Loan deductions', icon: 'i-lucide-banknote', link: '/reports/loans' }
+      { title: t('report.payrollSummary'), description: 'Payroll overview', icon: 'i-lucide-list', link: '/reports/payroll-summary' }
     ]
   },
   {
@@ -63,11 +45,9 @@ const reportCategories = [
     icon: 'i-lucide-pie-chart',
     color: 'purple',
     reports: [
-      { title: t('report.dashboardSummary'), description: 'Overview statistics', icon: 'i-lucide-layout-dashboard', link: '/reports/dashboard' },
       { title: t('report.departmentReport'), description: 'Department performance', icon: 'i-lucide-building', link: '/reports/departments' },
       { title: t('report.serviceUsage'), description: 'Service usage stats', icon: 'i-lucide-pie-chart', link: '/reports/service-usage' },
-      { title: t('report.topDiseases'), description: 'Common diseases', icon: 'i-lucide-activity', link: '/reports/diseases' },
-      { title: t('report.topRevenueServices'), description: 'Top revenue services', icon: 'i-lucide-trending-up', link: '/reports/top-services' }
+      { title: t('report.topDiseases'), description: 'Common diseases', icon: 'i-lucide-activity', link: '/reports/diseases' }
     ]
   }
 ]
