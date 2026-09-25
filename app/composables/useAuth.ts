@@ -113,6 +113,11 @@ export const useAuth = () => {
   }
 
   const logout = () => {
+    // Ends the login on the server too: the refresh token's session is revoked, so a copy of it
+    // left in another browser stops working. Fire and forget; signing out locally never waits.
+    if (refreshToken.value) {
+      $api('/auth/logout', { method: 'POST', body: { refresh_token: refreshToken.value } }).catch(() => {})
+    }
     accessToken.value = null
     refreshToken.value = null
     profile.value = null
