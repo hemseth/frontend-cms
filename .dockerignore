@@ -1,0 +1,17 @@
+# Secrets must never reach an image layer.
+.env
+.env.*
+!.env.example
+
+# Built inside the image.
+node_modules
+.nuxt
+.output
+
+.git
+.gitignore
+*.rar
+*.zip
+*.log
+nul
+package-lock.json
