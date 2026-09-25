@@ -2,15 +2,16 @@
 /**
  * Dispense a prescription.
  *
- * Lines are seeded from the prescription, the pharmacist confirms each quantity,
- * then the server allocates batches FEFO and posts the deduction. The frontend
- * never chooses a batch and never writes stock.
+ * Lines are seeded from the prescription with what is still owed on each, the
+ * pharmacist confirms each quantity, then the server allocates batches FEFO and
+ * posts the deduction. The frontend never chooses a batch and never writes stock.
  *
- * Quantities here are BASE units (the unit stock is counted in), which is what
- * the prescription schedule produces: (morning+afternoon+evening+night) x days.
+ * Quantities here are BASE units (the unit stock is counted in). The server
+ * enforces the safety rules (docs/PHARMACY.md); this form shows them early:
+ * remaining quantity, pharmacist verification, controlled medicines and allergies.
  */
 import { ref, computed, watch, onMounted } from 'vue'
-import type { MedicineRef, MedicineSuggestion, PrescriptionLine, WarehouseRef } from '~/types/pharmacy'
+import type { MedicineRef, MedicineSuggestion, PrescriptionLine, PrescriptionStatus, WarehouseRef } from '~/types/pharmacy'
 
 const props = defineProps<{
   visitId?: string
@@ -26,22 +27,29 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const toast = useToast()
+const auth = useAuth()
 const { fetchStock, summarise, fetchWarehouses } = useStock()
-const { dispense, isSubmitting } = useDispensing()
-const { fetchPrescriptions } = useDispensing()
+const { dispense, isSubmitting, fetchPrescriptions, verifyPrescription } = useDispensing()
 
 interface Line {
   key: string
   medicineId: string
   medicine: MedicineRef
   prescriptionItemId?: string
-  /** What the doctor prescribed, in base units. */
+  /** What the doctor prescribed, in base units (0 for a walk-in line). */
   prescribedQty: number
+  /** What is still owed on the prescription line. */
+  remainingQty: number
   /** What the pharmacist will actually hand over. */
   dispenseQty: number
   stockBase: number
   nearestExpiry: Date | null
   include: boolean
+  status?: PrescriptionStatus
+  verified: boolean
+  allergyConflict?: string
+  allergyOverrideReason?: string
+  verifying?: boolean
 }
 
 const lines = ref<Line[]>([])
@@ -49,7 +57,9 @@ const warehouses = ref<WarehouseRef[]>([])
 const warehouseId = ref<string>('')
 const isLoading = ref(false)
 const loadError = ref<string | null>(null)
+const lastDispensingId = ref('')
 
+const canVerify = computed(() => auth.can('prescription', 'approve'))
 const selectedLines = computed(() => lines.value.filter(l => l.include && l.dispenseQty > 0))
 
 const warehouseOptions = computed(() =>
@@ -71,22 +81,34 @@ const hasExpiredOnly = computed(() =>
   selectedLines.value.some(l => l.stockBase > 0 && l.nearestExpiry && !isDispensable(l.nearestExpiry))
 )
 
-/** Matches a line's medicine against the patient's recorded allergies. */
+/** Same matcher as the server and the OPD screen (utils/drugAllergy.ts). */
 function allergyMatch(line: Line): string | null {
-  const list = props.allergies || []
-  if (!list.length) return null
-  const name = `${line.medicine?.nameEn || ''} ${line.medicine?.brandName || ''}`.toLowerCase()
-  if (!name.trim()) return null
-  for (const allergy of list) {
-    const a = String(allergy || '').toLowerCase().trim()
-    if (a && name.includes(a)) return allergy
+  const m = line.medicine
+  return checkDrugAllergy(`${m?.nameEn || ''} ${m?.nameKh || ''} ${m?.brandName || ''}`, props.allergies || [])
+}
+
+/** What stops a selected line from being dispensed, or null. */
+function blockReason(line: Line): string | null {
+  if (line.prescriptionItemId && line.dispenseQty > line.remainingQty) {
+    return t('pharmacy.safety.overRemaining', { qty: line.remainingQty })
   }
+  if (!line.prescriptionItemId && line.medicine?.controlled) return t('pharmacy.safety.controlledNeedsRx')
+  if (line.prescriptionItemId && line.medicine?.controlled && !line.verified) return t('pharmacy.safety.controlledNeedsVerify')
+  if (!line.prescriptionItemId && allergyMatch(line) && !line.allergyOverrideReason?.trim()) return t('pharmacy.safety.reasonRequired')
   return null
 }
 
+const blockedLines = computed(() => selectedLines.value.filter(l => blockReason(l)))
+
 const canSubmit = computed(() =>
-  !!warehouseId.value && selectedLines.value.length > 0 && !isSubmitting.value
+  !!warehouseId.value && selectedLines.value.length > 0 && !blockedLines.value.length && !isSubmitting.value
 )
+
+function statusColor(status?: PrescriptionStatus) {
+  if (status === 'VERIFIED') return 'success'
+  if (status === 'PARTIALLY_DISPENSED') return 'warning'
+  return 'neutral'
+}
 
 async function load() {
   isLoading.value = true
@@ -94,7 +116,7 @@ async function load() {
   try {
     const [whList, prescriptions] = await Promise.all([
       fetchWarehouses(),
-      fetchPrescriptions({ visitId: props.visitId, patientId: props.patientId })
+      fetchPrescriptions({ visitId: props.visitId, patientId: props.visitId ? undefined : props.patientId })
     ])
 
     warehouses.value = whList
@@ -107,26 +129,32 @@ async function load() {
       : prescriptions
 
     const seeded: Line[] = relevant
-      .filter((p: PrescriptionLine) => p.medicineId)
+      // Nothing left to hand over, or cancelled: not shown.
+      .filter((p: PrescriptionLine) => p.medicineId && p.status !== 'CANCELLED' && (p.remainingBaseQty ?? 1) > 0)
       .map((p: PrescriptionLine, index: number) => {
-        const qty = Number(p.quantity) || prescriptionTotalQty(p)
+        const prescribed = Number(p.prescribedBaseQty) || Number(p.quantity) || prescriptionTotalQty(p)
+        const remaining = p.remainingBaseQty ?? prescribed
         return {
           key: String(p._id || index),
           medicineId: String(p.medicineId),
-          // The prescription only stores free text; refreshStock() fills in the
-          // real medicine document once the stock join comes back.
           medicine: {
             _id: String(p.medicineId),
-            nameEn: p.medication,
-            nameKh: p.medication,
-            baseUnit: p.unit
+            nameEn: p.medicine?.nameEn || p.medication,
+            nameKh: p.medicine?.nameKh || p.medication,
+            ...p.medicine,
+            baseUnit: p.medicine?.baseUnit || p.unit
           },
           prescriptionItemId: p._id ? String(p._id) : undefined,
-          prescribedQty: qty,
-          dispenseQty: qty,
+          prescribedQty: prescribed,
+          remainingQty: remaining,
+          dispenseQty: remaining,
           stockBase: 0,
           nearestExpiry: null,
-          include: true
+          include: true,
+          status: p.status,
+          verified: !!p.verifiedAt,
+          allergyConflict: p.allergyConflict,
+          allergyOverrideReason: p.allergyOverrideReason
         }
       })
 
@@ -153,9 +181,9 @@ async function refreshStock() {
       line.stockBase = summary?.totalBase ?? 0
       line.nearestExpiry = summary?.nearestExpiry ?? null
       // Enrich the display name from the stock join when the prescription only
-      // stored free text.
+      // stored free text. The safety flags from the prescription endpoint win.
       const med = summary?.rows?.[0]?.medicine
-      if (med) line.medicine = { ...line.medicine, ...med }
+      if (med) line.medicine = { ...med, ...line.medicine }
     }
   } catch {
     // Leave the figures at zero; the server still validates on confirm.
@@ -177,10 +205,12 @@ function addManualLine(medicine: MedicineSuggestion) {
     medicineId: String(medicine._id),
     medicine,
     prescribedQty: 0,
+    remainingQty: 0,
     dispenseQty: 1,
     stockBase: Number(medicine._stockBase) || 0,
     nearestExpiry: medicine._nearestExpiry || null,
-    include: true
+    include: true,
+    verified: false
   })
 }
 
@@ -188,10 +218,25 @@ function removeLine(key: string) {
   lines.value = lines.value.filter(l => l.key !== key)
 }
 
+async function verify(line: Line) {
+  if (!line.prescriptionItemId) return
+  line.verifying = true
+  try {
+    const updated = await verifyPrescription(line.prescriptionItemId)
+    line.verified = true
+    line.status = updated?.status ?? 'VERIFIED'
+    toast.add({ title: t('pharmacy.safety.verifiedOk'), color: 'success' })
+  } catch (e) {
+    toast.add({ title: t('pharmacy.safety.verifyFailed'), description: getApiErrorMessage(e, t('pharmacy.safety.verifyFailed')), color: 'error' })
+  } finally {
+    line.verifying = false
+  }
+}
+
 async function submit() {
   if (!canSubmit.value) return
   try {
-    const { id, shortages } = await dispense({
+    const { id, shortages, status } = await dispense({
       warehouseId: warehouseId.value,
       patientId: props.patientId,
       visitId: props.visitId,
@@ -201,22 +246,28 @@ async function submit() {
         prescriptionItemId: l.prescriptionItemId,
         requestedQty: l.dispenseQty,
         // Quantities on this form are already base units.
-        conversionFactorSnapshot: 1
+        conversionFactorSnapshot: 1,
+        ...(!l.prescriptionItemId && l.allergyOverrideReason?.trim() ? { allergyOverrideReason: l.allergyOverrideReason.trim() } : {})
       }))
     })
 
-    if (shortages.length) {
+    if (status === 'PREPARED') {
+      // Nothing was in stock: nothing was handed over.
+      toast.add({ title: t('pharmacy.dispenseFailed'), description: t('pharmacy.safety.nothingInStock'), color: 'error' })
+    } else if (shortages.length) {
+      lastDispensingId.value = id
       toast.add({
         title: t('pharmacy.dispensedPartial'),
         description: t('pharmacy.dispensedPartialHint', { count: shortages.length }),
         color: 'warning'
       })
     } else {
+      lastDispensingId.value = id
       toast.add({ title: t('pharmacy.dispensedOk'), color: 'success' })
     }
 
     emit('dispensed', { id })
-    await refreshStock()
+    await load()
   } catch (e) {
     // Never report success on failure: the pharmacist must know stock was not
     // deducted and the patient was not given the medicine.
@@ -317,14 +368,78 @@ onMounted(load)
                   :expiry-date="line.nearestExpiry"
                 />
 
-                <div v-if="allergyMatch(line)" class="mt-1 flex items-center gap-1 text-xs font-bold text-error">
+                <div class="mt-1 flex flex-wrap items-center gap-1">
+                  <UBadge
+                    v-if="line.prescriptionItemId"
+                    :color="statusColor(line.status)"
+                    variant="subtle"
+                    size="sm"
+                  >
+                    {{ t(`pharmacy.safety.status.${line.status || 'PENDING'}`) }}
+                  </UBadge>
+                  <UBadge
+                    v-else
+                    color="neutral"
+                    variant="outline"
+                    size="sm"
+                  >
+                    {{ t('pharmacy.safety.walkIn') }}
+                  </UBadge>
+                  <UBadge
+                    v-if="line.medicine?.controlled"
+                    color="error"
+                    variant="subtle"
+                    size="sm"
+                    icon="i-lucide-lock"
+                  >
+                    {{ t('pharmacy.safety.controlled') }}
+                  </UBadge>
+                  <UBadge
+                    v-if="line.medicine?.highAlert"
+                    color="warning"
+                    variant="subtle"
+                    size="sm"
+                    icon="i-lucide-triangle-alert"
+                  >
+                    {{ t('pharmacy.safety.highAlert') }}
+                  </UBadge>
+                  <UButton
+                    v-if="line.prescriptionItemId && !line.verified && canVerify"
+                    :label="t('pharmacy.safety.verify')"
+                    icon="i-lucide-badge-check"
+                    size="xs"
+                    color="primary"
+                    variant="soft"
+                    :loading="line.verifying"
+                    @click="verify(line)"
+                  />
+                </div>
+
+                <div v-if="line.allergyConflict || allergyMatch(line)" class="mt-1 flex items-center gap-1 text-xs font-bold text-error">
                   <UIcon name="i-lucide-octagon-alert" class="w-3.5 h-3.5" />
-                  {{ t('pharmacy.allergyWarning', { allergy: allergyMatch(line) }) }}
+                  {{ t('pharmacy.allergyWarning', { allergy: line.allergyConflict || allergyMatch(line) }) }}
+                </div>
+                <div v-if="line.prescriptionItemId && line.allergyOverrideReason" class="text-xs text-muted">
+                  {{ t('pharmacy.safety.prescriberReason', { reason: line.allergyOverrideReason }) }}
+                </div>
+                <UInput
+                  v-if="!line.prescriptionItemId && allergyMatch(line)"
+                  v-model="line.allergyOverrideReason"
+                  size="xs"
+                  class="mt-1 w-full max-w-sm"
+                  :placeholder="t('pharmacy.safety.overrideReason')"
+                  :maxlength="500"
+                />
+                <div v-if="line.include && blockReason(line)" class="mt-1 text-xs font-semibold text-error">
+                  {{ blockReason(line) }}
                 </div>
               </td>
 
               <td class="py-2 text-right tabular-nums text-muted">
-                {{ line.prescribedQty || '-' }}
+                <div>{{ line.prescribedQty || '-' }}</div>
+                <div v-if="line.prescriptionItemId && line.remainingQty < line.prescribedQty" class="text-xs">
+                  {{ t('pharmacy.safety.remaining', { qty: line.remainingQty }) }}
+                </div>
               </td>
 
               <td class="py-2 text-right">
@@ -332,6 +447,7 @@ onMounted(load)
                   v-model.number="line.dispenseQty"
                   type="number"
                   min="0"
+                  :max="line.prescriptionItemId ? line.remainingQty : undefined"
                   size="sm"
                   class="w-24"
                   :disabled="!line.include"
@@ -403,6 +519,15 @@ onMounted(load)
         <div class="text-xs text-muted">
           {{ t('pharmacy.fefoNote') }}
         </div>
+        <UButton
+          v-if="lastDispensingId"
+          :label="t('pharmacy.safety.printLabels')"
+          icon="i-lucide-tag"
+          color="neutral"
+          variant="outline"
+          :to="`/print/medicine-label/${lastDispensingId}`"
+          target="_blank"
+        />
         <UButton
           :label="t('pharmacy.confirmDispense')"
           icon="i-lucide-check"

@@ -105,6 +105,8 @@ export interface PrescriptionLine {
   quantity?: number
   unitPrice?: number
   totalPrice?: number
+  /** Required by the server when the medicine matches one of the patient's allergies. */
+  allergyOverrideReason?: string
 }
 
 export interface PaymentItem {

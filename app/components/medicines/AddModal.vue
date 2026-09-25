@@ -98,7 +98,9 @@ const schema = z.object({
   instructionEn: z.string().optional(),
   instructionKh: z.string().optional(),
   sideEffects: z.array(z.string()).default([]),
-  status: z.enum(['active', 'inactive']).default('active')
+  status: z.enum(['active', 'inactive']).default('active'),
+  controlled: z.boolean().default(false),
+  highAlert: z.boolean().default(false)
 })
 
 type Schema = z.output<typeof schema>
@@ -127,7 +129,10 @@ const state = reactive({
   instructionEn: '',
   instructionKh: '',
   sideEffects: [] as string[],
-  status: 'active' as 'active' | 'inactive'
+  status: 'active' as 'active' | 'inactive',
+  // Controlled: dispensed only from a pharmacist-verified prescription, listed in the register.
+  controlled: false,
+  highAlert: false
 })
 
 function resolveId(val: any, list: any[]) {
@@ -145,7 +150,8 @@ function resetState() {
     category: '', dosageForm: '', route: 'Oral', strength: '', unit: '',
     retailPrice: 0, wholesalePrice: 0, currency: 'USD', stock: 0,
     conversionRate: 1, baseUnit: 'pill', saleUnit: 'unit', minStockAlert: 10,
-    instructionEn: '', instructionKh: '', sideEffects: [], status: 'active'
+    instructionEn: '', instructionKh: '', sideEffects: [], status: 'active',
+    controlled: false, highAlert: false
   })
   activeStep.value = 'basic'
 }
@@ -190,6 +196,8 @@ watch(() => props.medicine, (medicine) => {
       ? String(medicine.sideEffects).split(',').map((s: string) => s.trim()).filter(Boolean)
       : []
   state.status = medicine.status || 'active'
+  state.controlled = !!medicine.controlled
+  state.highAlert = !!medicine.highAlert
   activeStep.value = 'basic'
 }, { immediate: true })
 
@@ -614,6 +622,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                   >
                     <UIcon name="i-lucide-triangle-alert" class="text-base flex-shrink-0" />
                     {{ t('medicine.lowStock') }}
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <UCheckbox
+                      v-model="state.controlled"
+                      :label="t('pharmacy.safety.controlled')"
+                      :description="t('pharmacy.safety.controlledHelp')"
+                    />
+                    <UCheckbox
+                      v-model="state.highAlert"
+                      :label="t('pharmacy.safety.highAlert')"
+                      :description="t('pharmacy.safety.highAlertHelp')"
+                    />
                   </div>
                 </div>
               </div>

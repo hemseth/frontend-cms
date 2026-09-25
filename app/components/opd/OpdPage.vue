@@ -147,6 +147,7 @@ watch(bodyMarkers, (newMarkers) => {
 const isAllergyModalOpen = ref(false)
 const pendingAllergicMed = ref<any>(null)
 const allergyConflictReason = ref('')
+const allergyOverrideText = ref('')
 
 // checkDrugAllergy is shared from utils/drugAllergy.ts (auto-imported).
 
@@ -260,6 +261,7 @@ async function loadVisitData(vId: string) {
           qty: m.quantity || 1,
           unit: m.unit || '',
           isWholesale: m.isWholesale ?? false,
+          allergyOverrideReason: m.allergyOverrideReason,
           type: 'MEDICINE'
         })
       })
@@ -368,6 +370,7 @@ function handleAddMedicineWrapper(id: string, qty = 1, isWholesale = false) {
   if (conflict) {
     pendingAllergicMed.value = { med, qty, isWholesale }
     allergyConflictReason.value = conflict
+    allergyOverrideText.value = ''
     isAllergyModalOpen.value = true
     return
   }
@@ -376,9 +379,12 @@ function handleAddMedicineWrapper(id: string, qty = 1, isWholesale = false) {
 }
 
 function confirmAddAllergicMedicine() {
+  // The server refuses the line without a reason, so one is required here too.
+  const reason = allergyOverrideText.value.trim()
+  if (!reason) return
   if (pendingAllergicMed.value) {
     const { med, qty, isWholesale } = pendingAllergicMed.value
-    addMedicine(med, qty, focusPrescriptionTable, isWholesale)
+    addMedicine(med, qty, focusPrescriptionTable, isWholesale, reason)
     pendingAllergicMed.value = null
   }
   isAllergyModalOpen.value = false
@@ -734,6 +740,15 @@ function handleAdmitToIpd() {
           <p class="text-xs text-muted">
             តើលោកអ្នកពិតជាចង់បន្តចេញវេជ្ជបញ្ជាថ្នាំនេះដោយមានការត្រួតពិនិត្យជាពិសេស (Clinical Override) មែនទេ?
           </p>
+          <UFormField :label="$t('pharmacy.safety.overrideReason')" required :help="$t('pharmacy.safety.overrideReasonHelp')">
+            <UTextarea
+              v-model="allergyOverrideText"
+              :rows="2"
+              autoresize
+              class="w-full"
+              :maxlength="500"
+            />
+          </UFormField>
         </div>
       </template>
       <template #footer>
@@ -750,6 +765,7 @@ function handleAdmitToIpd() {
             color="error"
             variant="solid"
             icon="i-lucide-alert-triangle"
+            :disabled="!allergyOverrideText.trim()"
             @click="confirmAddAllergicMedicine"
           />
         </div>

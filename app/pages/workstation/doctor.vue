@@ -163,9 +163,15 @@ function pickMedicine(m: MedicineSuggestion | null) {
 async function addPrescription() {
   const d = draft.value
   if (!d || !canPrescribe.value) return
-  if (allergyConflict.value && !window.confirm(t('workstation.doctor.allergyConfirm', { allergy: allergyConflict.value }))) return
+  // The server refuses a medicine matching a recorded allergy unless a reason is given.
+  let allergyOverrideReason: string | undefined
+  if (allergyConflict.value) {
+    allergyOverrideReason = window.prompt(t('workstation.doctor.allergyReasonPrompt', { allergy: allergyConflict.value }))?.trim()
+    if (!allergyOverrideReason) return
+  }
   try {
     await record.addPrescription({
+      ...(allergyOverrideReason ? { allergyOverrideReason } : {}),
       medicineId: d.medicine._id,
       medication: d.medicine.nameEn || d.medicine.nameKh || '',
       unit: d.medicine.baseUnit || d.medicine.unit,

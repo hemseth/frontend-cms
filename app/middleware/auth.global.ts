@@ -71,6 +71,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       ['/settings', 'settings:read'],
       ['/inventory/goods-receipt', 'goodsReceipt:read'],
       ['/inventory/dispense', 'dispensing:read'],
+      ['/inventory/controlled-register', 'pharmacy:read'],
       ['/inventory/stock-count', 'stockCount:read'],
       ['/inventory/transfers', 'transfer:read'],
       ['/inventory/adjustments', 'stockAdjustment:read'],

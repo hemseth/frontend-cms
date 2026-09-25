@@ -19,7 +19,8 @@ const schema = z.object({
   description: z.string().optional(),
   logo: z.string().max(500).optional(),
   headerLines: z.array(z.string().max(100)).optional(),
-  footerNote: z.string().max(200).optional()
+  footerNote: z.string().max(200).optional(),
+  pharmacyWorkflow: z.enum(['DIRECT', 'PHARMACY_COUNTER']).optional()
 })
 
 type Schema = z.output<typeof schema>
@@ -34,8 +35,15 @@ const state = reactive({
   description: '',
   logo: '',
   headerLines: ['', '', '', ''] as string[],
-  footerNote: ''
+  footerNote: '',
+  // How medicine leaves stock; see docs/PHARMACY.md in the backend repository.
+  pharmacyWorkflow: 'DIRECT' as 'DIRECT' | 'PHARMACY_COUNTER'
 })
+
+const pharmacyWorkflowOptions = computed(() => [
+  { label: t('pharmacy.workflow.DIRECT'), value: 'DIRECT' },
+  { label: t('pharmacy.workflow.PHARMACY_COUNTER'), value: 'PHARMACY_COUNTER' }
+])
 
 const config = useRuntimeConfig()
 const logoUrl = computed(() => resolveAssetUrl(state.logo, String(config.public.apiBase)))
@@ -96,6 +104,7 @@ watch(clinicData, (val) => {
     state.logo = val.logo || ''
     state.headerLines = Array.from({ length: 4 }, (_, i) => val.headerLines?.[i] || '')
     state.footerNote = val.footerNote || ''
+    state.pharmacyWorkflow = val.pharmacyWorkflow === 'PHARMACY_COUNTER' ? 'PHARMACY_COUNTER' : 'DIRECT'
   } else if (!clinicId.value) {
     if (!state.name && user.value?.username) {
       state.name = `${user.value.username}'s Clinic`
@@ -112,10 +121,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     const body = { ...event.data, headerLines: (event.data.headerLines ?? []).map(line => line.trim()).filter(Boolean) }
     if (!clinicId.value) {
-      // Create new clinic
+      // Create new clinic (the pharmacy workflow is set once the clinic exists)
+      const { pharmacyWorkflow: _workflow, ...createBody } = body
       const res = await $api<{ message: string; data: any; user?: any }>('/clinics', {
         method: 'POST',
-        body
+        body: createBody
       })
       if (res.user) {
         setUser(res.user)
@@ -321,6 +331,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
           <UFormField label="Footer note" name="footerNote" help="Printed under the address and phone">
             <UInput v-model="state.footerNote" maxlength="200" class="w-full" />
+          </UFormField>
+
+          <UFormField
+            v-if="clinicId"
+            :label="t('pharmacy.workflow.label')"
+            name="pharmacyWorkflow"
+            :help="state.pharmacyWorkflow === 'PHARMACY_COUNTER' ? t('pharmacy.workflow.counterHelp') : t('pharmacy.workflow.directHelp')"
+          >
+            <USelect
+              v-model="state.pharmacyWorkflow"
+              :items="pharmacyWorkflowOptions"
+              value-key="value"
+              class="w-full"
+            />
           </UFormField>
         </div>
 

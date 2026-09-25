@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { WorklistItem, WorkStatus } from '~/types/workstation'
+import type { DispensingDoc } from '~/types/pharmacy'
 import WorkstationLayout from '~/components/workstation/WorkstationLayout.vue'
 import WorklistQueue from '~/components/workstation/WorklistQueue.vue'
 import PatientHeader from '~/components/workstation/PatientHeader.vue'
@@ -8,6 +9,7 @@ import WorkstationState from '~/components/workstation/WorkstationState.vue'
 import DispensePrescriptionForm from '~/components/pharmacy/DispensePrescriptionForm.vue'
 
 const { t } = useI18n()
+const toast = useToast()
 const auth = useAuth()
 const allowed = computed(() => auth.can('dispensing', 'create'))
 
@@ -23,37 +25,42 @@ const isPaid = computed(() => visit.value?.payment?.status === 'paid')
 
 async function select(item: WorklistItem) {
   selected.value = item
+  lastDispensingId.value = ''
   await record.load(item.visitId)
 }
 
-async function onDispensed() {
+async function onDispensed(payload: { id: string }) {
+  lastDispensingId.value = payload.id
   await worklist.refresh()
 }
 
-const escape = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]!))
+/**
+ * Labels are printed from what was actually handed over (batch, expiry), so they come
+ * from the visit's latest dispensing, not from the prescription.
+ */
+const lastDispensingId = ref('')
+const isFindingLabels = ref(false)
 
-/** One small label per medicine, printed from a separate window so only the labels print. */
-function printLabels() {
+async function printLabels() {
   const v = visit.value
-  if (!v?.medications.length) return
-  const name = v.patient?.nameKh || v.patient?.nameEn || ''
-  const labels = v.medications.map(m => `
-    <div class="label">
-      <strong>${escape(m.medication)}</strong>
-      <div>${escape(name)} ${escape(patientCode(v.patient))}</div>
-      <div>${escape(t('workstation.pharmacy.labelSchedule', { m: m.morning, a: m.afternoon, e: m.evening, n: m.night }))}</div>
-      <div>${escape(t('workstation.pharmacy.labelDays', { n: m.days }))} • ${escape(m.quantity ?? '')} ${escape(m.unit || '')}</div>
-    </div>`).join('')
-  const win = window.open('', '_blank', 'width=420,height=600')
-  if (!win) return
-  win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${escape(t('workstation.pharmacy.labels'))}</title>
-    <style>body{font-family:'Battambang','Noto Sans Khmer',sans-serif;margin:0}.label{width:60mm;padding:3mm;border-bottom:1px dashed #999;font-size:11px;page-break-inside:avoid}strong{font-size:13px}</style>
-    </head><body>${labels}</body></html>`)
-  win.document.close()
-  // Printed from here rather than an inline script in the label document; the short delay lets
-  // the written document lay out first.
-  win.focus()
-  setTimeout(() => win.print(), 300)
+  if (!v) return
+  let id = lastDispensingId.value
+  if (!id) {
+    isFindingLabels.value = true
+    try {
+      const res: { data?: DispensingDoc[] } = await $api('/dispensings', { params: { visitId: v._id } })
+      id = (res?.data ?? []).find(d => d.status === 'DISPENSED' || d.status === 'PARTIAL')?._id ?? ''
+    } catch {
+      id = ''
+    } finally {
+      isFindingLabels.value = false
+    }
+  }
+  if (!id) {
+    toast.add({ title: t('pharmacy.label.nothingToPrint'), color: 'warning' })
+    return
+  }
+  window.open(`/print/medicine-label/${id}`, '_blank')
 }
 
 watch(() => worklist.day.value, () => {
@@ -107,6 +114,7 @@ watch(() => worklist.day.value, () => {
               variant="outline"
               color="neutral"
               :disabled="!visit.medications.length"
+              :loading="isFindingLabels"
               @click="printLabels"
             />
           </div>

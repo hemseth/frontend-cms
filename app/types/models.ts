@@ -192,4 +192,6 @@ export interface OpdRow {
   saleUnit?: string
   usage?: string
   instructions?: string
+  /** Why a medicine matching the patient's allergy is prescribed anyway (required by the server). */
+  allergyOverrideReason?: string
 }

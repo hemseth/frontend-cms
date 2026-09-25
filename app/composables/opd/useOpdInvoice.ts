@@ -108,7 +108,8 @@ export const useOpdInvoice = (
     med: OpdMedicine,
     qty = 1,
     onFocus?: () => void,
-    isWholesale = false
+    isWholesale = false,
+    allergyOverrideReason?: string
   ) {
     const medName = med.nameEn || med.nameKh || ''
 
@@ -149,7 +150,8 @@ export const useOpdInvoice = (
       retailPrice: med.retailPrice || med.price,
       wholesalePrice: med.wholesalePrice || med.price,
       baseUnit: med.baseUnit || unitLabel,
-      saleUnit: med.saleUnit || unitLabel
+      saleUnit: med.saleUnit || unitLabel,
+      ...(allergyOverrideReason ? { allergyOverrideReason } : {})
     })
 
     if (onFocus) {
@@ -375,7 +377,8 @@ export const useOpdInvoice = (
         days: Number(r.days) || 1,
         duration: `${Number(r.days) || 1} ថ្ងៃ`,
         unit: r.unit,
-        isWholesale: r.isWholesale
+        isWholesale: r.isWholesale,
+        ...(r.allergyOverrideReason ? { allergyOverrideReason: r.allergyOverrideReason } : {})
       }))
 
       // Prepare Lab/Imaging

@@ -5,9 +5,13 @@
  * both happen server-side (fefo-allocation.service.ts -> stock-posting.service.ts),
  * so the sequence is always:
  *
- *   create (DRAFT/PREPARED) -> previewFefo (read-only) -> confirm (posts stock)
+ *   create (PREPARED) -> previewFefo (read-only) -> confirm (posts stock)
+ *
+ * The server also enforces the safety rules (docs/PHARMACY.md): prescribed
+ * quantity, pharmacist verification, controlled medicines and allergies. The
+ * checks here only give earlier feedback.
  */
-import type { DispensingDoc, FefoPreviewRow, PrescriptionLine } from '~/types/pharmacy'
+import type { DispenseShortage, DispensingDoc, FefoPreviewRow, MedicineLabelData, PrescriptionLine } from '~/types/pharmacy'
 
 export interface DispenseLineInput {
   medicineId: string
@@ -16,8 +20,8 @@ export interface DispenseLineInput {
   requestedQty: number
   /** Base units per requested unit. 1 when the form already works in base units. */
   conversionFactorSnapshot: number
-  sellingPriceSnapshot?: number
-  currency?: string
+  /** Walk-in item matching the patient's allergy: why it is dispensed anyway. */
+  allergyOverrideReason?: string
 }
 
 export interface DispensePayload {
@@ -41,7 +45,7 @@ export const useDispensing = () => {
     }))
     const res: { data?: DispensingDoc } = await $api('/dispensings', {
       method: 'POST',
-      body: { ...payload, items, status: 'PREPARED' }
+      body: { ...payload, items }
     })
     return res?.data
   }
@@ -54,7 +58,7 @@ export const useDispensing = () => {
   }
 
   /** POST /dispensings/:id/confirm — the only call that deducts stock. */
-  async function confirmDispensing(id: string): Promise<unknown> {
+  async function confirmDispensing(id: string): Promise<{ data?: DispensingDoc, shortages?: DispenseShortage[] }> {
     return await $api(`/dispensings/${id}/confirm`, { method: 'POST' })
   }
 
@@ -65,31 +69,53 @@ export const useDispensing = () => {
   /**
    * Create -> preview -> confirm in one go. Throws on any step so the caller can
    * surface the real error instead of reporting a success that never happened.
+   * A dispensing whose confirm was refused (e.g. not verified) is cancelled so it
+   * does not linger as PREPARED.
    */
   async function dispense(payload: DispensePayload) {
     isSubmitting.value = true
     error.value = null
+    let createdId: string | undefined
+    let confirmed = false
     try {
       const created = await createDispensing(payload)
-      const id = created?._id
-      if (!id) throw new Error('Dispensing was created without an id')
+      createdId = created?._id
+      if (!createdId) throw new Error('Dispensing was created without an id')
 
-      const rows = await previewFefo(id)
-      const shortages = rows.filter(r => r.available < r.requestedBaseQty)
-      const result = await confirmDispensing(id)
+      await previewFefo(createdId)
+      const result = await confirmDispensing(createdId)
+      confirmed = true
+      const shortages = result?.shortages ?? []
+      const status = result?.data?.status
 
-      return { id, shortages, result }
+      return { id: createdId, shortages, status }
     } catch (e) {
       error.value = getApiErrorMessage(e, 'Failed to dispense')
+      if (createdId && !confirmed) await cancelDispensing(createdId).catch(() => undefined)
       throw e
     } finally {
       isSubmitting.value = false
     }
   }
 
-  /** GET /prescriptions — lines for a visit or patient, used to seed the form. */
+  /** GET /prescriptions — lines for a visit or patient, with remaining quantities and status. */
   async function fetchPrescriptions(params: { visitId?: string, patientId?: string }): Promise<PrescriptionLine[]> {
-    return unwrapList<PrescriptionLine>(await $api('/prescriptions', { params }))
+    return unwrapList<PrescriptionLine>(await $api('/prescriptions', { params: { ...params, limit: 200 } }))
+  }
+
+  /** POST /prescriptions/:id/verify — pharmacist verification (prescription:approve). */
+  async function verifyPrescription(id: string, note?: string): Promise<PrescriptionLine | undefined> {
+    const res: { data?: PrescriptionLine } = await $api(`/prescriptions/${id}/verify`, {
+      method: 'POST',
+      body: note ? { note } : {}
+    })
+    return res?.data
+  }
+
+  /** GET /dispensings/:id/labels — what to print on the medicine labels. */
+  async function fetchLabels(id: string): Promise<MedicineLabelData | undefined> {
+    const res: { data?: MedicineLabelData } = await $api(`/dispensings/${id}/labels`)
+    return res?.data
   }
 
   return {
@@ -101,6 +127,8 @@ export const useDispensing = () => {
     confirmDispensing,
     cancelDispensing,
     dispense,
-    fetchPrescriptions
+    fetchPrescriptions,
+    verifyPrescription,
+    fetchLabels
   }
 }

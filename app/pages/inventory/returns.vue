@@ -2,7 +2,8 @@
 import InventoryDocumentPage from '~/components/inventory/InventoryDocumentPage.vue'
 import type { DocumentConfig } from '~/types/inventoryDocs'
 
-// Posting a return books the stock back in; patient returns land in QUARANTINE, not AVAILABLE.
+// Posting a return books the stock back in; patient returns land in QUARANTINE, not AVAILABLE,
+// and must name the dispensing they came from.
 const config: DocumentConfig = {
   endpoint: '/inventory/returns',
   resource: 'inventoryReturn',
@@ -19,6 +20,9 @@ const config: DocumentConfig = {
       default: 'PATIENT',
       required: true
     },
+    // Required by the server for a PATIENT return: the dispensing slip number (DSP-...).
+    // The patient, invoice, batches and refund are then taken from that dispensing.
+    { key: 'dispensingNo', labelKey: 'pharmacy.docs.dispensingNo', type: 'text' },
     { key: 'reasonCode', labelKey: 'pharmacy.docs.reason', type: 'text' }
   ],
   linesKey: 'items',

@@ -199,6 +199,10 @@ const links = computed(() => {
       to: '/inventory/dispense',
       icon: 'i-lucide-pill-bottle'
     }, {
+      label: t('nav.controlledRegister'),
+      to: '/inventory/controlled-register',
+      icon: 'i-lucide-lock'
+    }, {
       label: t('nav.stockCount'),
       to: '/inventory/stock-count',
       icon: 'i-lucide-clipboard-list'
@@ -453,6 +457,7 @@ const links = computed(() => {
     if (path.startsWith('/settings')) return 'settings'
     if (path.startsWith('/inventory/goods-receipt')) return 'goodsReceipt'
     if (path.startsWith('/inventory/dispense')) return 'dispensing'
+    if (path.startsWith('/inventory/controlled-register')) return 'pharmacy'
     if (path.startsWith('/inventory/stock-count')) return 'stockCount'
     if (path.startsWith('/inventory/transfers')) return 'transfer'
     if (path.startsWith('/inventory/adjustments')) return 'stockAdjustment'
