@@ -58,11 +58,11 @@ async function handleDelete() {
           <p class="font-medium">
             {{ medicine.name }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             Code: {{ medicine.code }}
           </p>
         </div>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-muted">
           This action cannot be undone.
         </p>
       </div>

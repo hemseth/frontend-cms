@@ -101,7 +101,7 @@ function createNewVisit() {
           <UBadge :color="patient.gender == 2 ? 'error' : 'primary'" variant="subtle">
             {{ patient.gender == 2 ? t('patient.female') || 'ស្រី' : t('patient.male') || 'ប្រុស' }}
           </UBadge>
-          <span class="text-sm font-normal text-gray-500">
+          <span class="text-sm font-normal text-muted">
             ID: P-{{ String(patient.pId || '').padStart(6, '0') }}
           </span>
         </h1>
@@ -134,24 +134,24 @@ function createNewVisit() {
             </h3>
           </template>
           <div class="space-y-3.5 text-sm">
-            <div class="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-              <span class="text-gray-500">{{ t('patient.dob') || 'ថ្ងៃខែឆ្នាំកំណើត' }}</span>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">{{ t('patient.dob') || 'ថ្ងៃខែឆ្នាំកំណើត' }}</span>
               <span class="font-medium">{{ formatDate(patient.dob) }}</span>
             </div>
-            <div class="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-              <span class="text-gray-500">{{ t('patient.phone') || 'លេខទូរស័ព្ទ' }}</span>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">{{ t('patient.phone') || 'លេខទូរស័ព្ទ' }}</span>
               <span class="font-medium">{{ patient.phone || '-' }}</span>
             </div>
-            <div class="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-              <span class="text-gray-500">ក្រុមឈាម (Blood Group)</span>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">ក្រុមឈាម (Blood Group)</span>
               <span class="font-bold text-primary-600">{{ patient.bloodGroup || 'មិនបានកត់ត្រា' }}</span>
             </div>
-            <div class="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-              <span class="text-gray-500">{{ t('patient.email') || 'អ៊ីមែល' }}</span>
+            <div class="flex justify-between border-b border-default pb-2">
+              <span class="text-muted">{{ t('patient.email') || 'អ៊ីមែល' }}</span>
               <span class="font-medium">{{ patient.email || '-' }}</span>
             </div>
             <div class="space-y-1 pt-1">
-              <span class="text-gray-500 text-xs">{{ t('patient.address') || 'អាសយដ្ឋានបច្ចុប្បន្ន' }}</span>
+              <span class="text-muted text-xs">{{ t('patient.address') || 'អាសយដ្ឋានបច្ចុប្បន្ន' }}</span>
               <p class="text-xs font-medium leading-relaxed">
                 {{ [patient.villageName, patient.communeName, patient.districtName, patient.provinceName].filter(Boolean).join(', ') || patient.address || '-' }}
               </p>
@@ -226,11 +226,11 @@ function createNewVisit() {
               <UCard v-if="billing">
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <span class="text-xs text-gray-500">សរុបបានទូទាត់ (Total Paid)</span>
+                    <span class="text-xs text-muted">សរុបបានទូទាត់ (Total Paid)</span>
                     <p class="text-xl font-bold text-emerald-600">{{ formatCurrency(billing.totalPaid) }}</p>
                   </div>
                   <div>
-                    <span class="text-xs text-gray-500">ប្រាក់នៅសល់ (Balance Due)</span>
+                    <span class="text-xs text-muted">ប្រាក់នៅសល់ (Balance Due)</span>
                     <p class="text-xl font-bold text-rose-600">{{ formatCurrency(billing.balanceDue) }}</p>
                   </div>
                 </div>

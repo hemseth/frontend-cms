@@ -2,7 +2,7 @@
   <UModal v-model:open="isOpen" title="Select Parameters" :ui="{ content: 'max-w-4xl' }">
     <template #header>
       <div class="flex items-center justify-between">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
+        <h3 class="text-base font-semibold leading-6 text-highlighted">
           Select Parameters for {{ service?.nameEn }}
         </h3>
       </div>
@@ -39,30 +39,30 @@
         <!-- Parameters Table -->
         <div class="border rounded-lg overflow-hidden max-h-[60vh] overflow-y-auto">
           <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 text-gray-700 uppercase font-bold border-b sticky top-0 z-10">
+            <thead class="bg-muted text-default uppercase font-bold border-b sticky top-0 z-10">
               <tr>
-                <th class="px-4 py-3 w-10 bg-gray-50">
+                <th class="px-4 py-3 w-10 bg-muted">
                   <UCheckbox
                     :model-value="areAllFilteredSelected"
                     @update:model-value="toggleAllFiltered"
                   />
                 </th>
-                <th class="px-4 py-3 bg-gray-50">
+                <th class="px-4 py-3 bg-muted">
                   Parameter Name
                 </th>
-                <th class="px-4 py-3 w-32 bg-gray-50">
+                <th class="px-4 py-3 w-32 bg-muted">
                   Unit
                 </th>
-                <th class="px-4 py-3 w-40 bg-gray-50">
+                <th class="px-4 py-3 w-40 bg-muted">
                   Ref Range
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y relative bg-white dark:bg-gray-900">
+            <tbody class="divide-y relative bg-default">
               <tr
                 v-for="(param, idx) in filteredParameters"
                 :key="idx"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                class="hover:bg-muted cursor-pointer transition-colors"
                 :class="{ 'bg-primary-50 dark:bg-primary-900/10': selectedIndices.has(param.originalIndex) }"
                 @click="toggleSelection(param.originalIndex)"
               >
@@ -73,22 +73,22 @@
                   />
                 </td>
                 <td class="px-4 py-3">
-                  <div class="font-medium text-gray-900 dark:text-gray-100">
+                  <div class="font-medium text-highlighted">
                     {{ param.labelEn }}
                   </div>
-                  <div v-if="param.labelKh" class="text-xs text-gray-500 battambang hidden md:block">
+                  <div v-if="param.labelKh" class="text-xs text-muted battambang hidden md:block">
                     {{ param.labelKh }}
                   </div>
                 </td>
-                <td class="px-4 py-3 text-gray-500">
+                <td class="px-4 py-3 text-muted">
                   {{ param.unit || '-' }}
                 </td>
-                <td class="px-4 py-3 text-gray-500">
+                <td class="px-4 py-3 text-muted">
                   {{ param.refRange || '-' }}
                 </td>
               </tr>
               <tr v-if="filteredParameters.length === 0">
-                <td colspan="4" class="px-4 py-8 text-center text-gray-500 italic">
+                <td colspan="4" class="px-4 py-8 text-center text-muted italic">
                   No parameters found matching "{{ search }}"
                 </td>
               </tr>
@@ -96,7 +96,7 @@
           </table>
         </div>
 
-        <div class="flex justify-between items-center text-sm text-gray-500">
+        <div class="flex justify-between items-center text-sm text-muted">
           <span>{{ selectedIndices.size }} selected</span>
           <span>Total: {{ service?.parameters?.length || 0 }}</span>
         </div>

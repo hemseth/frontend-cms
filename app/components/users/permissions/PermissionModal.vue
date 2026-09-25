@@ -120,7 +120,7 @@ async function handleSave() {
         <div class="grid grid-cols-1 gap-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Role ID
+              <label class="block text-sm font-medium text-default mb-1">Role ID
                 *</label>
               <UInput
                 v-model.number="state.roleId"
@@ -130,29 +130,29 @@ async function handleSave() {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Slug
+              <label class="block text-sm font-medium text-default mb-1">Slug
                 *</label>
               <UInput v-model="state.roleSlug" placeholder="doctor" class="w-full" />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameKh') }} *</label>
             <UInput v-model="state.nameKh" placeholder="វេជ្ជបណ្ឌិត" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameEn') }} *</label>
             <UInput v-model="state.nameEn" placeholder="Doctor" class="w-full" />
           </div>
           <!--
                     <div>
                         <label
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Permissions</label>
+                            class="block text-sm font-medium text-default mb-1">Permissions</label>
                         <div class="border rounded-md p-4 max-h-60 overflow-y-auto space-y-4">
                             <div v-for="(group, resource) in groupedPermissions" :key="resource">
                                 <h4
-                                    class="font-semibold text-sm capitalize mb-2 sticky top-0 bg-white dark:bg-gray-900 pb-1 border-b">
+                                    class="font-semibold text-sm capitalize mb-2 sticky top-0 bg-default pb-1 border-b">
                                     {{ resource.replace('_', ' ') }}
                                 </h4>
                                 <div class="grid grid-cols-2 gap-2">
@@ -164,7 +164,7 @@ async function handleSave() {
                     </div>
                     -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.description') }}</label>
             <UTextarea v-model="state.description" placeholder="Optional description..." class="w-full" />
           </div>

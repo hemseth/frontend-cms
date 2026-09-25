@@ -212,20 +212,20 @@ function pathLabel(d: DiagnosisMaster): string {
     <!-- Summary counters -->
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
       <div class="flex items-center gap-1.5">
-        <span class="font-semibold text-gray-700 dark:text-gray-200">{{ t('diagnosisSettings.summary.whoMaster') }}</span>
-        <span class="font-mono text-gray-500 dark:text-gray-400">{{ stats.totalMaster.toLocaleString() }}</span>
+        <span class="font-semibold text-default">{{ t('diagnosisSettings.summary.whoMaster') }}</span>
+        <span class="font-mono text-muted">{{ stats.totalMaster.toLocaleString() }}</span>
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="text-gray-500 dark:text-gray-400">{{ t('diagnosisSettings.summary.clinicAdded') }}</span>
-        <span class="font-mono text-gray-700 dark:text-gray-200">{{ stats.clinicAdded.toLocaleString() }}</span>
+        <span class="text-muted">{{ t('diagnosisSettings.summary.clinicAdded') }}</span>
+        <span class="font-mono text-default">{{ stats.clinicAdded.toLocaleString() }}</span>
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="text-gray-500 dark:text-gray-400">{{ t('diagnosisSettings.summary.favorites') }}</span>
-        <span class="font-mono text-gray-700 dark:text-gray-200">{{ stats.favorites.toLocaleString() }}</span>
+        <span class="text-muted">{{ t('diagnosisSettings.summary.favorites') }}</span>
+        <span class="font-mono text-default">{{ stats.favorites.toLocaleString() }}</span>
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="text-gray-500 dark:text-gray-400">{{ t('diagnosisSettings.summary.disabled') }}</span>
-        <span class="font-mono text-gray-700 dark:text-gray-200">{{ stats.disabled.toLocaleString() }}</span>
+        <span class="text-muted">{{ t('diagnosisSettings.summary.disabled') }}</span>
+        <span class="font-mono text-default">{{ stats.disabled.toLocaleString() }}</span>
       </div>
     </div>
 
@@ -350,14 +350,14 @@ function pathLabel(d: DiagnosisMaster): string {
           :data="data"
           :loading="loading"
           class="w-full"
-          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900' }"
+          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-muted' }"
         >
           <template #empty>
             <div class="py-10 text-center">
-              <p class="text-gray-500 dark:text-gray-400">
+              <p class="text-muted">
                 {{ t('diagnosisSettings.noResults') }}
               </p>
-              <p v-if="stats.totalMaster === 0" class="text-xs text-gray-400 mt-1">
+              <p v-if="stats.totalMaster === 0" class="text-xs text-dimmed mt-1">
                 {{ t('diagnosisSettings.importHint') }}
               </p>
             </div>
@@ -373,7 +373,7 @@ function pathLabel(d: DiagnosisMaster): string {
 
           <template #code-cell="{ row }">
             <div class="flex items-center gap-2">
-              <span :class="row.original.terminal === false ? 'text-gray-400' : 'font-mono font-semibold'">
+              <span :class="row.original.terminal === false ? 'text-dimmed' : 'font-mono font-semibold'">
                 {{ row.original.code }}
               </span>
               <UBadge
@@ -406,7 +406,7 @@ function pathLabel(d: DiagnosisMaster): string {
           <template #nameKh-cell="{ row }">
             <div>
               <div>{{ row.original.display.nameKh || row.original.nameKh || '—' }}</div>
-              <div v-if="row.original.clinic?.localNameKh" class="text-xs text-gray-400">
+              <div v-if="row.original.clinic?.localNameKh" class="text-xs text-dimmed">
                 {{ t('diagnosisSettings.masterName') }}: {{ row.original.master.nameKh }}
               </div>
             </div>
@@ -415,16 +415,16 @@ function pathLabel(d: DiagnosisMaster): string {
           <template #nameEn-cell="{ row }">
             <div>
               <div>{{ row.original.display.nameEn || row.original.nameEn || '—' }}</div>
-              <div v-if="row.original.clinic?.localNameEn" class="text-xs text-gray-400">
+              <div v-if="row.original.clinic?.localNameEn" class="text-xs text-dimmed">
                 {{ t('diagnosisSettings.masterName') }}: {{ row.original.master.nameEn }}
               </div>
             </div>
           </template>
 
           <template #path-cell="{ row }">
-            <div class="text-xs text-gray-500">
+            <div class="text-xs text-muted">
               <span>{{ pathLabel(row.original) }}</span>
-              <div class="mt-0.5 text-gray-400">
+              <div class="mt-0.5 text-dimmed">
                 WHO ICD-10{{ row.original.codeSystem ? ` · ${row.original.codeSystem}` : '' }}{{ row.original.codeVersion ? ` · ${row.original.codeVersion}` : '' }}
               </div>
             </div>
@@ -437,7 +437,7 @@ function pathLabel(d: DiagnosisMaster): string {
               :color="row.original.clinic.enabled ? 'success' : 'error'"
               variant="subtle"
             />
-            <span v-else class="text-xs text-gray-400">{{ t('diagnosisSettings.statusNotAdded') }}</span>
+            <span v-else class="text-xs text-dimmed">{{ t('diagnosisSettings.statusNotAdded') }}</span>
           </template>
 
           <template #actions-cell="{ row }">
@@ -462,7 +462,7 @@ function pathLabel(d: DiagnosisMaster): string {
 
       <template v-if="error" #footer>
         <div class="flex flex-col items-center gap-2 py-6">
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             {{ error }}
           </p>
           <UButton
@@ -477,7 +477,7 @@ function pathLabel(d: DiagnosisMaster): string {
 
       <template v-else #footer>
         <div class="flex items-center justify-between">
-          <span class="text-sm text-gray-500">Total: {{ total.toLocaleString() }}</span>
+          <span class="text-sm text-muted">Total: {{ total.toLocaleString() }}</span>
           <div class="flex gap-2">
             <UButton icon="i-lucide-chevron-left" :disabled="page === 1" @click="page--" />
             <UButton trailing-icon="i-lucide-chevron-right" :disabled="page * limit >= total" @click="page++" />

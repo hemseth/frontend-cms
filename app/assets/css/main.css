@@ -1,11 +1,38 @@
 @import "tailwindcss" theme(static);
 @import "@nuxt/ui";
 
+/*
+ * Type: Inter for Latin letters and digits, Battambang for Khmer. Inter's unicode-range covers
+ * no Khmer, so the browser picks the face per character and mixed lines need no markup.
+ * Inter's range skips U+200B-200D (zero-width space and joiners): Khmer text uses them inside
+ * words, and handing them to another font would break Khmer shaping.
+ * All faces are self-hosted so clinics without internet still get them. Inter: SIL OFL 1.1,
+ * see fonts/Inter-LICENSE.txt.
+ */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-200A, U+200E-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./fonts/inter-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 @font-face {
   font-family: 'Battambang';
   src: url('./fonts/KhmerOS_battambang.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -13,23 +40,63 @@
   src: url('./fonts/KhmerOS_muollight.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @theme static {
-  --font-sans: 'Battambang', sans-serif;
-  --color-green-50:  #EFFDF5;
-  --color-green-100: #D9FBE8;
-  --color-green-200: #B3F5D1;
-  --color-green-300: #75EDAE;
-  --color-green-400: #00DC82;
-  --color-green-500: #00C16A;
-  --color-green-600: #00A155;
-  --color-green-700: #007F45;
-  --color-green-800: #016538;
-  --color-green-900: #0A5331;
-  --color-green-950: #052E16;
+  --font-sans: 'Inter Variable', 'Battambang', system-ui, sans-serif;
+  /* font-khmer puts Battambang first, for Khmer-only blocks that should keep its Latin too. */
+  --font-khmer: 'Battambang', 'Inter Variable', sans-serif;
+  /* font-moul: the formal Khmer display face used for titles on printed documents. */
+  --font-moul: 'Moul', 'Battambang', serif;
 }
 
+/*
+ * Colour: primary is teal and neutral is slate (app.config.ts). Nuxt UI draws primary at 500,
+ * which is too light for teal text on white (about 3:1), so light mode uses 600 and dark mode 400.
+ */
+:root {
+  --ui-primary: var(--ui-color-primary-600);
+}
+
+.dark {
+  --ui-primary: var(--ui-color-primary-400);
+}
+
+@layer base {
+  /* Figures in tables line up by column: amounts, quantities, dates. */
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Native date pickers render digits badly in Battambang. */
 input[type="date"] {
-  font-family: sans-serif !important;
+  font-family: 'Inter Variable', system-ui, sans-serif !important;
+}
+
+/*
+ * Printing always uses the light palette. Screens now use semantic tokens (text-highlighted,
+ * bg-default ...) that turn light-on-dark in dark mode, and paper needs dark ink on white.
+ */
+@media print {
+  .dark {
+    color-scheme: light;
+    --ui-primary: var(--ui-color-primary-600);
+    --ui-text-dimmed: var(--ui-color-neutral-400);
+    --ui-text-muted: var(--ui-color-neutral-500);
+    --ui-text-toned: var(--ui-color-neutral-600);
+    --ui-text: var(--ui-color-neutral-700);
+    --ui-text-highlighted: var(--ui-color-neutral-900);
+    --ui-text-inverted: #fff;
+    --ui-bg: #fff;
+    --ui-bg-muted: var(--ui-color-neutral-50);
+    --ui-bg-elevated: var(--ui-color-neutral-100);
+    --ui-bg-accented: var(--ui-color-neutral-200);
+    --ui-bg-inverted: var(--ui-color-neutral-900);
+    --ui-border: var(--ui-color-neutral-200);
+    --ui-border-muted: var(--ui-color-neutral-200);
+    --ui-border-accented: var(--ui-color-neutral-300);
+    --ui-border-inverted: var(--ui-color-neutral-900);
+  }
 }

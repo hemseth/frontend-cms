@@ -115,7 +115,7 @@ function printReport() {
         <h1 class="text-2xl font-bold">
           {{ t('report.patientProfile') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           View patient details and visit history
         </p>
       </div>
@@ -168,7 +168,7 @@ function printReport() {
           </template>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.id') }}
               </p>
               <p class="font-medium">
@@ -176,7 +176,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.nameKh') }}
               </p>
               <p class="font-medium">
@@ -184,7 +184,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.gender') }}
               </p>
               <p class="font-medium">
@@ -192,7 +192,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.age') }}
               </p>
               <p class="font-medium">
@@ -200,7 +200,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.phone') }}
               </p>
               <p class="font-medium">
@@ -208,7 +208,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.dob') }}
               </p>
               <p class="font-medium">
@@ -216,7 +216,7 @@ function printReport() {
               </p>
             </div>
             <div class="col-span-2">
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Address
               </p>
               <p class="font-medium">
@@ -230,7 +230,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Total Visits
                 </p>
                 <p class="text-3xl font-bold mt-1">
@@ -245,7 +245,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Total Spent
                 </p>
                 <p class="text-3xl font-bold mt-1 text-green-600">
@@ -260,7 +260,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Last Visit
                 </p>
                 <p class="text-lg font-bold mt-1">
@@ -275,7 +275,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Diagnoses
                 </p>
                 <p class="text-3xl font-bold mt-1">
@@ -322,8 +322,8 @@ function printReport() {
     </template>
 
     <UCard v-else-if="!isLoading && !patientData" class="text-center py-12">
-      <UIcon name="i-lucide-user-x" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-      <p class="text-gray-500">
+      <UIcon name="i-lucide-user-x" class="w-16 h-16 text-dimmed mx-auto mb-4" />
+      <p class="text-muted">
         {{ t('report.selectPatient') }}
       </p>
     </UCard>

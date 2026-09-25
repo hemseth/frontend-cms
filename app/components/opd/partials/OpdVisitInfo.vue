@@ -9,7 +9,7 @@
       </template>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="khmer-label block text-sm mb-1 font-bold text-slate-700">{{ t('visit.visitNo')
+          <label class="khmer-label block text-sm mb-1 font-bold text-default">{{ t('visit.visitNo')
           }}</label>
           <UInput
             type="text"
@@ -21,7 +21,7 @@
           />
         </div>
         <div>
-          <label class="khmer-label block text-sm mb-1 font-bold text-slate-700">{{ t('visit.date') }}</label>
+          <label class="khmer-label block text-sm mb-1 font-bold text-default">{{ t('visit.date') }}</label>
           <UInput type="datetime-local" class="w-full" :value="new Date().toISOString().slice(0, 16)" />
         </div>
 

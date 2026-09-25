@@ -42,14 +42,14 @@ function resetFilters() {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 w-full py-8 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-muted w-full py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-8">
             <!-- Header Section -->
             <div class="text-center space-y-4">
-                <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
+                <h1 class="text-4xl font-extrabold text-highlighted sm:text-5xl">
                     {{ t('medicine.title') }}
                 </h1>
-                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                <p class="text-lg text-toned max-w-2xl mx-auto">
                     Browse our comprehensive catalog of medicines. Search by name, code, or dosage to find what you
                     need.
                 </p>
@@ -76,22 +76,22 @@ function resetFilters() {
             <!-- Results Section -->
             <div v-if="status === 'pending'"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
-                <UCard v-for="i in 8" :key="i" class="animate-pulse h-64 border-none bg-gray-200 dark:bg-gray-800" />
+                <UCard v-for="i in 8" :key="i" class="animate-pulse h-64 border-none bg-accented" />
             </div>
 
             <div v-else-if="medicines.length === 0" class="text-center py-20 space-y-4">
                 <div
-                    class="bg-gray-100 dark:bg-gray-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
-                    <UIcon name="i-lucide-search-x" class="w-10 h-10 text-gray-400" />
+                    class="bg-elevated w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+                    <UIcon name="i-lucide-search-x" class="w-10 h-10 text-dimmed" />
                 </div>
-                <h3 class="text-xl font-medium text-gray-900 dark:text-white">No medicines found</h3>
-                <p class="text-gray-500">Try adjusting your search or filters to find what you're looking for.</p>
+                <h3 class="text-xl font-medium text-highlighted">No medicines found</h3>
+                <p class="text-muted">Try adjusting your search or filters to find what you're looking for.</p>
                 <UButton variant="soft" @click="resetFilters">Clear all filters</UButton>
             </div>
 
             <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 pb-12">
                 <UCard v-for="medicine in medicines" :key="medicine._id"
-                    class="group hover:shadow-2xl transition-all duration-300 border-none bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 overflow-hidden"
+                    class="group hover:shadow-2xl transition-all duration-300 border-none bg-default ring-1 ring-default overflow-hidden"
                     :ui="{ body: 'p-0' }">
                     <!-- Medicine Image Container (Mock) -->
                     <div
@@ -111,7 +111,7 @@ function resetFilters() {
                             <div class="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
                                 {{ medicine.code }}
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
+                            <h3 class="text-xl font-bold text-highlighted line-clamp-1">
                                 {{ medicine.name }}
                             </h3>
                         </div>
@@ -126,7 +126,7 @@ function resetFilters() {
                         </div>
 
                         <div
-                            class="pt-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
+                            class="pt-4 flex items-center justify-between border-t border-default">
                             <div class="text-2xl font-black text-primary">
                                 ${{ Number(medicine.price).toFixed(2) }}
                             </div>

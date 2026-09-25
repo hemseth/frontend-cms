@@ -645,7 +645,7 @@ async function handleImport(event: Event) {
     }"
   >
     <template #content>
-      <div class="h-[720px] flex flex-col bg-white dark:bg-gray-900 rounded-xl overflow-hidden">
+      <div class="h-[720px] flex flex-col bg-default rounded-xl overflow-hidden">
         <OpdRoundHistoryTable
           :patient-id="historyPatientId"
           show-close-button

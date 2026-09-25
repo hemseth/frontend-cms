@@ -38,8 +38,8 @@ const columns: TableColumn<any>[] = [
       const p = row.original.patientId
       if (!p) return 'N/A'
       return h('div', { class: 'flex flex-col' }, [
-        h('span', { class: 'font-bold text-slate-800' }, p.nameEn || p.nameKh),
-        h('span', { class: 'text-xs text-slate-500' }, `#${p.pId || p.code || '?'}`)
+        h('span', { class: 'font-bold text-highlighted' }, p.nameEn || p.nameKh),
+        h('span', { class: 'text-xs text-muted' }, `#${p.pId || p.code || '?'}`)
       ])
     }
   },
@@ -48,7 +48,7 @@ const columns: TableColumn<any>[] = [
     header: 'Test Name',
     cell: ({ row }) => h('div', { class: 'flex flex-col' }, [
       h('span', { class: 'font-medium' }, row.original.serviceName),
-      h('span', { class: 'text-[10px] text-slate-400 uppercase tracking-wider' }, row.original.category)
+      h('span', { class: 'text-[10px] text-dimmed uppercase tracking-wider' }, row.original.category)
     ])
   },
   {
@@ -132,19 +132,19 @@ async function saveResults() {
 </script>
 
 <template>
-  <div class="h-full flex flex-col p-4 bg-slate-50 dark:bg-slate-950">
+  <div class="h-full flex flex-col p-4 bg-muted">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+        <h1 class="text-2xl font-black text-highlighted flex items-center gap-2">
           <UIcon name="i-lucide-flask-conical" class="text-primary-500" />
           Laboratory Dashboard
         </h1>
-        <p class="text-slate-500 text-sm">
+        <p class="text-muted text-sm">
           Manage test requests and enter results for patients.
         </p>
       </div>
 
-      <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm px-3">
+      <div class="flex items-center gap-2 bg-default p-1.5 rounded-lg border border-default shadow-sm px-3">
         <UDateInput
           v-model="dateFrom"
           size="sm"
@@ -152,7 +152,7 @@ async function saveResults() {
           class="w-28"
           icon=""
         />
-        <span class="text-slate-300">to</span>
+        <span class="text-dimmed">to</span>
         <UDateInput
           v-model="dateTo"
           size="sm"
@@ -160,7 +160,7 @@ async function saveResults() {
           class="w-28"
           icon=""
         />
-        <div class="w-px h-6 bg-slate-200 dark:bg-slate-800 mx-1" />
+        <div class="w-px h-6 bg-accented mx-1" />
         <USelect
           v-model="statusFilter"
           :options="[
@@ -182,14 +182,14 @@ async function saveResults() {
       </div>
     </div>
 
-    <div class="flex-1 overflow-hidden bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+    <div class="flex-1 overflow-hidden bg-default rounded-xl border border-default shadow-sm flex flex-col">
       <UTable
         :columns="columns"
         :rows="labs"
         :loading="pending"
         class="flex-1"
         :ui="{
-          thead: 'bg-slate-50/50 dark:bg-slate-800/50',
+          thead: 'bg-muted/50',
           th: 'uppercase tracking-wider text-[10px] py-3'
         }"
       />

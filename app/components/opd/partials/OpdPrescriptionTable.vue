@@ -1,9 +1,9 @@
 <template>
   <UCard class="h-full flex flex-col">
     <div class="overflow-x-auto grow">
-      <table class="w-full border border-gray-200 dark:border-gray-800 border-collapse text-sm">
-        <thead class="text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800">
-          <tr class="border-b border-gray-200 dark:border-gray-800">
+      <table class="w-full border border-default border-collapse text-sm">
+        <thead class="text-default bg-muted">
+          <tr class="border-b border-default">
             <th class="p-2 text-center min-w-12">
               {{ t("common.number") }}
             </th>
@@ -43,13 +43,13 @@
             <th class="p-2 text-center min-w-10" />
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+        <tbody class="divide-y divide-default">
           <tr
             v-for="(rIndex, idx) in prescriptionIndices"
             :key="rIndex"
-            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800"
+            class="hover:bg-muted border-b border-default"
           >
-            <td class="p-2 text-center text-gray-500 dark:text-gray-400">
+            <td class="p-2 text-center text-muted">
               {{ idx + 1 }}
             </td>
             <td class="p-2">
@@ -62,12 +62,12 @@
               />
               <div
                 v-if="rows[rIndex].result"
-                class="mt-1 text-xs text-gray-500 dark:text-gray-400 whitespace-pre-wrap"
+                class="mt-1 text-xs text-muted whitespace-pre-wrap"
               >
                 {{ t("common.notes") }}: {{ rows[rIndex].result }}
               </div>
             </td>
-            <td class="p-2 text-center text-sm text-gray-700 dark:text-gray-200 font-medium">
+            <td class="p-2 text-center text-sm text-default font-medium">
               {{ rows[rIndex].unit || '—' }}
             </td>
             <td class="p-2">
@@ -124,7 +124,7 @@
                 size="md"
                 class="text-center w-full"
                 :placeholder="'1'"
-                :ui="{ base: 'text-center p-1 font-semibold text-primary-600 dark:text-primary-400' }"
+                :ui="{ base: 'text-center p-1 font-semibold text-primary' }"
                 @update:model-value="() => onFieldChange(rIndex)"
               />
             </td>
@@ -176,7 +176,7 @@
           <tr v-if="prescriptionIndices.length === 0">
             <td
               colspan="12"
-              class="p-8 text-center text-gray-500 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-800/30"
+              class="p-8 text-center text-muted bg-muted/50"
             >
               {{ t("common.noMedicines") }}
             </td>
@@ -184,13 +184,13 @@
         </tbody>
       </table>
     </div>
-    <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200 dark:border-gray-800">
+    <div class="flex justify-between items-center mt-4 pt-3 border-t border-default">
       <div class="flex justify-end w-full gap-3 text-right items-center">
-        <div class="khmer-label font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wide text-sm">
+        <div class="khmer-label font-bold text-default uppercase tracking-wide text-sm">
           {{ t("common.grandTotal") }}:
         </div>
         <div
-          class="text-xl font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-4 py-1 rounded-md shadow-sm border border-primary-100 dark:border-primary-900/50"
+          class="text-xl font-bold text-primary bg-primary-50 dark:bg-primary-900/20 px-4 py-1 rounded-md shadow-sm border border-primary-100 dark:border-primary-900/50"
         >
           ${{ grandTotal.toLocaleString() }}
         </div>

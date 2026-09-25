@@ -27,7 +27,7 @@ if (tab === 'master') {
       <h2 class="text-xl font-semibold">
         {{ t('diagnosisSettings.tabs.clinicDiagnoses') }}
       </h2>
-      <p class="text-sm text-gray-500">
+      <p class="text-sm text-muted">
         {{ t('diagnosisSettings.subtitle') }}
       </p>
     </div>

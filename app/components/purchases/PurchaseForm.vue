@@ -168,7 +168,7 @@ defineExpose({ handleSave })
       <!-- Supplier Info -->
       <UCard :ui="{ body: 'p-3' }" class="md:col-span-1">
         <template #header>
-          <div class="text-sm font-bold text-primary-600 dark:text-primary-400">
+          <div class="text-sm font-bold text-primary">
             {{ t('supplier.title') }}
           </div>
         </template>
@@ -203,7 +203,7 @@ defineExpose({ handleSave })
       <!-- Purchase Type -->
       <UCard :ui="{ body: 'p-3' }" class="md:col-span-1">
         <template #header>
-          <div class="text-sm font-bold text-primary-600 dark:text-primary-400">
+          <div class="text-sm font-bold text-primary">
             {{ t('purchase.type') }}
           </div>
         </template>
@@ -222,7 +222,7 @@ defineExpose({ handleSave })
       <!-- Invoice Info -->
       <UCard :ui="{ body: 'p-3' }" class="md:col-span-1">
         <template #header>
-          <div class="text-sm font-bold text-primary-600 dark:text-primary-400">
+          <div class="text-sm font-bold text-primary">
             {{ t('purchase.title') }}
           </div>
         </template>
@@ -239,7 +239,7 @@ defineExpose({ handleSave })
       <!-- Search Filters -->
       <UCard :ui="{ body: 'p-3' }" class="md:col-span-1 border-primary-100 dark:border-primary-900">
         <template #header>
-          <div class="text-sm font-bold text-primary-600 dark:text-primary-400">
+          <div class="text-sm font-bold text-primary">
             {{ t('common.search') }}
           </div>
         </template>
@@ -267,7 +267,7 @@ defineExpose({ handleSave })
       <!-- Left: Items Table -->
       <UCard class="md:col-span-8 flex flex-col" :ui="{ body: 'p-0 flex-1 overflow-auto' }">
         <table class="w-full text-sm text-left border-collapse">
-          <thead class="sticky top-0 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800 z-10">
+          <thead class="sticky top-0 bg-muted border-b dark:border-gray-800 z-10">
             <tr>
               <th class="px-3 py-2 font-bold w-12 text-center">
                 {{ t('common.number') }}
@@ -297,7 +297,7 @@ defineExpose({ handleSave })
             <tr
               v-for="(item, index) in form.items"
               :key="index"
-              class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
+              class="hover:bg-muted/50 transition-colors"
             >
               <td class="px-3 py-2 text-center">
                 {{ index + 1 }}
@@ -307,13 +307,13 @@ defineExpose({ handleSave })
               </td>
               <td class="px-3 py-2 text-center">
                 <div
-                  class="w-8 h-8 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden mx-auto"
+                  class="w-8 h-8 rounded bg-elevated flex items-center justify-center overflow-hidden mx-auto"
                 >
                   <img v-if="item.image" :src="item.image" class="w-full h-full object-cover">
-                  <UIcon v-else name="i-lucide-image" class="text-gray-400" />
+                  <UIcon v-else name="i-lucide-image" class="text-dimmed" />
                 </div>
               </td>
-              <td class="px-3 py-2 text-gray-500">
+              <td class="px-3 py-2 text-muted">
                 {{ item.unit }}
               </td>
               <td class="px-3 py-2">
@@ -349,7 +349,7 @@ defineExpose({ handleSave })
               </td>
             </tr>
             <tr v-if="form.items.length === 0">
-              <td colspan="8" class="px-3 py-10 text-center text-gray-400 italic">
+              <td colspan="8" class="px-3 py-10 text-center text-dimmed italic">
                 {{ t('common.noItemsAdded') }}
               </td>
             </tr>
@@ -378,23 +378,23 @@ defineExpose({ handleSave })
               @click="addProduct(product)"
             >
               <div
-                class="w-10 h-10 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden shrink-0"
+                class="w-10 h-10 rounded bg-elevated flex items-center justify-center overflow-hidden shrink-0"
               >
                 <img v-if="product.image" :src="product.image" class="w-full h-full object-cover">
-                <UIcon v-else name="i-lucide-package" class="text-gray-400" />
+                <UIcon v-else name="i-lucide-package" class="text-dimmed" />
               </div>
               <div class="flex-1 min-w-0">
                 <div class="text-sm font-medium truncate group-hover:text-primary-600">
                   {{ product.nameKh || product.nameEn }}
                 </div>
-                <div class="text-xs text-gray-500 flex justify-between">
+                <div class="text-xs text-muted flex justify-between">
                   <span>{{ product.code }}</span>
                   <span class="font-bold text-primary-600">${{ product.price?.toFixed(2) }}</span>
                 </div>
               </div>
-              <UIcon name="i-lucide-plus-circle" class="text-gray-300 group-hover:text-primary-500" />
+              <UIcon name="i-lucide-plus-circle" class="text-dimmed group-hover:text-primary-500" />
             </div>
-            <div v-if="filteredProducts.length === 0" class="py-4 text-center text-xs text-gray-500 italic">
+            <div v-if="filteredProducts.length === 0" class="py-4 text-center text-xs text-muted italic">
               {{ t('purchase.noProduct') }}
             </div>
           </div>
@@ -404,11 +404,11 @@ defineExpose({ handleSave })
         <UCard :ui="{ body: 'p-4' }" class="border-t-4 border-t-primary-500">
           <div class="space-y-3">
             <div class="flex justify-between items-center text-sm">
-              <span class="text-gray-500">{{ t('payment.subtotal') }}</span>
+              <span class="text-muted">{{ t('payment.subtotal') }}</span>
               <span class="font-medium">${{ subtotal.toFixed(2) }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">
-              <span class="text-gray-500">{{ t('payment.discount') }}</span>
+              <span class="text-muted">{{ t('payment.discount') }}</span>
               <UInput
                 v-model.number="form.discount"
                 type="number"
@@ -417,7 +417,7 @@ defineExpose({ handleSave })
               />
             </div>
             <div class="flex justify-between items-center text-sm">
-              <span class="text-gray-500">{{ t('payment.tax') }}</span>
+              <span class="text-muted">{{ t('payment.tax') }}</span>
               <UInput
                 v-model.number="form.tax"
                 type="number"

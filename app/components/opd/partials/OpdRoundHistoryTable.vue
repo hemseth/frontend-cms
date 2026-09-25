@@ -1,20 +1,20 @@
 <template>
-  <div class="h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden font-khmer select-none text-slate-800 dark:text-slate-100">
+  <div class="h-full flex flex-col bg-default overflow-hidden font-khmer select-none text-highlighted">
     <!-- Top Header: Patient Summary Bar -->
-    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/80 flex items-center justify-between">
+    <div class="px-4 py-3 border-b border-default bg-muted/80 flex items-center justify-between">
       <div>
         <div class="flex items-center gap-2">
           <UIcon name="i-lucide-history" class="w-5 h-5 text-primary-500" />
-          <h2 class="text-base font-bold text-gray-900 dark:text-white">
+          <h2 class="text-base font-bold text-highlighted">
             ប្រវត្តិអ្នកជំងឺ & ការពិនិត្យ (Patient Medical History)
           </h2>
         </div>
-        <div v-if="patientInfo" class="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mt-1">
-          <span class="font-bold text-primary-600 dark:text-primary-400">
+        <div v-if="patientInfo" class="flex flex-wrap items-center gap-2 text-xs text-toned mt-1">
+          <span class="font-bold text-primary">
             {{ patientInfo.pId ? `P-${String(patientInfo.pId).padStart(6, '0')}` : (patientInfo.code || patientInfo._id || 'P-000000') }}
           </span>
           <span>•</span>
-          <span class="font-bold text-gray-900 dark:text-gray-100">
+          <span class="font-bold text-highlighted">
             {{ patientInfo.nameKh || patientInfo.nameEn || patientInfo.name || 'Unknown' }}
           </span>
           <span>•</span>
@@ -55,10 +55,10 @@
     </div>
 
     <!-- Filter & Search Controls Bar -->
-    <div class="p-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 space-y-2.5">
+    <div class="p-3 border-b border-default bg-default space-y-2.5">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <!-- Department Filter Pills -->
-        <div class="flex items-center gap-1.5 p-1 bg-gray-100 dark:bg-gray-800/80 rounded-lg">
+        <div class="flex items-center gap-1.5 p-1 bg-elevated rounded-lg">
           <button
             v-for="dept in deptTabs"
             :key="dept.value"
@@ -66,7 +66,7 @@
             class="px-3 py-1 text-xs font-semibold rounded-md transition-all"
             :class="selectedDept === dept.value
               ? 'bg-primary-500 text-white shadow-xs font-bold'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
+              : 'text-toned hover:text-highlighted'"
             @click="selectedDept = dept.value"
           >
             {{ dept.label }}
@@ -121,14 +121,14 @@
     </div>
 
     <!-- Empty / No Patient State -->
-    <div v-if="!patientId" class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400">
+    <div v-if="!patientId" class="flex-1 flex flex-col items-center justify-center p-8 text-dimmed">
       <UIcon name="i-lucide-user-x" class="w-12 h-12 mb-2 stroke-1" />
       <p class="text-sm font-medium">សូមជ្រើសរើសអ្នកជំងឺជាមុនសិន</p>
-      <p class="text-xs text-gray-500 mt-1">Please select a patient to view clinical history</p>
+      <p class="text-xs text-muted mt-1">Please select a patient to view clinical history</p>
     </div>
 
     <!-- Loading State -->
-    <div v-else-if="isLoading" class="flex-1 flex items-center justify-center p-8 text-gray-500">
+    <div v-else-if="isLoading" class="flex-1 flex items-center justify-center p-8 text-muted">
       <div class="flex flex-col items-center gap-2">
         <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary-500" />
         <span class="text-sm">កំពុងទាញយកប្រវត្តិចូលពិនិត្យ...</span>
@@ -136,10 +136,10 @@
     </div>
 
     <!-- No Records Found -->
-    <div v-else-if="filteredVisits.length === 0" class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400">
+    <div v-else-if="filteredVisits.length === 0" class="flex-1 flex flex-col items-center justify-center p-8 text-dimmed">
       <UIcon name="i-lucide-folder-open" class="w-12 h-12 mb-2 stroke-1 text-emerald-500" />
-      <p class="text-sm font-bold text-gray-700 dark:text-gray-300">មិនមានទិន្នន័យពិនិត្យស្របតាមលក្ខខណ្ឌស្វែងរកទេ</p>
-      <p class="text-xs text-gray-500 mt-1">No visit records matching your filter criteria</p>
+      <p class="text-sm font-bold text-default">មិនមានទិន្នន័យពិនិត្យស្របតាមលក្ខខណ្ឌស្វែងរកទេ</p>
+      <p class="text-xs text-muted mt-1">No visit records matching your filter criteria</p>
     </div>
 
     <!-- Timeline List Content -->
@@ -147,20 +147,20 @@
       <div
         v-for="(v, index) in filteredVisits"
         :key="v._id || index"
-        class="relative pl-6 before:absolute before:left-2 before:top-2.5 before:bottom-0 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-800 last:before:hidden"
+        class="relative pl-6 before:absolute before:left-2 before:top-2.5 before:bottom-0 before:w-0.5 before:bg-accented last:before:hidden"
       >
         <!-- Timeline Bullet & Date Header -->
         <div class="flex items-center gap-2 mb-2">
-          <div class="absolute left-0.5 top-1 w-3.5 h-3.5 rounded-full border-2 border-primary-500 bg-white dark:bg-gray-900 ring-4 ring-white dark:ring-gray-900" />
-          <span class="text-xs font-bold text-gray-700 dark:text-gray-300">
+          <div class="absolute left-0.5 top-1 w-3.5 h-3.5 rounded-full border-2 border-primary-500 bg-default ring-4 ring-white dark:ring-gray-900" />
+          <span class="text-xs font-bold text-default">
             ● {{ formatDateTime(v.dateIn || v.createdAt) }}
           </span>
         </div>
 
         <!-- Visit Detail Card (Exact ASCII Box Layout) -->
-        <div class="border border-gray-200 dark:border-gray-800 rounded-xl p-4 bg-white dark:bg-gray-900/90 shadow-sm hover:border-primary-400 dark:hover:border-primary-600 transition-all space-y-3.5">
+        <div class="border border-default rounded-xl p-4 bg-default shadow-sm hover:border-primary-400 dark:hover:border-primary-600 transition-all space-y-3.5">
           <!-- Card Top Line: Dept, Code, Doctor, Status -->
-          <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-gray-100 dark:border-gray-800">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-default">
             <div class="flex items-center gap-2">
               <span
                 class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
@@ -170,13 +170,13 @@
               >
                 {{ v.dept || 'OPD' }}
               </span>
-              <span class="font-bold text-sm text-gray-900 dark:text-white">
+              <span class="font-bold text-sm text-highlighted">
                 {{ v.visitId || v.visitNo || 'VIS-' + (v._id?.substring(18) || '000001') }}
               </span>
             </div>
 
             <div class="flex items-center gap-2">
-              <span v-if="v.doctorName || v.doctor?.nameKh || v.doctor?.nameEn" class="text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <span v-if="v.doctorName || v.doctor?.nameKh || v.doctor?.nameEn" class="text-xs font-semibold px-2 py-0.5 rounded bg-elevated text-default">
                 👨‍⚕️ {{ v.doctorName || v.doctor?.nameKh || v.doctor?.nameEn }}
               </span>
               <span
@@ -190,17 +190,17 @@
 
           <!-- Chief Complaint / មូលហេតុមកពិនិត្យ -->
           <div>
-            <div class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <div class="text-xs font-bold text-muted uppercase tracking-wider mb-1">
               Chief Complaint / រោគសញ្ញាដំបូង
             </div>
-            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 leading-relaxed bg-gray-50/60 dark:bg-gray-800/40 p-2 rounded-lg border border-gray-100 dark:border-gray-800/80">
+            <p class="text-sm font-medium text-highlighted leading-relaxed bg-muted/60 p-2 rounded-lg border border-default">
               {{ v.reason || v.notes || 'ក្អក ក្តៅខ្លួន ឈឺក្បាល (General consultation)' }}
             </p>
           </div>
 
           <!-- Vitals / សញ្ញាជីវិត -->
           <div v-if="v.vitals && Object.keys(v.vitals).length > 0">
-            <div class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <div class="text-xs font-bold text-muted uppercase tracking-wider mb-1">
               Vitals / សញ្ញាជីវិត
             </div>
             <div class="flex flex-wrap gap-2 text-xs">
@@ -224,7 +224,7 @@
 
           <!-- Diagnosis / រោគវិនិច្ឆ័យ -->
           <div>
-            <div class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <div class="text-xs font-bold text-muted uppercase tracking-wider mb-1">
               Diagnosis / រោគវិនិច្ឆ័យ
             </div>
             <div v-if="v.diagnosis && v.diagnosis.length > 0" class="flex flex-wrap gap-1.5">
@@ -236,16 +236,16 @@
                 {{ d.code ? `${d.code} • ` : '' }}{{ d.nameKh || d.nameEn || d.name || d }}
               </span>
             </div>
-            <p v-else class="text-xs text-gray-400 italic">
+            <p v-else class="text-xs text-dimmed italic">
               មិនមានកត់ត្រាកូដរោគវិនិច្ឆ័យ
             </p>
           </div>
 
           <!-- Prescription / វេជ្ជបញ្ជា -->
           <div>
-            <div class="flex items-center justify-between text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <div class="flex items-center justify-between text-xs font-bold text-muted uppercase tracking-wider mb-1">
               <span>Prescription / វេជ្ជបញ្ជា</span>
-              <span class="text-[11px] text-gray-400 font-normal">
+              <span class="text-[11px] text-dimmed font-normal">
                 {{ getMedicationsForVisit(v._id).length }} មុខថ្នាំ
               </span>
             </div>
@@ -253,13 +253,13 @@
               <div
                 v-for="(med, mIdx) in getMedicationsForVisit(v._id)"
                 :key="mIdx"
-                class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-800 flex items-start justify-between text-xs"
+                class="p-2 rounded-lg bg-muted border border-default flex items-start justify-between text-xs"
               >
                 <div>
-                  <span class="font-bold text-gray-900 dark:text-white text-xs">
+                  <span class="font-bold text-highlighted text-xs">
                     {{ med.nameEn || med.nameKh || med.name }}
                   </span>
-                  <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <div class="text-[11px] text-muted mt-0.5 flex flex-wrap items-center gap-2">
                     <span>ព្រឹក: <b>{{ med.morningDose || med.morning || med.qmor || 0 }}</b></span>
                     <span>ថ្ងៃ: <b>{{ med.afternoonDose || med.afternoon || med.qaft || 0 }}</b></span>
                     <span>ល្ងាច: <b>{{ med.eveningDose || med.evening || med.qeve || 0 }}</b></span>
@@ -270,19 +270,19 @@
                     {{ med.usage || med.instructions }}
                   </div>
                 </div>
-                <span class="font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap pl-2">
+                <span class="font-bold text-primary whitespace-nowrap pl-2">
                   {{ med.quantity || med.qty || 1 }} {{ med.unit || '' }}
                 </span>
               </div>
             </div>
-            <p v-else class="text-xs text-gray-400 italic">
+            <p v-else class="text-xs text-dimmed italic">
               គ្មានការចេញវេជ្ជបញ្ជា
             </p>
           </div>
 
           <!-- Labs / តេស្តពិសោធន៍ -->
           <div v-if="getLabsForVisit(v._id).length > 0">
-            <div class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <div class="text-xs font-bold text-muted uppercase tracking-wider mb-1">
               Labs: {{ getLabsForVisit(v._id).length }}
             </div>
             <div class="flex flex-wrap gap-1.5">
@@ -297,7 +297,7 @@
           </div>
 
           <!-- Bottom Action Buttons: View Detail, Print, Amend -->
-          <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+          <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-default">
             <UButton
               label="View Detail"
               icon="i-lucide-eye"

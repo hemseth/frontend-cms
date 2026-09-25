@@ -72,7 +72,7 @@ async function handleSave() {
       <div class="space-y-4">
         <div class="grid grid-cols-1 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Permission ID
+            <label class="block text-sm font-medium text-default mb-1">Permission ID
               *</label>
             <UInput
               v-model.number="state.permissionId"
@@ -82,21 +82,21 @@ async function handleSave() {
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameKh') }} *</label>
             <UInput v-model="state.nameKh" placeholder="មើលអ្នកជំងឺ" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameEn') }} *</label>
             <UInput v-model="state.nameEn" placeholder="View Patients" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Slug *</label>
+            <label class="block text-sm font-medium text-default mb-1">Slug *</label>
             <UInput v-model="state.permissionSlug" placeholder="view_patients" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.description') }}</label>
             <UTextarea v-model="state.description" placeholder="Optional description..." class="w-full" />
           </div>

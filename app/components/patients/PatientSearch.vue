@@ -381,7 +381,7 @@ function formatGender(p: any) {
       </div>
       <div class="overflow-auto max-h-[60vh]">
         <table class="w-full border-collapse text-sm">
-          <thead class="bg-gray-100 dark:bg-gray-800 sticky top-0">
+          <thead class="bg-elevated sticky top-0">
             <tr>
               <th class="p-2 text-left">
                 {{ t('patient.id') }}
@@ -407,7 +407,7 @@ function formatGender(p: any) {
             <tr
               v-for="p in paged"
               :key="p.id"
-              class="border-t border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer"
+              class="border-t border-default hover:bg-muted cursor-pointer"
               @click="selectPatient(p)"
             >
               <td class="p-2 font-mono text-xs">
@@ -415,7 +415,7 @@ function formatGender(p: any) {
               </td>
               <td class="p-2 font-medium">
                 {{ p.nameEn }}
-                <span v-if="p.nameKh" class="text-gray-500 text-xs ml-1">/ {{ p.nameKh }}</span>
+                <span v-if="p.nameKh" class="text-muted text-xs ml-1">/ {{ p.nameKh }}</span>
               </td>
               <td class="p-2">
                 {{ formatGender(p) }}
@@ -426,12 +426,12 @@ function formatGender(p: any) {
               <td class="p-2">
                 {{ p.phone ?? '-' }}
               </td>
-              <td class="p-2 text-xs text-gray-500">
+              <td class="p-2 text-xs text-muted">
                 {{ [p.villageName, p.communeName, p.districtName, p.provinceName].filter(Boolean).join(', ') || '-' }}
               </td>
             </tr>
             <tr v-if="!paged.length">
-              <td class="p-2 text-center text-gray-500" colspan="6">
+              <td class="p-2 text-center text-muted" colspan="6">
                 No patients found
               </td>
             </tr>
@@ -439,7 +439,7 @@ function formatGender(p: any) {
         </table>
       </div>
 
-      <div class="flex items-center justify-between mt-3 pt-2 border-t border-gray-200 dark:border-gray-800">
+      <div class="flex items-center justify-between mt-3 pt-2 border-t border-default">
         <div class="flex items-center gap-2">
           <USelectMenu
             v-model="perPage"
@@ -447,10 +447,10 @@ function formatGender(p: any) {
             class="w-20 cursor-pointer"
             size="sm"
           />
-          <span class="text-sm text-gray-600 dark:text-gray-400">Total: {{ filtered.length }}</span>
+          <span class="text-sm text-toned">Total: {{ filtered.length }}</span>
         </div>
         <div class="flex items-center gap-4">
-          <div class="text-sm text-gray-600 dark:text-gray-400">
+          <div class="text-sm text-toned">
             Page {{ page }} of {{ totalPages }}
           </div>
           <div class="flex gap-2">

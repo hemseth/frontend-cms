@@ -107,7 +107,7 @@ async function deleteUser(id: string) {
         <template #staffId-cell="{ row }">
           <div v-if="row.original.staffId" class="flex flex-col">
             <span>{{ row.original.staffId.nameEn }}</span>
-            <span v-if="row.original.staffId.nameKh" class="text-xs text-gray-500">({{ row.original.staffId.nameKh }})</span>
+            <span v-if="row.original.staffId.nameKh" class="text-xs text-muted">({{ row.original.staffId.nameKh }})</span>
           </div>
           <UButton
             v-else
@@ -122,10 +122,10 @@ async function deleteUser(id: string) {
 
         <template #clinicId-cell="{ row }">
           <div v-if="row.original.clinicId" class="flex flex-col">
-            <span class="font-medium text-primary-600 dark:text-primary-400">{{ row.original.clinicId.name }}</span>
-            <span v-if="row.original.clinicId.nameKh" class="text-xs text-gray-500">{{ row.original.clinicId.nameKh }}</span>
+            <span class="font-medium text-primary">{{ row.original.clinicId.name }}</span>
+            <span v-if="row.original.clinicId.nameKh" class="text-xs text-muted">{{ row.original.clinicId.nameKh }}</span>
           </div>
-          <span v-else class="text-gray-400">N/A</span>
+          <span v-else class="text-dimmed">N/A</span>
         </template>
 
         <template #active-cell="{ row }">

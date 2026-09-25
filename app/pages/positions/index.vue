@@ -265,13 +265,13 @@ async function handleImport(event: Event) {
 
       <template #footer>
         <div class="flex justify-between items-center w-full">
-          <div class="text-sm text-gray-500">
+          <div class="text-sm text-muted">
             Showing {{ (page - 1) * limit + 1 }} to {{ Math.min(page * limit, total) }} of {{ total }}
             entries
           </div>
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 text-sm">
-              <span class="text-gray-500">Per page</span>
+              <span class="text-muted">Per page</span>
               <USelectMenu v-model="limit" :items="[10, 20, 50, 100]" class="w-20" />
             </div>
             <UPagination v-model:page="page" :total="total" :items-per-page="limit" />
@@ -311,7 +311,7 @@ async function handleImport(event: Event) {
             />
           </UFormField>
 
-          <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-800">
+          <div class="flex justify-end gap-2 pt-4 border-t border-default">
             <UButton
               :label="t('common.cancel')"
               color="neutral"

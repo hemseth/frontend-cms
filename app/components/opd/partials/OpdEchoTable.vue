@@ -1,9 +1,9 @@
 <template>
   <UCard class="h-full">
     <div class="overflow-x-auto">
-      <table class="w-full border border-gray-200 dark:border-gray-800 border-collapse text-sm text-left">
+      <table class="w-full border border-default border-collapse text-sm text-left">
         <thead
-          class="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 uppercase font-bold border-b border-gray-200 dark:border-gray-700"
+          class="bg-muted text-default uppercase font-bold border-b border-default"
         >
           <tr>
             <th class="px-4 py-3 w-10">
@@ -23,11 +23,11 @@
             </th>
           </tr>
         </thead>
-        <tbody class="border-b border-gray-200 dark:border-gray-800">
+        <tbody class="border-b border-default">
           <template v-for="(r, idx) in rows" :key="idx">
             <tr
               v-if="r.type === 'ECHO'"
-              class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group border-b border-gray-200 dark:border-gray-800"
+              class="hover:bg-muted group border-b border-default"
             >
               <td class="px-4 py-3 font-medium align-top pt-4">
                 {{ idx + 1 }}
@@ -35,7 +35,7 @@
               <td class="px-4 py-3 font-medium align-top pt-4">
                 <div class="flex flex-col">
                   <span>{{ r.name }}-{{ r.nameKh }}</span>
-                  <span v-if="r.category" class="text-xs text-gray-400 font-normal mt-0.5">{{
+                  <span v-if="r.category" class="text-xs text-dimmed font-normal mt-0.5">{{
                     r.category
                   }}</span>
                 </div>
@@ -68,10 +68,10 @@
           <tr v-if="!rows.some(r => r.type === 'ECHO')">
             <td
               colspan="5"
-              class="px-4 py-12 text-center text-gray-500 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-800/30"
+              class="px-4 py-12 text-center text-muted bg-muted/50"
             >
               <div class="flex flex-col items-center gap-3">
-                <UIcon name="i-lucide-activity" class="w-10 h-10 text-gray-300" />
+                <UIcon name="i-lucide-activity" class="w-10 h-10 text-dimmed" />
                 <span class="font-medium">No Echo services selected</span>
                 <span class="text-xs">Select services from the sidebar to add them here.</span>
               </div>

@@ -104,7 +104,7 @@ const quickActions = computed(() => [
         <h1 class="text-3xl font-bold">
           {{ t('nav.home') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           Dashboard Overview
         </p>
       </div>
@@ -127,7 +127,7 @@ const quickActions = computed(() => [
       >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-toned">
               {{ stat.title }}
             </p>
             <p class="text-2xl font-bold mt-1">
@@ -152,7 +152,7 @@ const quickActions = computed(() => [
         <div
           v-for="action in quickActions"
           :key="action.title"
-          class="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
+          class="flex flex-col items-center justify-center p-4 rounded-lg border border-default hover:bg-muted transition-colors cursor-pointer"
           @click="navigateTo(action.link)"
         >
           <div :class="`p-3 rounded-full bg-${action.color}-100 dark:bg-${action.color}-900/20 mb-2`">

@@ -7,7 +7,7 @@ provideSidebar(open, collapsed)
 </script>
 
 <template>
-  <div class="flex min-h-screen w-full bg-white dark:bg-gray-950">
+  <div class="flex min-h-screen w-full bg-default">
     <!-- Mobile Sidebar Backdrop -->
     <div v-if="open" class="fixed inset-0 z-40 bg-gray-950/25 backdrop-blur-sm lg:hidden" @click="open = false" />
 

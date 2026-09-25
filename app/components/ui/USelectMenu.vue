@@ -52,12 +52,12 @@ const currentLabel = computed(() => {
         <li
           v-for="it in filtered"
           :key="it.value"
-          class="p-2 hover:bg-gray-100 cursor-pointer"
+          class="p-2 hover:bg-elevated cursor-pointer"
           @click="select(it.value)"
         >
           {{ it.label }}
         </li>
-        <li v-if="!filtered.length" class="p-2 text-gray-400">
+        <li v-if="!filtered.length" class="p-2 text-dimmed">
           No results
         </li>
       </ul>

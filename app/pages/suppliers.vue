@@ -315,7 +315,7 @@ async function handleImport(event: Event) {
         </div>
       </template>
 
-      <div class="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-lg">
+      <div class="overflow-x-auto border border-default rounded-lg">
         <UTable
           :columns="columns"
           :data="suppliers"
@@ -323,7 +323,7 @@ async function handleImport(event: Event) {
           class="w-full"
           :ui="{
             td: 'py-1 px-4 text-sm',
-            th: 'py-1.5 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-left'
+            th: 'py-1.5 px-4 font-semibold text-sm bg-muted border-b border-default text-left'
           }"
         />
       </div>
@@ -331,7 +331,7 @@ async function handleImport(event: Event) {
       <template #footer>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <span class="text-sm text-gray-500">
+            <span class="text-sm text-muted">
               {{ t('pagination.total') || 'Total' }}: {{ total }}
             </span>
           </div>

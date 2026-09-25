@@ -1,8 +1,8 @@
 <template>
-  <UCard class="mt-4 bg-gray-50/50">
+  <UCard class="mt-4 bg-muted/50">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
       <div class="col-span-1">
-        <label class="khmer-label block text-sm mb-1 font-bold text-gray-700">Payment Method /
+        <label class="khmer-label block text-sm mb-1 font-bold text-default">Payment Method /
           ការបង់ប្រាក់</label>
         <USelectMenu
           :model-value="paymentMethod"
@@ -13,7 +13,7 @@
         />
       </div>
       <div class="col-span-1">
-        <label class="khmer-label block text-sm mb-1 font-bold text-gray-700">Amount Paid / ចំនួនប្រាក់</label>
+        <label class="khmer-label block text-sm mb-1 font-bold text-default">Amount Paid / ចំនួនប្រាក់</label>
         <UInput
           type="number"
           class="w-full"
@@ -22,7 +22,7 @@
         />
       </div>
       <div class="col-span-1 flex gap-3 justify-end items-center">
-        <div class="mr-auto text-lg font-bold text-gray-600 hidden md:block">
+        <div class="mr-auto text-lg font-bold text-toned hidden md:block">
           Total: <span class="text-primary-600">${{ grandTotal.toLocaleString() }}</span>
         </div>
         <UButton

@@ -103,7 +103,7 @@ function printReport() {
           <h1 class="text-2xl font-bold">
             {{ t('report.payrollSummary') }}
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-toned mt-1">
             Monthly payroll overview
           </p>
         </div>
@@ -115,7 +115,7 @@ function printReport() {
               class="w-36"
               @change="onDateChange"
             />
-            <span class="text-gray-500">-</span>
+            <span class="text-muted">-</span>
             <UInput
               v-model="dateRange.end"
               type="date"
@@ -139,7 +139,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Payroll
               </p>
               <p class="text-2xl font-bold mt-1">
@@ -154,7 +154,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Deductions
               </p>
               <p class="text-2xl font-bold mt-1 text-red-600">
@@ -169,7 +169,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Net Pay
               </p>
               <p class="text-2xl font-bold mt-1 text-green-600">
@@ -184,7 +184,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Employees
               </p>
               <p class="text-2xl font-bold mt-1">

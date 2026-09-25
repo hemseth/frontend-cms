@@ -222,11 +222,11 @@ function resetFilters() {
             <template #footer>
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <div class="flex items-center gap-2 text-sm text-muted">
                     {{ t('pagination.perPage') }}:
                     <USelectMenu v-model="limit" :items="[10, 20, 50, 100]" class="w-20" />
                   </div>
-                  <span class="text-sm text-gray-500">Total: {{ total }}</span>
+                  <span class="text-sm text-muted">Total: {{ total }}</span>
                 </div>
                 <div class="flex gap-2">
                   <UButton
@@ -259,7 +259,7 @@ function resetFilters() {
 
     <UModal v-model:open="isParamViewModalOpen" title="Service Parameters">
       <template #header>
-        <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
+        <h3 class="text-base font-semibold leading-6 text-highlighted">
           Parameters for {{ selectedService?.nameEn }}
         </h3>
       </template>
@@ -268,17 +268,17 @@ function resetFilters() {
           <div
             v-for="(p, i) in selectedService.parameters"
             :key="i"
-            class="flex items-center justify-between p-2 rounded border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900"
+            class="flex items-center justify-between p-2 rounded border border-default bg-muted"
           >
             <div>
               <div class="font-medium text-sm">
                 {{ p.labelEn }} <span
                   v-if="p.labelKh"
-                  class="text-gray-500"
+                  class="text-muted"
                 >({{
                   p.labelKh }})</span>
               </div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-muted">
                 Range: {{ p.refRange || 'N/A' }}
               </div>
             </div>
@@ -287,7 +287,7 @@ function resetFilters() {
             </UBadge>
           </div>
         </div>
-        <div v-else class="text-center py-8 text-gray-500 italic">
+        <div v-else class="text-center py-8 text-muted italic">
           No parameters defined for this service.
         </div>
       </div>

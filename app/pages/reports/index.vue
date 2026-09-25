@@ -83,7 +83,7 @@ const expandedCategories = ref<string[]>(['patientReports', 'financialReports'])
       <h1 class="text-2xl font-bold">
         {{ t('report.title') }}
       </h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">
+      <p class="text-toned mt-1">
         View, analyze and export clinic reports
       </p>
     </div>
@@ -92,10 +92,10 @@ const expandedCategories = ref<string[]>(['patientReports', 'financialReports'])
       <div
         v-for="category in reportCategories"
         :key="category.title"
-        class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+        class="border border-default rounded-lg overflow-hidden"
       >
         <div
-          class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 cursor-pointer"
+          class="flex items-center justify-between p-4 bg-muted cursor-pointer"
           @click="expandedCategories.includes(category.title)
             ? expandedCategories = expandedCategories.filter(c => c !== category.title)
             : expandedCategories.push(category.title)"
@@ -110,27 +110,27 @@ const expandedCategories = ref<string[]>(['patientReports', 'financialReports'])
           </div>
           <UIcon
             :name="expandedCategories.includes(category.title) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-            class="w-5 h-5 text-gray-400"
+            class="w-5 h-5 text-dimmed"
           />
         </div>
 
         <div
           v-show="expandedCategories.includes(category.title)"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 bg-white dark:bg-gray-900"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 bg-default"
         >
           <UCard
             v-for="report in category.reports"
             :key="report.title"
-            class="hover:shadow-md transition-shadow cursor-pointer border border-gray-100 dark:border-gray-800"
+            class="hover:shadow-md transition-shadow cursor-pointer border border-default"
             @click="navigateTo(report.link)"
           >
             <div class="flex items-center gap-3">
-              <UIcon :name="report.icon" class="w-5 h-5 text-gray-400" />
+              <UIcon :name="report.icon" class="w-5 h-5 text-dimmed" />
               <div>
                 <h3 class="font-medium text-sm">
                   {{ report.title }}
                 </h3>
-                <p class="text-xs text-gray-500 mt-0.5">
+                <p class="text-xs text-muted mt-0.5">
                   {{ report.description }}
                 </p>
               </div>

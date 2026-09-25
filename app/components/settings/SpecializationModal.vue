@@ -79,22 +79,22 @@ async function handleSave() {
       <div class="space-y-4">
         <div class="grid grid-cols-1 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('specialization.nameKh') }} *</label>
             <UInput v-model="state.nameKh" :placeholder="t('diagnosis.nameKhPlaceholder')" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('specialization.nameEn') }} *</label>
             <UInput v-model="state.nameEn" :placeholder="t('diagnosis.nameEnPlaceholder')" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('specialization.description') }}</label>
             <UTextarea v-model="state.description" :placeholder="t('common.optional')" class="w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('specialization.status') }}</label>
             <USelect v-model="state.status" :options="['active', 'inactive']" class="w-full" />
           </div>

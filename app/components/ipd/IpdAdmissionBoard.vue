@@ -54,23 +54,23 @@ onMounted(loadAdmissions)
         អ្នកជំងឺសម្រាកពេទ្យ / IPD
       </h2>
     </template>
-    <div v-if="loading" class="text-gray-500">
+    <div v-if="loading" class="text-muted">
       កំពុងទាញយក...
     </div>
-    <div v-else-if="!admissions.length" class="text-gray-500">
+    <div v-else-if="!admissions.length" class="text-muted">
       មិនមានអ្នកជំងឺកំពុងសម្រាកពេទ្យ
     </div>
     <div v-else class="space-y-3">
       <button
         v-for="item in admissions"
         :key="item._id"
-        class="w-full rounded border p-3 text-left hover:bg-gray-50"
+        class="w-full rounded border p-3 text-left hover:bg-muted"
         @click="selected = item"
       >
         <div class="font-medium">
           {{ item.admissionNumber }}
         </div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-muted">
           Patient: {{ item.patientId }} · {{ item.admissionReason }}
         </div>
       </button>

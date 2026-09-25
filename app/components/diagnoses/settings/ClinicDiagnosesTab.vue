@@ -197,7 +197,7 @@ function resetFilters() {
 
     <UCard>
       <div v-if="error" class="flex flex-col items-center gap-2 py-6">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-muted">
           {{ error }}
         </p>
         <UButton
@@ -221,17 +221,17 @@ function resetFilters() {
           :data="data"
           :loading="loading"
           class="w-full"
-          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900' }"
+          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-muted' }"
         >
           <template #empty>
-            <div class="py-10 text-center text-gray-500 dark:text-gray-400">
+            <div class="py-10 text-center text-muted">
               {{ t('diagnosisSettings.noResults') }}
             </div>
           </template>
           <template #nameKh-cell="{ row }">
             <div>
               <div>{{ row.original.display.nameKh || row.original.nameKh || '—' }}</div>
-              <div v-if="row.original.localNameKh" class="text-xs text-gray-400">
+              <div v-if="row.original.localNameKh" class="text-xs text-dimmed">
                 {{ t('diagnosisSettings.masterName') }}: {{ row.original.master.nameKh }}
               </div>
             </div>
@@ -239,7 +239,7 @@ function resetFilters() {
           <template #nameEn-cell="{ row }">
             <div>
               <div>{{ row.original.display.nameEn || row.original.nameEn || '—' }}</div>
-              <div v-if="row.original.localNameEn" class="text-xs text-gray-400">
+              <div v-if="row.original.localNameEn" class="text-xs text-dimmed">
                 {{ t('diagnosisSettings.masterName') }}: {{ row.original.master.nameEn }}
               </div>
             </div>
@@ -286,7 +286,7 @@ function resetFilters() {
 
       <template #footer>
         <div class="flex items-center justify-between">
-          <span class="text-sm text-gray-500">Total: {{ total }}</span>
+          <span class="text-sm text-muted">Total: {{ total }}</span>
           <div class="flex gap-2">
             <UButton icon="i-lucide-chevron-left" :disabled="page === 1" @click="page--" />
             <UButton trailing-icon="i-lucide-chevron-right" :disabled="page * limit >= total" @click="page++" />
@@ -305,7 +305,7 @@ function resetFilters() {
 
     <UModal v-model:open="removeModalOpen" :title="t('common.confirm')">
       <template #body>
-        <p class="text-gray-600 dark:text-gray-300">
+        <p class="text-toned">
           {{ t('diagnosisSettings.deleteConfirm') }}
         </p>
       </template>

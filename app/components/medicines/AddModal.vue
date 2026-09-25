@@ -250,10 +250,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <UIcon name="i-lucide-pill" class="text-primary-500 text-xl" />
             </div>
             <div>
-              <h2 class="text-base font-semibold text-gray-900 dark:text-white leading-tight">
+              <h2 class="text-base font-semibold text-highlighted leading-tight">
                 {{ medicine ? t('common.edit') : t('common.addNew') }}
               </h2>
-              <p v-if="!medicine" class="text-xs text-gray-400 mt-0.5">
+              <p v-if="!medicine" class="text-xs text-dimmed mt-0.5">
                 {{ t('medicine.addNew') }}
               </p>
             </div>
@@ -285,7 +285,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             class="flex flex-col items-center gap-1.5 min-w-0 rounded-lg px-1 py-2.5 transition-all duration-200 group"
             :class="index === activeStepIndex
               ? 'bg-primary-50 dark:bg-primary-950 ring-1 ring-primary-200 dark:ring-primary-800'
-              : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'"
+              : 'hover:bg-muted'"
             @click="activeStep = step.key"
           >
             <span
@@ -294,7 +294,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 ? 'bg-primary-500 text-white'
                 : index === activeStepIndex
                   ? 'bg-primary-500 text-white ring-2 ring-primary-200 dark:ring-primary-800'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-400 group-hover:text-gray-500'"
+                  : 'bg-elevated text-dimmed group-hover:text-muted'"
             >
               <UIcon v-if="index < activeStepIndex" name="i-lucide-check" class="size-4" />
               <UIcon v-else :name="step.icon" class="size-4" />
@@ -303,7 +303,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               class="w-full text-[11px] leading-tight font-medium truncate hidden sm:block"
               :class="index <= activeStepIndex
                 ? 'text-primary-700 dark:text-primary-300'
-                : 'text-gray-400 dark:text-gray-500'"
+                : 'text-dimmed'"
             >
               {{ step.label }}
             </span>
@@ -385,14 +385,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                     <button
                       v-for="opt in [
                         { value: 'active', label: t('common.active'), color: 'bg-primary-50 border-primary-300 text-primary-700 dark:bg-primary-950 dark:border-primary-800 dark:text-primary-300' },
-                        { value: 'inactive', label: t('common.inactive'), color: 'bg-gray-50 border-gray-200 text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300' }
+                        { value: 'inactive', label: t('common.inactive'), color: 'bg-muted border-default text-toned' }
                       ]"
                       :key="opt.value"
                       type="button"
                       class="flex-1 py-2.5 px-4 rounded-lg border text-sm font-medium transition-all"
                       :class="state.status === opt.value
                         ? opt.color + ' ring-1 ring-offset-0 ring-current'
-                        : 'bg-white border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-gray-700'"
+                        : 'bg-default border-default text-dimmed'"
                       @click="state.status = opt.value as 'active' | 'inactive'"
                     >
                       {{ opt.label }}
@@ -454,24 +454,24 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                   </div>
 
                   <div
-                    class="flex items-center justify-center gap-3 py-3 mb-4 rounded-lg bg-white dark:bg-gray-900 border border-blue-100 dark:border-blue-900"
+                    class="flex items-center justify-center gap-3 py-3 mb-4 rounded-lg bg-default border border-blue-100 dark:border-blue-900"
                   >
                     <div class="text-center">
-                      <div class="text-xl font-bold text-gray-700 dark:text-gray-200">
+                      <div class="text-xl font-bold text-default">
                         1
                       </div>
-                      <div class="text-xs text-gray-400 mt-0.5 capitalize">
+                      <div class="text-xs text-dimmed mt-0.5 capitalize">
                         {{ state.saleUnit || 'Sale Unit' }}
                       </div>
                     </div>
                     <div class="flex flex-col items-center gap-0.5">
-                      <UIcon name="i-lucide-equal" class="text-gray-300 text-xl" />
+                      <UIcon name="i-lucide-equal" class="text-dimmed text-xl" />
                     </div>
                     <div class="text-center">
                       <div class="text-xl font-bold text-blue-600 dark:text-blue-400">
                         {{ state.conversionRate }}
                       </div>
-                      <div class="text-xs text-gray-400 mt-0.5 capitalize">
+                      <div class="text-xs text-dimmed mt-0.5 capitalize">
                         {{ state.baseUnit || 'Base Unit' }}
                       </div>
                     </div>
@@ -518,7 +518,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       class="flex-1 py-2.5 rounded-lg border text-sm font-semibold transition-all"
                       :class="state.currency === cur
                         ? 'bg-primary-50 border-primary-300 text-primary-700 dark:bg-primary-950 dark:border-primary-700 dark:text-primary-300'
-                        : 'bg-white border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-gray-700 hover:border-gray-300'"
+                        : 'bg-default border-default text-dimmed hover:border-accented'"
                       @click="state.currency = cur"
                     >
                       {{ cur }}
@@ -526,9 +526,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                   </div>
                 </UFormField>
 
-                <div class="rounded-xl border border-gray-100 dark:border-gray-800 p-4 space-y-2">
+                <div class="rounded-xl border border-default p-4 space-y-2">
                   <div
-                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                    class="flex items-center gap-1.5 text-xs font-semibold text-muted uppercase tracking-wide"
                   >
                     <UIcon name="i-lucide-tag" class="text-base" />
                     {{ t('common.retail') }}
@@ -544,15 +544,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       :placeholder="'0.00'"
                     >
                       <template #trailing>
-                        <span class="text-gray-400 text-sm">{{ state.currency }}</span>
+                        <span class="text-dimmed text-sm">{{ state.currency }}</span>
                       </template>
                     </UInput>
                   </UFormField>
                 </div>
 
-                <div class="rounded-xl border border-gray-100 dark:border-gray-800 p-4 space-y-2">
+                <div class="rounded-xl border border-default p-4 space-y-2">
                   <div
-                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                    class="flex items-center gap-1.5 text-xs font-semibold text-muted uppercase tracking-wide"
                   >
                     <UIcon name="i-lucide-building-2" class="text-base" />
                     {{ t('common.wholesale') }}
@@ -568,7 +568,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                       :placeholder="'0.00'"
                     >
                       <template #trailing>
-                        <span class="text-gray-400 text-sm">{{ state.currency }}</span>
+                        <span class="text-dimmed text-sm">{{ state.currency }}</span>
                       </template>
                     </UInput>
                   </UFormField>
@@ -649,7 +649,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                     @update:model-value="(val: string) => state.sideEffects = val.split(',').map((s: string) => s.trim()).filter(Boolean)"
                   />
                   <template #hint>
-                    <span class="text-xs text-gray-400">Separate each side effect with a comma</span>
+                    <span class="text-xs text-dimmed">Separate each side effect with a comma</span>
                   </template>
                 </UFormField>
 
@@ -676,7 +676,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
         <!-- ── Footer (sticky) ─────────────────────────────────────────────── -->
         <div
-          class="shrink-0 sticky bottom-0 flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900"
+          class="shrink-0 sticky bottom-0 flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 border-t border-default bg-default"
         >
           <div class="flex items-center gap-1.5 ml-1 min-w-0">
             <button
@@ -686,7 +686,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               class="w-2 h-2 rounded-full transition-all shrink-0"
               :class="activeStepIndex === i
                 ? 'bg-primary-500 w-4'
-                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'"
+                : 'bg-accented hover:bg-gray-300 dark:hover:bg-gray-600'"
               @click="activeStep = tab.key"
             />
           </div>

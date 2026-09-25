@@ -287,13 +287,13 @@ const links = computed(() => {
 
 <template>
   <aside
-    class="flex flex-col border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 h-screen fixed lg:sticky top-0 z-50 transition-all duration-300 lg:translate-x-0"
+    class="flex flex-col border-r border-default bg-muted/50 h-screen fixed lg:sticky top-0 z-50 transition-all duration-300 lg:translate-x-0"
     :class="[
       isOpen ? 'translate-x-0' : '-translate-x-full',
       collapsed ? 'lg:w-16 px-2' : 'lg:w-64 px-4'
     ]"
   >
-    <div class="border-b border-gray-200 dark:border-gray-800 h-16 flex items-center justify-between overflow-hidden relative">
+    <div class="border-b border-default h-16 flex items-center justify-between overflow-hidden relative">
       <TeamsMenu :collapsed="collapsed" />
       <UButton
         variant="ghost"
@@ -321,7 +321,7 @@ const links = computed(() => {
       />
     </div>
 
-    <div class="py-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-4">
+    <div class="py-4 border-t border-default flex flex-col gap-4">
       <UserMenu :collapsed="collapsed" />
     </div>
   </aside>

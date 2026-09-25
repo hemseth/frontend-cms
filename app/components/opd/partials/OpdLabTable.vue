@@ -3,7 +3,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-sm text-left">
         <thead
-          class="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 uppercase font-bold border-b border-gray-200 dark:border-gray-700"
+          class="bg-muted text-default uppercase font-bold border-b border-default"
         >
           <tr>
             <th class="px-4 py-3 w-1/4">
@@ -20,17 +20,17 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-800 relative">
+        <tbody class="divide-y divide-default relative">
           <template v-for="(r, idx) in rows" :key="idx">
             <tr
               v-if="r.type === 'LAB'"
-              class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group"
-              :class="{ 'bg-gray-50 dark:bg-gray-800/50': expandedRowIndex === idx }"
+              class="hover:bg-muted group"
+              :class="{ 'bg-muted': expandedRowIndex === idx }"
             >
               <td class="px-4 py-3 font-medium align-top">
                 <div class="flex flex-col">
                   <span>{{ r.name }}</span>
-                  <span class="text-xs text-gray-500 mt-1">{{ r.category }}</span>
+                  <span class="text-xs text-muted mt-1">{{ r.category }}</span>
                 </div>
               </td>
               <td class="px-4 py-3 align-top">
@@ -46,7 +46,7 @@
                   >
                     {{ getResultStatus(r) === 'complete' ? t('common.completed') : t('common.pending') }}
                   </UBadge>
-                  <span class="text-xs text-gray-500">{{ r.parameters.length }} {{ t('common.qty') }}</span>
+                  <span class="text-xs text-muted">{{ r.parameters.length }} {{ t('common.qty') }}</span>
                   <UButton
                     :icon="expandedRowIndex === idx ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
                     :color="expandedRowIndex === idx ? 'primary' : 'neutral'"
@@ -64,7 +64,7 @@
                     autoresize
                     :placeholder="t('common.notes')"
                     class="w-full"
-                    :ui="{ base: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700' }"
+                    :ui="{ base: 'bg-default border-accented' }"
                   />
                 </div>
               </td>
@@ -100,25 +100,25 @@
             >
               <td
                 colspan="4"
-                class="p-0 border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30"
+                class="p-0 border-b border-default bg-muted/50"
               >
                 <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div
                     v-for="(param, pIdx) in r.parameters"
                     :key="pIdx"
-                    class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
+                    class="bg-default p-3 rounded-lg border border-default shadow-sm"
                   >
                     <div class="flex justify-between items-start mb-2">
                       <div>
                         <div class="font-medium text-sm">
                           {{ param.labelEn }}
                         </div>
-                        <div v-if="param.labelKh" class="text-xs text-gray-500 battambang">
+                        <div v-if="param.labelKh" class="text-xs text-muted battambang">
                           {{
                             param.labelKh }}
                         </div>
                       </div>
-                      <div class="text-xs text-gray-400 text-right">
+                      <div class="text-xs text-dimmed text-right">
                         <div v-if="param.unit">
                           {{ param.unit }}
                         </div>
@@ -146,10 +146,10 @@
           <tr v-if="!rows.some(r => r.type === 'LAB')">
             <td
               colspan="4"
-              class="px-4 py-12 text-center text-gray-500 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-800"
+              class="px-4 py-12 text-center text-muted bg-muted/50 border-b border-default"
             >
               <div class="flex flex-col items-center gap-3">
-                <UIcon name="i-lucide-flask-conical" class="w-10 h-10 text-gray-300" />
+                <UIcon name="i-lucide-flask-conical" class="w-10 h-10 text-dimmed" />
                 <span class="font-medium">{{ t("common.noLabTests") }}</span>
                 <span class="text-xs">{{ t("common.selectFromSidebar") }}</span>
               </div>

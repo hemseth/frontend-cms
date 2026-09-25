@@ -415,11 +415,11 @@ async function onSubmit() {
             </div>
 
             <!-- Clinical Safety & Allergies Section -->
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-3">
+            <div class="pt-3 border-t border-default space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <UIcon name="i-lucide-shield-alert" class="w-5 h-5 text-rose-500" />
-                  <span class="font-bold text-sm text-gray-800 dark:text-gray-200">
+                  <span class="font-bold text-sm text-highlighted">
                     ព័ត៌មានសុវត្ថិភាព និងប្រតិកម្មថ្នាំ (Drug Allergies)
                   </span>
                 </div>
@@ -435,7 +435,7 @@ async function onSubmit() {
 
               <!-- Selected Allergies Badges -->
               <div class="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/50 rounded-lg items-center">
-                <span v-if="!state.allergies || state.allergies.length === 0" class="text-xs text-gray-400 italic">
+                <span v-if="!state.allergies || state.allergies.length === 0" class="text-xs text-dimmed italic">
                   គ្មានប្រវត្តិប្រតិកម្មថ្នាំ (No known allergies recorded)
                 </span>
                 <span
@@ -473,7 +473,7 @@ async function onSubmit() {
                 </div>
 
                 <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">ថ្នាំប្រតិកម្មញឹកញាប់:</span>
+                  <span class="text-[11px] text-muted font-medium">ថ្នាំប្រតិកម្មញឹកញាប់:</span>
                   <button
                     v-for="item in commonAllergies"
                     :key="item"
@@ -481,7 +481,7 @@ async function onSubmit() {
                     class="text-[11px] px-2 py-0.5 rounded border transition-all"
                     :class="state.allergies?.includes(item)
                       ? 'bg-rose-500 border-rose-500 text-white font-bold'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:border-rose-400'"
+                      : 'bg-elevated text-default border-accented hover:border-rose-400'"
                     @click="toggleAllergy(item)"
                   >
                     {{ item }}
@@ -494,7 +494,7 @@ async function onSubmit() {
           <!-- Photo Side -->
           <div class="col-span-1 flex flex-col items-center gap-4">
             <div
-              class="w-full aspect-[3/3] max-w-[150px] border-2 border-dashed border-gray-600 rounded-xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative bg-gray-900/50 cursor-pointer hover:border-primary transition-colors"
+              class="w-full aspect-[3/3] max-w-[150px] border-2 border-dashed border-gray-600 rounded-xl flex flex-col items-center justify-center text-dimmed overflow-hidden relative bg-gray-900/50 cursor-pointer hover:border-primary transition-colors"
               @click="fileInput?.click()"
             >
               <template v-if="!state.photo">

@@ -1,8 +1,19 @@
 export default defineAppConfig({
   ui: {
+    // Clinical teal with cool slate greys. Status colours stay distinct from primary: success
+    // green, warning amber, error red, info sky.
+    colors: {
+      primary: 'teal',
+      secondary: 'sky',
+      success: 'green',
+      info: 'sky',
+      warning: 'amber',
+      error: 'red',
+      neutral: 'slate'
+    },
     breadcrumb: {
       slots: {
-        root: 'relative min-w-0 bg-gray-100 dark:bg-gray-800 rounded-md px-3 py-2',
+        root: 'relative min-w-0 bg-elevated rounded-md px-3 py-2',
         list: 'flex items-center gap-1.5',
         item: 'flex min-w-0',
         link: 'group relative flex items-center gap-1.5 text-sm min-w-0 focus-visible:outline-primary',
@@ -72,9 +83,9 @@ export default defineAppConfig({
     card: {
       slots: {
         root: 'rounded-lg overflow-hidden',
-        header: 'p-3 sm:px-3 py-2 bg-gray-50 dark:bg-gray-800',
+        header: 'p-3 sm:px-3 py-2 bg-muted',
         body: 'p-3 sm:p-3',
-        footer: 'p-3 sm:px-3 py-2 bg-gray-50 dark:bg-gray-800'
+        footer: 'p-3 sm:px-3 py-2 bg-muted'
       },
       variants: {
         variant: {

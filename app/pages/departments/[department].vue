@@ -78,7 +78,7 @@ const columns = [
             <h1 class="text-3xl font-bold">
               {{ departmentConfig.title }}
             </h1>
-            <p class="text-gray-600 dark:text-gray-400">
+            <p class="text-toned">
               {{ departmentConfig.description }}
             </p>
           </div>
@@ -100,7 +100,7 @@ const columns = [
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <UCard>
           <div class="text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-toned">
               Today's Visits
             </p>
             <p class="text-3xl font-bold mt-2">
@@ -110,7 +110,7 @@ const columns = [
         </UCard>
         <UCard>
           <div class="text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-toned">
               Total Visits
             </p>
             <p class="text-3xl font-bold mt-2">
@@ -120,7 +120,7 @@ const columns = [
         </UCard>
         <UCard>
           <div class="text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-toned">
               Active Patients
             </p>
             <p class="text-3xl font-bold mt-2">
@@ -141,7 +141,7 @@ const columns = [
           <div
             v-for="visit in todayVisits.data"
             :key="visit._id"
-            class="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer"
+            class="flex items-center justify-between p-3 rounded-lg border border-default hover:bg-muted cursor-pointer"
             @click="navigateTo(`/departments/${department}?visitId=${visit._id}&patientId=${visit.patientId}`)"
           >
             <div class="flex items-center gap-3">
@@ -150,7 +150,7 @@ const columns = [
                 <p class="font-medium">
                   {{ visit.patientName }}
                 </p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
+                <p class="text-sm text-toned">
                   {{ visit.diagnosis?.join(', ')
                     || 'No diagnosis' }}
                 </p>
@@ -162,7 +162,7 @@ const columns = [
             </UBadge>
           </div>
         </div>
-        <div v-else class="text-center py-8 text-gray-500">
+        <div v-else class="text-center py-8 text-muted">
           <UIcon :name="departmentConfig.icon" class="w-12 h-12 mx-auto mb-2 opacity-50" />
           <p>No visits for today</p>
         </div>
@@ -174,13 +174,13 @@ const columns = [
             All Visits
           </h2>
         </template>
-        <div class="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-lg">
+        <div class="overflow-x-auto border border-default rounded-lg">
           <UTable
             :columns="columns"
             :data="(visits as any)?.data || []"
             :loading="status === 'pending'"
             class="w-full"
-            :ui="{ td: 'py-3 px-4 text-sm', th: 'py-2 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-left' }"
+            :ui="{ td: 'py-3 px-4 text-sm', th: 'py-2 px-4 font-semibold text-sm bg-muted border-b border-default text-left' }"
           />
         </div>
       </UCard>

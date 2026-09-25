@@ -83,7 +83,7 @@ onMounted(() => {
         <h1 class="text-2xl font-bold">
           {{ t('report.dailyReport') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           {{ selectedDate }}
         </p>
       </div>
@@ -103,7 +103,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Patients
             </p>
             <p class="text-3xl font-bold mt-1">
@@ -119,7 +119,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               New Patients
             </p>
             <p class="text-3xl font-bold mt-1 text-green-600">
@@ -135,7 +135,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               {{ t('visit.title') }}
             </p>
             <p class="text-3xl font-bold mt-1">
@@ -151,7 +151,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Collection Rate
             </p>
             <p class="text-3xl font-bold mt-1 text-primary-600">
@@ -170,7 +170,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Billed
             </p>
             <p class="text-2xl font-bold mt-1">
@@ -186,7 +186,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Collected
             </p>
             <p class="text-2xl font-bold mt-1 text-green-600">
@@ -202,7 +202,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Balance Due
             </p>
             <p class="text-2xl font-bold mt-1 text-red-600">
@@ -229,7 +229,7 @@ onMounted(() => {
           <p class="text-3xl font-bold">
             {{ stats.byDepartment.opd }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             {{ t('nav.opd') }}
           </p>
         </div>
@@ -238,7 +238,7 @@ onMounted(() => {
           <p class="text-3xl font-bold">
             {{ stats.byDepartment.ipd }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             {{ t('nav.ipd') }}
           </p>
         </div>
@@ -247,7 +247,7 @@ onMounted(() => {
           <p class="text-3xl font-bold">
             {{ stats.byDepartment.laboratory }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             {{ t('nav.lab') }}
           </p>
         </div>
@@ -256,7 +256,7 @@ onMounted(() => {
           <p class="text-3xl font-bold">
             {{ stats.byDepartment.pharmacy }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             {{ t('nav.pharmacy') }}
           </p>
         </div>

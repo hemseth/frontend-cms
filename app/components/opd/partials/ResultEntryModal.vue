@@ -2,7 +2,7 @@
   <UModal v-model:open="isOpen" :title="`Enter Results: ${service?.name}`">
     <template #header>
       <div class="flex items-center justify-between">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
+        <h3 class="text-base font-semibold leading-6 text-highlighted">
           Enter Results: {{ service?.name }}
         </h3>
         <UBadge color="primary" variant="soft">
@@ -16,7 +16,7 @@
         <div
           v-for="(param, idx) in service?.parameters"
           :key="idx"
-          class="p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50"
+          class="p-3 border border-default rounded-lg bg-muted"
         >
           <div class="flex flex-col gap-2">
             <div class="flex items-start justify-between">
@@ -24,11 +24,11 @@
                 <div class="font-medium text-sm">
                   {{ param.labelEn }}
                 </div>
-                <div v-if="param.labelKh" class="text-xs text-gray-500 battambang">
+                <div v-if="param.labelKh" class="text-xs text-muted battambang">
                   {{ param.labelKh }}
                 </div>
               </div>
-              <div class="text-xs text-gray-400 text-right">
+              <div class="text-xs text-dimmed text-right">
                 <div v-if="param.unit">
                   Unit: {{ param.unit }}
                 </div>

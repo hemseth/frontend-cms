@@ -64,7 +64,7 @@ function next() { if (page.value < totalPages.value) page.value++ }
         <h3 class="text-lg font-semibold">
           Search Patient
         </h3>
-        <button class="text-gray-600" @click="close">
+        <button class="text-toned" @click="close">
           ✕
         </button>
       </div>
@@ -93,7 +93,7 @@ function next() { if (page.value < totalPages.value) page.value++ }
 
       <div class="overflow-auto">
         <table class="w-full border-collapse">
-          <thead class="bg-gray-100">
+          <thead class="bg-elevated">
             <tr>
               <th class="p-2 text-left">
                 Patient ID
@@ -142,7 +142,7 @@ function next() { if (page.value < totalPages.value) page.value++ }
       </div>
 
       <div class="flex items-center justify-between mt-3">
-        <div class="text-sm text-gray-600">
+        <div class="text-sm text-toned">
           Showing page {{ page }} / {{ totalPages }}
         </div>
         <div class="flex gap-2">

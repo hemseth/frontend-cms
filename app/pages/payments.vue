@@ -111,7 +111,7 @@ function viewPayment(payment: any) {
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Payment ID
               </p>
               <p class="font-semibold">
@@ -119,7 +119,7 @@ function viewPayment(payment: any) {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Amount
               </p>
               <p class="font-semibold">
@@ -127,7 +127,7 @@ function viewPayment(payment: any) {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Patient ID
               </p>
               <p class="font-semibold">
@@ -135,7 +135,7 @@ function viewPayment(payment: any) {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Visit ID
               </p>
               <p class="font-semibold">
@@ -143,7 +143,7 @@ function viewPayment(payment: any) {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Method
               </p>
               <p class="font-semibold">
@@ -151,7 +151,7 @@ function viewPayment(payment: any) {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Source
               </p>
               <p class="font-semibold">
@@ -161,12 +161,12 @@ function viewPayment(payment: any) {
           </div>
 
           <div v-if="selectedPayment.items && selectedPayment.items.length">
-            <p class="text-sm text-gray-500 mb-2">
+            <p class="text-sm text-muted mb-2">
               Items
             </p>
             <div class="border rounded-lg overflow-hidden">
               <table class="w-full">
-                <thead class="bg-gray-50">
+                <thead class="bg-muted">
                   <tr>
                     <th class="px-4 py-2 text-left text-sm font-medium">
                       Name
@@ -203,7 +203,7 @@ function viewPayment(payment: any) {
           </div>
 
           <div v-if="selectedPayment.notes">
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Notes
             </p>
             <p class="mt-1">

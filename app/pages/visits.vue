@@ -230,13 +230,13 @@ async function handleSave() {
               :ui="{ td: 'py-1', th: 'py-1.5' }"
             />
 
-            <div class="mt-auto flex items-center justify-between py-4 border-t border-gray-200 dark:border-gray-800">
+            <div class="mt-auto flex items-center justify-between py-4 border-t border-default">
               <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 text-sm text-gray-500">
+                <div class="flex items-center gap-2 text-sm text-muted">
                   {{ t('pagination.perPage') }}:
                   <USelectMenu v-model="limit" :items="[10, 20, 50, 100]" class="w-20" />
                 </div>
-                <span class="text-sm text-gray-500">Total: {{ total }}</span>
+                <span class="text-sm text-muted">Total: {{ total }}</span>
               </div>
               <div class="flex gap-2">
                 <UButton

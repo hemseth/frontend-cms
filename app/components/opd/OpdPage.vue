@@ -517,20 +517,20 @@ function handleCopyPastMedications(meds: any[]) {
     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 items-start md:overflow-hidden pb-4">
       <!-- Left: Tabs -->
       <div
-        class="col-span-1 md:col-span-9 flex flex-col h-full bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden"
+        class="col-span-1 md:col-span-9 flex flex-col h-full bg-default rounded-lg shadow-sm border border-default overflow-hidden"
       >
         <!-- Diagnosis Control (Left Side) -->
         <OpdDiagnosisControls v-model="diagnosis" />
 
         <!-- Custom Rounded Tab Header -->
-        <div class="flex items-center gap-1.5 p-2 bg-gray-50/80 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
+        <div class="flex items-center gap-1.5 p-2 bg-muted/80 border-b border-default overflow-x-auto">
           <button
             v-for="(tab, index) in mainTabs"
             :key="tab.value"
             class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all outline-none focus:outline-none flex items-center gap-2 shrink-0"
             :class="activeTab === tab.value
               ? 'bg-primary-500 text-white shadow-sm font-bold'
-              : 'bg-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-200/60 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+              : 'bg-transparent text-toned hover:bg-accented/60 hover:text-highlighted'"
             @click="activeTab = tab.value"
           >
             <UIcon :name="tab.icon" class="w-4 h-4" />
@@ -632,7 +632,7 @@ function handleCopyPastMedications(meds: any[]) {
       }"
     >
       <template #body>
-        <p class="text-gray-600 dark:text-gray-300">
+        <p class="text-toned">
           This item has already been saved to the database. Removing it will flag it for deletion upon your next Save.
           <br><br>
           Are you sure you want to remove it?
@@ -663,19 +663,19 @@ function handleCopyPastMedications(meds: any[]) {
         <div class="space-y-4 p-1">
           <div class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg flex items-start gap-3">
             <UIcon name="i-lucide-shield-alert" class="w-8 h-8 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-            <div class="text-sm space-y-1.5 text-gray-800 dark:text-gray-200">
+            <div class="text-sm space-y-1.5 text-highlighted">
               <div class="font-bold text-rose-600 dark:text-rose-400 text-base">
                 អ្នកជំងឺមានប្រវត្តិប្រតិកម្មជាមួយ: {{ allergyConflictReason }}
               </div>
               <div>
-                ថ្នាំដែលអ្នករៀបនឹងចេញ: <span class="font-bold text-gray-900 dark:text-white">{{ pendingAllergicMed?.med?.nameEn }} ({{ pendingAllergicMed?.med?.nameKh || 'N/A' }})</span>
+                ថ្នាំដែលអ្នករៀបនឹងចេញ: <span class="font-bold text-highlighted">{{ pendingAllergicMed?.med?.nameEn }} ({{ pendingAllergicMed?.med?.nameKh || 'N/A' }})</span>
               </div>
               <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">
                 ការចេញវេជ្ជបញ្ជាប៉ះចំថ្នាំដែលអ្នកជំងឺមានប្រតិកម្ម អាចបណ្តាលឱ្យមានគ្រោះថ្នាក់ធ្ងន់ធ្ងរ (Severe Allergic Reaction / Anaphylaxis)!
               </p>
             </div>
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-muted">
             តើលោកអ្នកពិតជាចង់បន្តចេញវេជ្ជបញ្ជាថ្នាំនេះដោយមានការត្រួតពិនិត្យជាពិសេស (Clinical Override) មែនទេ?
           </p>
         </div>

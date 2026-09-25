@@ -69,7 +69,7 @@ function printReport() {
           <h1 class="text-2xl font-bold">
             {{ t('report.employeeList') }}
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-toned mt-1">
             Staff directory
           </p>
         </div>
@@ -90,7 +90,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Staff
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -105,7 +105,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Doctors
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -120,7 +120,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Nurses
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -135,7 +135,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Active
               </p>
               <p class="text-3xl font-bold mt-1 text-green-600">

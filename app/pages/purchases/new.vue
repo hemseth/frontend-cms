@@ -38,7 +38,7 @@ function triggerSave() {
             variant="ghost"
             @click="onCancel"
           />
-          <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <h1 class="text-2xl font-bold tracking-tight text-highlighted">
             {{ t('purchase.add') }}
           </h1>
         </div>
@@ -51,7 +51,7 @@ function triggerSave() {
       </div>
     </div>
 
-    <div class="flex-1 min-h-0 bg-gray-50 dark:bg-gray-950/50 rounded-xl border dark:border-gray-800 p-2 overflow-hidden shadow-sm">
+    <div class="flex-1 min-h-0 bg-muted rounded-xl border dark:border-gray-800 p-2 overflow-hidden shadow-sm">
       <PurchasesPurchaseForm ref="purchaseFormRef" @success="onSuccess" @cancel="onCancel" />
     </div>
   </div>

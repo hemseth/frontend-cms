@@ -69,7 +69,7 @@ async function confirmDelete() {
 
     <UCard>
       <div v-if="error" class="flex flex-col items-center gap-2 py-6">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-muted">
           {{ error }}
         </p>
         <UButton
@@ -93,10 +93,10 @@ async function confirmDelete() {
           :data="groups"
           :loading="loading"
           class="w-full"
-          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900' }"
+          :ui="{ td: 'py-1.5 px-4 text-sm', th: 'py-1.5 px-4 font-semibold text-sm bg-muted' }"
         >
           <template #empty>
-            <div class="py-10 text-center text-gray-500 dark:text-gray-400">
+            <div class="py-10 text-center text-muted">
               {{ t('diagnosisSettings.noResults') }}
             </div>
           </template>
@@ -134,7 +134,7 @@ async function confirmDelete() {
 
     <UModal v-model:open="deleteModalOpen" :title="t('common.confirm')">
       <template #body>
-        <p class="text-gray-600 dark:text-gray-300">
+        <p class="text-toned">
           {{ t('diagnosisSettings.groupDeleteConfirm') }}
         </p>
       </template>

@@ -200,9 +200,9 @@ async function onSubmit() {
           </UFormField>
         </div>
 
-        <div class="space-y-4 border p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+        <div class="space-y-4 border p-4 rounded-lg bg-muted">
           <div class="flex items-center justify-between">
-            <h3 class="font-medium text-sm text-gray-700 dark:text-gray-200">
+            <h3 class="font-medium text-sm text-default">
               Parameters / Sub-Tests
             </h3>
             <div class="flex gap-2">
@@ -229,7 +229,7 @@ async function onSubmit() {
             <div
               v-for="(param, idx) in state.parameters"
               :key="idx"
-              class="flex flex-col gap-2 p-3 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800"
+              class="flex flex-col gap-2 p-3 bg-default rounded border border-default"
             >
               <div class="flex gap-2">
                 <UFormField label="Label (EN)" class="flex-1">
@@ -257,7 +257,7 @@ async function onSubmit() {
                 </div>
               </div>
             </div>
-            <div v-if="state.parameters.length === 0" class="text-center text-sm text-gray-500 py-4">
+            <div v-if="state.parameters.length === 0" class="text-center text-sm text-muted py-4">
               No parameters added. Result will be free text.
             </div>
           </div>
@@ -288,7 +288,7 @@ async function onSubmit() {
     </template>
     <div class="p-4 space-y-4 max-h-[400px] overflow-y-auto">
       <div v-for="(items, group) in labPresets" :key="group">
-        <h4 class="font-bold text-sm uppercase text-gray-500 mb-2">
+        <h4 class="font-bold text-sm uppercase text-muted mb-2">
           {{ group }}
         </h4>
         <div class="grid grid-cols-1 gap-2">

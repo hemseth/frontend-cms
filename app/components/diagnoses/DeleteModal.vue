@@ -53,11 +53,11 @@ async function handleDelete() {
           <p class="font-medium">
             {{ diagnosis.nameEn }} / {{ diagnosis.nameKh }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-muted">
             Code: {{ diagnosis.code }}
           </p>
         </div>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-muted">
           This action cannot be undone.
         </p>
       </div>

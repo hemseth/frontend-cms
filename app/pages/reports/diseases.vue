@@ -75,7 +75,7 @@ function printReport() {
           <h1 class="text-2xl font-bold">
             {{ t('report.topDiseases') }}
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-toned mt-1">
             Most common diagnoses
           </p>
         </div>
@@ -87,7 +87,7 @@ function printReport() {
               class="w-36"
               @change="onDateChange"
             />
-            <span class="text-gray-500">-</span>
+            <span class="text-muted">-</span>
             <UInput
               v-model="dateRange.end"
               type="date"
@@ -111,7 +111,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Diagnoses
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -126,7 +126,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Unique Diseases
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -141,7 +141,7 @@ function printReport() {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Top Disease
               </p>
               <p class="text-lg font-bold mt-1 truncate">
@@ -173,9 +173,9 @@ function printReport() {
             <div class="flex-1">
               <div class="flex justify-between mb-1">
                 <span class="font-medium">{{ disease.name }}</span>
-                <span class="text-gray-500">{{ disease.count }} cases</span>
+                <span class="text-muted">{{ disease.count }} cases</span>
               </div>
-              <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-3 bg-accented rounded-full overflow-hidden">
                 <div
                   class="h-full bg-primary-500 rounded-full transition-all"
                   :style="{ width: `${(disease.count / maxCount) * 100}%` }"
@@ -183,7 +183,7 @@ function printReport() {
               </div>
             </div>
           </div>
-          <div v-if="!diseasesData.length && !isLoading" class="text-center text-gray-500 py-8">
+          <div v-if="!diseasesData.length && !isLoading" class="text-center text-muted py-8">
             {{ t('report.noData') }}
           </div>
         </div>

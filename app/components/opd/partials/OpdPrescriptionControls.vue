@@ -128,9 +128,9 @@ function onKeydown(e: KeyboardEvent) {
         >
           <template #item="{ item }">
             <div class="flex flex-col text-left min-w-0">
-              <span class="font-medium text-sm text-gray-800 dark:text-gray-200 truncate">{{ item.nameEn
+              <span class="font-medium text-sm text-highlighted truncate">{{ item.nameEn
               }}</span>
-              <span v-if="item.nameKh" class="text-xs text-gray-500 dark:text-gray-400 truncate">{{
+              <span v-if="item.nameKh" class="text-xs text-muted truncate">{{
                 item.nameKh }}</span>
             </div>
           </template>
@@ -148,9 +148,9 @@ function onKeydown(e: KeyboardEvent) {
         >
           <template #item="{ item }">
             <div class="flex flex-col text-left min-w-0">
-              <span class="font-medium text-sm text-gray-800 dark:text-gray-200 truncate">{{ item.nameEn
+              <span class="font-medium text-sm text-highlighted truncate">{{ item.nameEn
               }}</span>
-              <span v-if="item.nameKh" class="text-xs text-gray-500 dark:text-gray-400 truncate">{{
+              <span v-if="item.nameKh" class="text-xs text-muted truncate">{{
                 item.nameKh }}</span>
             </div>
           </template>
@@ -178,31 +178,31 @@ function onKeydown(e: KeyboardEvent) {
 
       <div
         v-else-if="filteredMedicines.length === 0"
-        class="flex-1 flex flex-col items-center justify-center text-gray-400"
+        class="flex-1 flex flex-col items-center justify-center text-dimmed"
       >
         <UIcon name="i-lucide-search-x" class="w-12 h-12 mb-2 opacity-50" />
         <span class="text-sm">{{ t('common.noData') }}</span>
       </div>
 
-      <div v-else class="flex-1 min-h-0 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+      <div v-else class="flex-1 min-h-0 overflow-y-auto border border-default rounded-lg">
         <div
           v-for="m in filteredMedicines"
           :key="m._id"
-          class="p-3 hover:bg-primary-50 dark:hover:bg-primary-900/20 cursor-pointer border-b border-gray-100 dark:border-gray-800 last:border-b-0 transition-colors"
+          class="p-3 hover:bg-primary-50 dark:hover:bg-primary-900/20 cursor-pointer border-b border-default last:border-b-0 transition-colors"
           @click="addMedicine(m._id, Number(medQty) || 1)"
         >
           <div class="flex justify-between items-start gap-2">
             <div class="flex-1 min-w-0">
-              <div class="font-medium text-sm text-gray-800 dark:text-gray-200 truncate">
+              <div class="font-medium text-sm text-highlighted truncate">
                 {{ m.nameEn }}
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
+              <div class="text-xs text-muted truncate">
                 {{ m.nameKh || '-' }}
               </div>
             </div>
             <div class="flex flex-col items-end gap-1">
               <span class="text-sm font-bold text-green-600 dark:text-green-400">${{ m.price }}</span>
-              <span class="text-xs text-gray-400">{{ m.code }}</span>
+              <span class="text-xs text-dimmed">{{ m.code }}</span>
             </div>
           </div>
         </div>

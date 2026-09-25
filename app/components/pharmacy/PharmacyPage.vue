@@ -286,18 +286,18 @@ function clearForm() {
               <div
                 v-for="p in searchResults"
                 :key="p._id || p.id"
-                class="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer border-b last:border-b-0"
+                class="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0"
                 @click="selectPatient(p)"
               >
                 <div class="font-medium">
                   {{ p.nameEn || p.nameKh }}
                 </div>
-                <div class="text-xs text-gray-500">
+                <div class="text-xs text-muted">
                   {{ p.phone || '-' }} | {{ p.pId || p.id }}
                 </div>
               </div>
             </div>
-            <div v-else-if="patientSearch && !isPatientSearching" class="text-center text-gray-500 text-sm py-4">
+            <div v-else-if="patientSearch && !isPatientSearching" class="text-center text-muted text-sm py-4">
               {{ t('patient.notFound') || 'No patients found' }}
             </div>
           </div>
@@ -308,7 +308,7 @@ function clearForm() {
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-muted">
                   {{ t('patient.id') }}
                 </div>
                 <div class="font-mono font-medium">
@@ -325,7 +325,7 @@ function clearForm() {
             </div>
 
             <div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-muted">
                 {{ t('patient.name') }}
               </div>
               <div class="font-medium">
@@ -335,13 +335,13 @@ function clearForm() {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-muted">
                   {{ t('patient.gender') }}
                 </div>
                 <div>{{ patientGender }}</div>
               </div>
               <div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-muted">
                   {{ t('patient.dob') }}
                 </div>
                 <div>{{ patientDob || '-' }}</div>
@@ -363,13 +363,13 @@ function clearForm() {
         </template>
         <div class="space-y-3">
           <div>
-            <label class="text-xs text-gray-500">{{ t('visit.date') || 'Date' }}</label>
+            <label class="text-xs text-muted">{{ t('visit.date') || 'Date' }}</label>
             <p class="font-medium">
               {{ new Date().toLocaleDateString() }}
             </p>
           </div>
           <div>
-            <label class="text-xs text-gray-500">{{ t('payment.method') || 'Payment Method' }}</label>
+            <label class="text-xs text-muted">{{ t('payment.method') || 'Payment Method' }}</label>
             <USelectMenu
               v-model="paymentMethod"
               :items="paymentMethods"
@@ -385,12 +385,12 @@ function clearForm() {
     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 items-start md:overflow-hidden pb-4">
       <!-- Left: Prescription Table -->
       <div
-        class="col-span-1 md:col-span-9 flex flex-col h-full bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden"
+        class="col-span-1 md:col-span-9 flex flex-col h-full bg-default rounded-lg shadow-sm border border-default overflow-hidden"
       >
         <!-- Diagnosis Control -->
         <OpdDiagnosisControls v-model="diagnosis" :options="diagnosisOptions" />
 
-        <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+        <div class="p-4 border-b border-default">
           <h3 class="text-lg font-semibold">
             {{ t('nav.prescriptions') || 'Prescriptions' }}
           </h3>
@@ -421,11 +421,11 @@ function clearForm() {
     </div>
 
     <!-- Fixed Bottom Footer -->
-    <div class="sticky bottom-0 z-50 -mx-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4">
+    <div class="sticky bottom-0 z-50 -mx-2 bg-default border-t border-default p-4">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
           <div class="text-sm">
-            <span class="text-gray-500">{{ t('common.total') || 'Total' }}:</span>
+            <span class="text-muted">{{ t('common.total') || 'Total' }}:</span>
             <span class="text-2xl font-bold ml-2">${{ grandTotal.toFixed(2) }}</span>
           </div>
           <div class="text-sm">
@@ -435,7 +435,7 @@ function clearForm() {
               :step="0.01"
               class="w-32"
             />
-            <span class="text-gray-500 ml-2">{{ t('common.discount') || 'Discount' }}</span>
+            <span class="text-muted ml-2">{{ t('common.discount') || 'Discount' }}</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -471,7 +471,7 @@ function clearForm() {
     <!-- Delete Confirmation Modal -->
     <UModal v-model:open="isDeleteModalOpen" :title="t('common.remove') || 'Remove Item?'" :ui="{ title: 'text-red-500' }">
       <template #body>
-        <p class="text-gray-600 dark:text-gray-300">
+        <p class="text-toned">
           {{ t('patient.deleteConfirm') || 'This item has been saved. Removing it will flag it for deletion on next save.' }}
         </p>
       </template>

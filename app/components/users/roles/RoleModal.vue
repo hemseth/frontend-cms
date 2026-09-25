@@ -142,7 +142,7 @@ async function handleSave() {
         <div class="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Role ID
+              <label class="block text-sm font-medium text-default mb-1">Role ID
                 *</label>
               <UInput
                 v-model.number="state.roleId"
@@ -152,25 +152,25 @@ async function handleSave() {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Slug
+              <label class="block text-sm font-medium text-default mb-1">Slug
                 *</label>
               <UInput v-model="state.roleSlug" placeholder="doctor" class="w-full" />
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameKh') }} *</label>
             <UInput v-model="state.nameKh" placeholder="វេជ្ជបណ្ឌិត" class="w-full" />
           </div>
             <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.nameEn') }} *</label>
             <UInput v-model="state.nameEn" placeholder="Doctor" class="w-full" />
           </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('settings.permissions') }}</label>
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               <section
@@ -199,7 +199,7 @@ async function handleSave() {
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
+            <label class="block text-sm font-medium text-default mb-1">{{
               t('common.description') }}</label>
             <UTextarea v-model="state.description" placeholder="Optional description..." class="w-full" />
           </div>

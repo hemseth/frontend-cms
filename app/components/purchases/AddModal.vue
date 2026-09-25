@@ -295,7 +295,7 @@ function handleOpenChange(open: boolean) {
             />
           </div>
 
-          <div v-if="form.items.length === 0" class="text-center py-4 text-gray-500">
+          <div v-if="form.items.length === 0" class="text-center py-4 text-muted">
             {{ t('purchase.noItems') }}
           </div>
         </div>

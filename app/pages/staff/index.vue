@@ -431,7 +431,7 @@ async function handleImport(event: Event) {
         </div>
       </template>
 
-      <div class="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-lg">
+      <div class="overflow-x-auto border border-default rounded-lg">
         <UTable
           :columns="columns"
           :data="staff"
@@ -439,7 +439,7 @@ async function handleImport(event: Event) {
           class="w-full"
           :ui="{
             td: 'py-1 px-4 text-sm',
-            th: 'py-1.5 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-left'
+            th: 'py-1.5 px-4 font-semibold text-sm bg-muted border-b border-default text-left'
           }"
         />
       </div>
@@ -448,10 +448,10 @@ async function handleImport(event: Event) {
         <div class="flex items-center justify-between px-4">
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-500 whitespace-nowrap">{{ t('pagination.perPage') }}:</span>
+              <span class="text-sm text-muted whitespace-nowrap">{{ t('pagination.perPage') }}:</span>
               <USelectMenu v-model="limit" :items="[10, 20, 50, 100]" class="w-20" />
             </div>
-            <span class="text-sm text-gray-500">Total: {{ total }}</span>
+            <span class="text-sm text-muted">Total: {{ total }}</span>
           </div>
           <div class="flex gap-2">
             <UButton

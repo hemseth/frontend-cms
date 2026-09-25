@@ -173,7 +173,7 @@ async function handleSave() {
       <div class="min-h-full flex flex-col">
         <div class="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 content-start">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Select Staff
+            <label class="block text-sm font-medium text-default mb-1">Select Staff
               *</label>
             <USelectMenu
               v-model="state.staffId"
@@ -187,12 +187,12 @@ async function handleSave() {
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:col-span-2">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Login
+              <label class="block text-sm font-medium text-default mb-1">Login
                 Username *</label>
               <UInput v-model="state.username" placeholder="john_doe" class="w-full" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Email</label>
+              <label class="block text-sm font-medium text-default mb-1">Email</label>
               <UInput
                 v-model="state.email"
                 type="email"
@@ -202,7 +202,7 @@ async function handleSave() {
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Password {{ user
+            <label class="block text-sm font-medium text-default mb-1">Password {{ user
               ? '(Leave blank to keep same)' : '*' }}</label>
             <UInput
               v-model="state.password"
@@ -212,7 +212,7 @@ async function handleSave() {
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">System Role
+            <label class="block text-sm font-medium text-default mb-1">System Role
               *</label>
             <USelect
               v-model="state.role"
@@ -224,7 +224,7 @@ async function handleSave() {
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Account Status</label>
+            <label class="block text-sm font-medium text-default mb-1">Account Status</label>
             <USelect
               v-model="state.active"
               :items="[{ label: 'Active', value: 1 }, { label: 'Inactive', value: 0 }]"
@@ -234,7 +234,7 @@ async function handleSave() {
             />
           </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Override
+            <label class="block text-sm font-medium text-default mb-1">Override
               Permissions (Role
               defaults assigned auto)</label>
             <div class="mt-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

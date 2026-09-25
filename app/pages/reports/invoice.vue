@@ -98,7 +98,7 @@ function printInvoice() {
         <h1 class="text-2xl font-bold">
           {{ t('report.invoiceReport') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           Patient invoice and billing details
         </p>
       </div>
@@ -143,7 +143,7 @@ function printInvoice() {
                   <h2 class="text-xl font-bold">
                     INVOICE
                   </h2>
-                  <p class="text-gray-600">
+                  <p class="text-toned">
                     {{ invoiceData.invoiceNumber }}
                   </p>
                 </div>
@@ -151,10 +151,10 @@ function printInvoice() {
                   <p class="font-medium">
                     {{ t('report.clinicInfo') }}
                   </p>
-                  <p class="text-sm text-gray-500">
+                  <p class="text-sm text-muted">
                     {{ clinicDisplayName }}
                   </p>
-                  <p class="text-sm text-gray-500">
+                  <p class="text-sm text-muted">
                     {{ clinicAddress }}
                   </p>
                 </div>
@@ -164,7 +164,7 @@ function printInvoice() {
               </div>
             </div>
 
-            <div class="patient-info mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div class="patient-info mb-6 p-4 bg-muted rounded-lg">
               <h3 class="font-semibold mb-2">
                 Bill To:
               </h3>
@@ -222,7 +222,7 @@ function printInvoice() {
             </div>
 
             <div class="mt-6 pt-6 border-t">
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 <strong>Payment Method:</strong> {{ invoiceData.paymentMethod?.toUpperCase() || 'CASH' }}
               </p>
             </div>
@@ -232,8 +232,8 @@ function printInvoice() {
     </template>
 
     <UCard v-else-if="!isLoading && !invoiceData" class="text-center py-12">
-      <UIcon name="i-lucide-file-text" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-      <p class="text-gray-500">
+      <UIcon name="i-lucide-file-text" class="w-16 h-16 text-dimmed mx-auto mb-4" />
+      <p class="text-muted">
         Select an invoice to view
       </p>
     </UCard>

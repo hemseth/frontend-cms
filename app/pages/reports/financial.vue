@@ -98,14 +98,14 @@ onMounted(() => {
         <h1 class="text-2xl font-bold">
           {{ t('report.financialReport') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           Financial overview and analytics
         </p>
       </div>
       <div class="flex items-center gap-4 no-print">
         <div class="flex items-center gap-2">
           <UInput v-model="dateRange.start" type="date" />
-          <span class="text-gray-500">-</span>
+          <span class="text-muted">-</span>
           <UInput v-model="dateRange.end" type="date" />
         </div>
         <UButton icon="i-lucide-refresh-cw" :loading="isLoading" @click="fetchFinancialStats">
@@ -122,7 +122,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Revenue
             </p>
             <p class="text-3xl font-bold mt-1 text-green-600">
@@ -138,7 +138,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Expenses
             </p>
             <p class="text-3xl font-bold mt-1 text-red-600">
@@ -154,7 +154,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Net Profit
             </p>
             <p class="text-3xl font-bold mt-1" :class="stats.netProfit >= 0 ? 'text-primary-600' : 'text-red-600'">
@@ -170,7 +170,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Profit Margin
             </p>
             <p class="text-3xl font-bold mt-1" :class="profitMargin >= 0 ? 'text-green-600' : 'text-red-600'">
@@ -189,7 +189,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Billed
             </p>
             <p class="text-2xl font-bold mt-1">
@@ -205,7 +205,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Total Collected
             </p>
             <p class="text-2xl font-bold mt-1 text-green-600">
@@ -221,13 +221,13 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Outstanding
             </p>
             <p class="text-2xl font-bold mt-1 text-red-600">
               ${{ stats.balanceDue.toFixed(2) }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-muted">
               Collection: {{ collectionRate }}%
             </p>
           </div>
@@ -251,7 +251,7 @@ onMounted(() => {
             <span>Collected</span>
             <span class="font-medium">${{ stats.totalPaid.toFixed(2) }} ({{ collectionRate }}%)</span>
           </div>
-          <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-6 bg-accented rounded-full overflow-hidden">
             <div
               class="h-full bg-green-500 rounded-full transition-all"
               :style="{ width: `${collectionRate}%` }"
@@ -263,7 +263,7 @@ onMounted(() => {
             <span>Outstanding</span>
             <span class="font-medium">${{ stats.balanceDue.toFixed(2) }} ({{ 100 - collectionRate }}%)</span>
           </div>
-          <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-6 bg-accented rounded-full overflow-hidden">
             <div
               class="h-full bg-red-500 rounded-full transition-all"
               :style="{ width: `${100 - collectionRate}%` }"
@@ -296,7 +296,7 @@ onMounted(() => {
             </div>
             <span class="font-bold text-red-600">${{ stats.totalExpenses.toFixed(2) }}</span>
           </div>
-          <hr class="border-gray-200 dark:border-gray-700">
+          <hr class="border-default">
           <div class="flex items-center justify-between">
             <span class="font-semibold">{{ t('report.netProfit') || 'Net Profit' }}</span>
             <span class="font-bold text-xl" :class="stats.netProfit >= 0 ? 'text-green-600' : 'text-red-600'">
@@ -313,7 +313,7 @@ onMounted(() => {
           </h3>
         </template>
         <div class="space-y-4">
-          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
             <div class="flex items-center gap-2">
               <UIcon name="i-lucide-banknote" class="w-5 h-5 text-green-600" />
               <span>Cash</span>
@@ -322,7 +322,7 @@ onMounted(() => {
               Primary
             </UBadge>
           </div>
-          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
             <div class="flex items-center gap-2">
               <UIcon name="i-lucide-credit-card" class="w-5 h-5 text-blue-600" />
               <span>ABA QR</span>
@@ -331,7 +331,7 @@ onMounted(() => {
               Popular
             </UBadge>
           </div>
-          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
             <div class="flex items-center gap-2">
               <UIcon name="i-lucide-smartphone" class="w-5 h-5 text-orange-600" />
               <span>Wing</span>

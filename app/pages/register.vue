@@ -149,10 +149,10 @@ const isClinicTabComplete = computed(() => {
             <Logo />
           </div>
           <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+            <h1 class="text-2xl font-bold text-highlighted">
               {{ t('auth.register') }}
             </h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p class="text-sm text-muted mt-1">
               Create your account and clinic
             </p>
           </div>
@@ -160,7 +160,7 @@ const isClinicTabComplete = computed(() => {
 
         <!-- Tab Navigation -->
         <div class="mb-6">
-          <div class="flex border-b border-gray-200 dark:border-gray-700">
+          <div class="flex border-b border-default">
             <button
               v-for="(tab, index) in tabs"
               :key="tab.slot"
@@ -168,8 +168,8 @@ const isClinicTabComplete = computed(() => {
               :class="[
                 'flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors flex items-center justify-center gap-2',
                 activeTab === index
-                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
+                  ? 'border-primary-500 text-primary'
+                  : 'border-transparent text-muted hover:text-default',
                 index === 1 && !isUserTabComplete ? 'opacity-50 cursor-not-allowed' : ''
               ]"
               @click="selectTab(index)"
@@ -311,7 +311,7 @@ const isClinicTabComplete = computed(() => {
 
         <template #footer>
           <div class="text-center">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Already have an account?</span>
+            <span class="text-sm text-muted">Already have an account?</span>
             <NuxtLink to="/login" class="text-sm text-primary-600 hover:text-primary-500 ml-1 font-medium">{{
               t('auth.login') }}</NuxtLink>
           </div>

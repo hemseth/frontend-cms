@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <label class="khmer-label block mb-2 font-bold text-gray-700">Payment Method</label>
+    <label class="khmer-label block mb-2 font-bold text-default">Payment Method</label>
 
     <!-- Payment Methods -->
     <div>
@@ -9,7 +9,7 @@
           v-for="method in paymentMethods"
           :key="method.value"
           class="p-2 border rounded text-sm text-center transition-colors"
-          :class="paymentMethod === method.value ? 'bg-primary-50 border-primary-500 text-primary-700 font-medium' : 'hover:bg-gray-50 text-gray-600'"
+          :class="paymentMethod === method.value ? 'bg-primary-50 border-primary-500 text-primary-700 font-medium' : 'hover:bg-muted text-toned'"
           @click="$emit('update:paymentMethod', method.value)"
         >
           {{ method.label }}

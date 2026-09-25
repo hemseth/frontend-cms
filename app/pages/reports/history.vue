@@ -81,7 +81,7 @@ function printReport() {
         <h1 class="text-2xl font-bold">
           {{ t('report.historyReport') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           Complete patient medical history
         </p>
       </div>
@@ -126,7 +126,7 @@ function printReport() {
           </template>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Patient ID
               </p>
               <p class="font-medium">
@@ -134,7 +134,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.gender') }}
               </p>
               <p class="font-medium">
@@ -142,7 +142,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.age') }}
               </p>
               <p class="font-medium">
@@ -150,7 +150,7 @@ function printReport() {
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ t('patient.phone') }}
               </p>
               <p class="font-medium">
@@ -164,7 +164,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Total Visits
                 </p>
                 <p class="text-2xl font-bold">
@@ -177,7 +177,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Prescriptions
                 </p>
                 <p class="text-2xl font-bold">
@@ -190,7 +190,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Lab Requests
                 </p>
                 <p class="text-2xl font-bold">
@@ -203,7 +203,7 @@ function printReport() {
           <UCard>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   Total Payments
                 </p>
                 <p class="text-2xl font-bold text-green-600">
@@ -225,7 +225,7 @@ function printReport() {
             <div
               v-for="(item, index) in historyData.timeline?.slice(0, 50)"
               :key="index"
-              class="flex gap-4 p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+              class="flex gap-4 p-4 border rounded-lg hover:bg-muted"
             >
               <div class="flex-shrink-0">
                 <div
@@ -249,9 +249,9 @@ function printReport() {
               <div class="flex-1">
                 <div class="flex items-center justify-between">
                   <span class="font-medium capitalize">{{ item.type }}</span>
-                  <span class="text-sm text-gray-500">{{ new Date(item.date).toLocaleString() }}</span>
+                  <span class="text-sm text-muted">{{ new Date(item.date).toLocaleString() }}</span>
                 </div>
-                <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <div class="mt-1 text-sm text-toned">
                   <template v-if="item.type === 'visit'">
                     <p>Type: {{ item.data.type }} | Department: {{ item.data.department }}</p>
                     <p v-if="item.data.diagnosis?.length">
@@ -280,8 +280,8 @@ function printReport() {
     </template>
 
     <UCard v-else-if="!isLoading && !historyData" class="text-center py-12">
-      <UIcon name="i-lucide-history" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-      <p class="text-gray-500">
+      <UIcon name="i-lucide-history" class="w-16 h-16 text-dimmed mx-auto mb-4" />
+      <p class="text-muted">
         {{ t('report.selectPatient') }}
       </p>
     </UCard>

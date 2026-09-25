@@ -4,22 +4,22 @@
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr class="bg-[#0f172a] border-b border-slate-800">
-            <th class="p-3 text-center w-12 text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-center w-12 text-muted uppercase tracking-wider font-bold">
               #
             </th>
-            <th class="p-3 text-left text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-left text-muted uppercase tracking-wider font-bold">
               {{ t("common.itemName") }}
             </th>
-            <th class="p-3 text-center text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-center text-muted uppercase tracking-wider font-bold">
               {{ t("common.type") }}
             </th>
-            <th class="p-3 text-center text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-center text-muted uppercase tracking-wider font-bold">
               {{ t("common.qty") }}
             </th>
-            <th class="p-3 text-right text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-right text-muted uppercase tracking-wider font-bold">
               {{ t("common.price") }}
             </th>
-            <th class="p-3 text-right text-slate-500 uppercase tracking-wider font-bold">
+            <th class="p-3 text-right text-muted uppercase tracking-wider font-bold">
               {{ t("common.total") }}
             </th>
             <th class="p-3 text-center w-12" />
@@ -31,7 +31,7 @@
             :key="idx"
             class="hover:bg-slate-800/30 transition-colors group"
           >
-            <td class="p-3 text-center text-slate-500 font-medium">
+            <td class="p-3 text-center text-muted font-medium">
               {{ idx + 1 }}
             </td>
             <td class="p-3">
@@ -39,7 +39,7 @@
                 <span class="font-bold text-slate-200 text-base">{{ row.name }}</span>
                 <span
                   v-if="row.parameters && row.parameters.length > 0"
-                  class="text-xs text-slate-500 mt-0.5"
+                  class="text-xs text-muted mt-0.5"
                 >
                   {{ row.parameters.length }} parameters
                 </span>
@@ -51,13 +51,13 @@
                 {{ row.type }}
               </div>
             </td>
-            <td class="p-3 text-center text-slate-300 font-bold text-base">
+            <td class="p-3 text-center text-dimmed font-bold text-base">
               {{ rowQtySum(row) }}
             </td>
             <td class="p-3 text-right text-slate-100 font-bold text-base">
               ${{ (row.price || 0).toLocaleString() }}
             </td>
-            <td class="p-3 text-right text-slate-500 font-semibold text-base">
+            <td class="p-3 text-right text-muted font-semibold text-base">
               ${{ (rowTotal(row)).toLocaleString() }}
             </td>
             <td class="p-3 text-center">
@@ -72,7 +72,7 @@
             </td>
           </tr>
           <tr v-if="rows.length === 0">
-            <td colspan="7" class="p-16 text-center text-slate-600 italic">
+            <td colspan="7" class="p-16 text-center text-toned italic">
               {{ t("common.noItemsAdded") }}
             </td>
           </tr>
@@ -80,9 +80,9 @@
       </table>
     </div>
     <!-- Grand Total Section mimics the white footer in the screenshot -->
-    <div class="bg-white p-4 flex justify-end items-center border-t border-slate-200">
+    <div class="bg-white p-4 flex justify-end items-center border-t border-default">
       <div class="flex items-center gap-8">
-        <span class="text-slate-400 font-bold uppercase tracking-wider text-xs">Grand Total:</span>
+        <span class="text-dimmed font-bold uppercase tracking-wider text-xs">Grand Total:</span>
         <span class="text-3xl font-black text-emerald-600">${{ grandTotal.toLocaleString() }}</span>
       </div>
     </div>

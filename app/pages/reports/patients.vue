@@ -80,14 +80,14 @@ onMounted(() => {
         <h1 class="text-2xl font-bold">
           {{ t('report.patientAnalysis') }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-toned mt-1">
           Patient demographics and statistics
         </p>
       </div>
       <div class="flex items-center gap-4 no-print">
         <div class="flex items-center gap-2">
           <UInput v-model="dateRange.start" type="date" />
-          <span class="text-gray-500">-</span>
+          <span class="text-muted">-</span>
           <UInput v-model="dateRange.end" type="date" />
         </div>
         <UButton icon="i-lucide-refresh-cw" :loading="isLoading" @click="fetchStats">
@@ -104,7 +104,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               {{ t('patient.total') }}
             </p>
             <p class="text-3xl font-bold mt-1">
@@ -120,13 +120,13 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               {{ t('patient.male') }}
             </p>
             <p class="text-3xl font-bold mt-1">
               {{ stats.male }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-muted">
               {{ genderPercentages.male }}%
             </p>
           </div>
@@ -139,13 +139,13 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               {{ t('patient.female') }}
             </p>
             <p class="text-3xl font-bold mt-1">
               {{ stats.female }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-muted">
               {{ genderPercentages.female }}%
             </p>
           </div>
@@ -158,7 +158,7 @@ onMounted(() => {
       <UCard>
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               New This Month
             </p>
             <p class="text-3xl font-bold mt-1">
@@ -187,7 +187,7 @@ onMounted(() => {
               <span>{{ t('patient.male') }}</span>
               <span class="font-medium">{{ stats.male }} ({{ genderPercentages.male }}%)</span>
             </div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-4 bg-accented rounded-full overflow-hidden">
               <div
                 class="h-full bg-blue-500 rounded-full transition-all"
                 :style="{ width: `${genderPercentages.male}%` }"
@@ -199,7 +199,7 @@ onMounted(() => {
               <span>{{ t('patient.female') }}</span>
               <span class="font-medium">{{ stats.female }} ({{ genderPercentages.female }}%)</span>
             </div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-4 bg-accented rounded-full overflow-hidden">
               <div
                 class="h-full bg-pink-500 rounded-full transition-all"
                 :style="{ width: `${genderPercentages.female}%` }"
@@ -226,18 +226,18 @@ onMounted(() => {
               {{ index + 1 }}
             </span>
             <span class="flex-1 font-medium truncate">{{ item.name }}</span>
-            <div class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="w-32 h-2 bg-accented rounded-full overflow-hidden">
               <div
                 class="h-full bg-primary-500 rounded-full"
                 :style="{ width: `${(item.count / maxProvinceCount) * 100}%` }"
               />
             </div>
-            <span class="text-gray-500 text-sm w-16 text-right">{{ item.count }}</span>
+            <span class="text-muted text-sm w-16 text-right">{{ item.count }}</span>
             <UBadge color="primary" variant="soft" size="sm">
               {{ Math.round(item.percentage) }}%
             </UBadge>
           </div>
-          <div v-if="!stats.byProvince?.length" class="text-center text-gray-500 py-8">
+          <div v-if="!stats.byProvince?.length" class="text-center text-muted py-8">
             {{ t('common.noData') }}
           </div>
         </div>
@@ -255,16 +255,16 @@ onMounted(() => {
         <div
           v-for="(item, index) in stats.byAge"
           :key="index"
-          class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+          class="text-center p-4 bg-muted rounded-lg"
         >
-          <p class="text-sm text-gray-500 mb-1">
+          <p class="text-sm text-muted mb-1">
             {{ item.label }}
           </p>
           <p class="text-2xl font-bold text-primary-600">
             {{ item.count }}
           </p>
         </div>
-        <div v-if="!stats.byAge?.length" class="col-span-7 text-center text-gray-500 py-8">
+        <div v-if="!stats.byAge?.length" class="col-span-7 text-center text-muted py-8">
           {{ t('common.noData') }}
         </div>
       </div>

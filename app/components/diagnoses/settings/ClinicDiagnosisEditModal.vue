@@ -96,9 +96,9 @@ function handleSubmit() {
       <!-- WHO master fields (read only) -->
       <div
         v-if="diagnosis"
-        class="mb-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 space-y-2"
+        class="mb-4 p-3 rounded-lg bg-muted border border-default space-y-2"
       >
-        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+        <div class="text-xs font-semibold text-dimmed uppercase tracking-wide">
           {{ t('diagnosisSettings.whoFields') }}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">

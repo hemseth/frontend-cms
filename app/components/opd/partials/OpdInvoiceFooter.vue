@@ -1,16 +1,16 @@
 <template>
   <div
-    class="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-gray-900 border-t dark:border-gray-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"
+    class="flex flex-col md:flex-row gap-4 justify-between items-center bg-default border-t dark:border-gray-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"
   >
     <!-- Financials -->
     <div class="flex flex-wrap items-center gap-6">
       <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-600 dark:text-gray-400">Subtotal:</span>
+        <span class="text-sm text-toned">Subtotal:</span>
         <span class="font-medium dark:text-gray-200">${{ subtotal?.toLocaleString() ?? 0 }}</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-600 dark:text-gray-400">Discount ($):</span>
+        <span class="text-sm text-toned">Discount ($):</span>
         <UInput
           :model-value="discount"
           type="number"
@@ -23,13 +23,13 @@
       </div>
 
       <div class="flex items-center gap-2 border-l pl-6 dark:border-gray-700">
-        <span class="text-lg font-bold text-gray-800 dark:text-white">Total:</span>
-        <span class="text-xl font-bold text-primary-600 dark:text-primary-400">${{ grandTotal.toLocaleString()
+        <span class="text-lg font-bold text-highlighted">Total:</span>
+        <span class="text-xl font-bold text-primary">${{ grandTotal.toLocaleString()
         }}</span>
       </div>
 
       <div class="flex items-center gap-2 border-l pl-6 dark:border-gray-700">
-        <span class="text-sm text-gray-600 dark:text-gray-400">Received ($):</span>
+        <span class="text-sm text-toned">Received ($):</span>
         <UInput
           :model-value="totalReceived"
           type="number"
@@ -42,7 +42,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-sm font-bold text-gray-800 dark:text-white">Balance:</span>
+        <span class="text-sm font-bold text-highlighted">Balance:</span>
         <span class="text-lg font-bold" :class="(balance || 0) > 0 ? 'text-red-600' : 'text-green-600'">${{
           (balance || 0).toLocaleString() }}</span>
       </div>

@@ -52,7 +52,7 @@ async function handleDelete() {
         <p v-if="patient" class="font-medium text-primary">
           {{ patient.nameKh || patient.nameEn }}
         </p>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-muted">
           {{ t('patient.deleteConfirm') || 'This action cannot be undone.' }}
         </p>
       </div>

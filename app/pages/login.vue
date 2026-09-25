@@ -87,7 +87,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <h2 class="text-2xl font-bold text-center">
           Welcome Back
         </h2>
-        <p class="text-center text-gray-500 dark:text-gray-400 mt-1">
+        <p class="text-center text-muted mt-1">
           Sign in to your account
         </p>
       </template>
@@ -133,7 +133,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <template #footer>
         <div class="flex flex-col items-center gap-3 text-sm">
           <div class="flex items-center gap-1">
-            <span class="text-gray-500 dark:text-gray-400">Don't have an account?</span>
+            <span class="text-muted">Don't have an account?</span>
             <UButton variant="link" to="/register" :padded="false">
               Sign up
             </UButton>

@@ -97,13 +97,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <template #header>
         <div class="flex items-center gap-3">
           <div class="p-2 bg-primary-100 dark:bg-primary-900 rounded-lg">
-            <UIcon name="i-lucide-building-2" class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            <UIcon name="i-lucide-building-2" class="w-6 h-6 text-primary" />
           </div>
           <div>
             <h2 class="text-xl font-semibold">
               Clinic Information
             </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
+            <p class="text-sm text-muted">
               Manage your clinic details
             </p>
           </div>
@@ -205,7 +205,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <p class="text-2xl font-bold">
               {{ clinicData?.branches?.length || '-' }}
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Branches
             </p>
           </div>
@@ -221,7 +221,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <p class="text-2xl font-bold">
               -
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Staff Members
             </p>
           </div>
@@ -238,7 +238,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               {{ clinicData?.createdAt ? new
                 Date(clinicData.createdAt).toLocaleDateString() : '-' }}
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
               Registered
             </p>
           </div>

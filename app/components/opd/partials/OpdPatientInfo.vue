@@ -80,7 +80,7 @@
     </div>
 
     <!-- Clinical Safety & Drug Allergy Alert Bar -->
-    <div v-if="patientId" class="mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-800">
+    <div v-if="patientId" class="mt-3 pt-2.5 border-t border-default">
       <div v-if="allergies && allergies.length > 0" class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 flex items-start gap-2 animate-pulse">
         <UIcon name="i-lucide-shield-alert" class="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
         <div class="flex-1 min-w-0">

@@ -312,7 +312,7 @@ async function handleSubmit() {
           </div>
         </div>
 
-        <div class="border-t pt-4 bg-gray-50 dark:bg-gray-900 rounded p-4">
+        <div class="border-t pt-4 bg-muted rounded p-4">
           <h4 class="font-medium mb-2">
             {{ t('payroll.summary') }}
           </h4>

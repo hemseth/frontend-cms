@@ -102,7 +102,7 @@ function getDepartmentColor(dept: string) {
           <h1 class="text-2xl font-bold">
             {{ t('report.departmentReport') }}
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-toned mt-1">
             Department performance metrics
           </p>
         </div>
@@ -114,7 +114,7 @@ function getDepartmentColor(dept: string) {
               class="w-36"
               @change="onDateChange"
             />
-            <span class="text-gray-500">-</span>
+            <span class="text-muted">-</span>
             <UInput
               v-model="dateRange.end"
               type="date"
@@ -138,7 +138,7 @@ function getDepartmentColor(dept: string) {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Visits
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -153,7 +153,7 @@ function getDepartmentColor(dept: string) {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Total Revenue
               </p>
               <p class="text-3xl font-bold mt-1 text-green-600">
@@ -168,7 +168,7 @@ function getDepartmentColor(dept: string) {
         <UCard>
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 Departments
               </p>
               <p class="text-3xl font-bold mt-1">
@@ -196,22 +196,22 @@ function getDepartmentColor(dept: string) {
               <p class="font-semibold capitalize">
                 {{ dept.department }}
               </p>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ dept.totalVisits }} visits
               </p>
             </div>
           </div>
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
-              <span class="text-gray-500">Completed</span>
+              <span class="text-muted">Completed</span>
               <span class="font-medium">{{ dept.completedVisits }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-500">Revenue</span>
+              <span class="text-muted">Revenue</span>
               <span class="font-medium text-green-600">${{ dept.totalRevenue.toFixed(2) }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-500">Billed</span>
+              <span class="text-muted">Billed</span>
               <span class="font-medium">${{ dept.totalBilled.toFixed(2) }}</span>
             </div>
           </div>

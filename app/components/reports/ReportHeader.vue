@@ -82,7 +82,7 @@ function printReport() {
       <h1 class="text-2xl font-bold">
         {{ title }}
       </h1>
-      <p v-if="subtitle" class="text-gray-600 dark:text-gray-400 mt-1">
+      <p v-if="subtitle" class="text-toned mt-1">
         {{ subtitle }}
       </p>
     </div>
@@ -106,7 +106,7 @@ function printReport() {
           class="w-36"
           @change="onDateChange"
         />
-        <span class="text-gray-500">-</span>
+        <span class="text-muted">-</span>
         <UInput
           v-model="dateEnd"
           type="date"

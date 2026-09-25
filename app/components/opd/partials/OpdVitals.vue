@@ -8,7 +8,7 @@
     </template>
     <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
       <div v-for="(field, idx) in fields" :key="idx">
-        <label class="khmer-label block text-sm mb-1 text-gray-700 dark:text-gray-200">{{ field.label }}</label>
+        <label class="khmer-label block text-sm mb-1 text-default">{{ field.label }}</label>
         <UInput
           v-model="vitals[field.key]"
           type="text"

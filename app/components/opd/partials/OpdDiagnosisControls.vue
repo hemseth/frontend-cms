@@ -107,8 +107,8 @@ async function handleFavorite(item: DiagnosisSearchResult) {
 </script>
 
 <template>
-  <div class="p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-    <label class="khmer-label block text-sm mb-1 font-bold text-gray-700 dark:text-gray-200">
+  <div class="p-4 border-b border-default bg-default">
+    <label class="khmer-label block text-sm mb-1 font-bold text-default">
       {{ $t('visit.diagnosis') }}
     </label>
 
@@ -124,9 +124,9 @@ async function handleFavorite(item: DiagnosisSearchResult) {
 
       <div
         v-if="showResults || loading"
-        class="absolute left-0 right-0 top-full mt-1 z-20 max-h-72 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg"
+        class="absolute left-0 right-0 top-full mt-1 z-20 max-h-72 overflow-y-auto rounded-lg border border-default bg-default shadow-lg"
       >
-        <div v-if="loading" class="p-3 text-sm text-gray-500">
+        <div v-if="loading" class="p-3 text-sm text-muted">
           {{ $t('common.loading') }}
         </div>
 
@@ -134,7 +134,7 @@ async function handleFavorite(item: DiagnosisSearchResult) {
           <button
             v-for="item in results"
             :key="item.id"
-            class="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-start gap-2 border-b border-gray-100 dark:border-gray-800 last:border-0"
+            class="w-full text-left px-3 py-2 hover:bg-muted flex items-start gap-2 border-b border-default last:border-0"
             :disabled="isAlreadySelected(item.id)"
             @click="addDiagnosis(item)"
           >
@@ -166,10 +166,10 @@ async function handleFavorite(item: DiagnosisSearchResult) {
               <div class="text-sm font-medium truncate">
                 {{ item.nameKh || item.nameEn }}
               </div>
-              <div class="text-xs text-gray-500 truncate">
+              <div class="text-xs text-muted truncate">
                 {{ item.nameEn }}
               </div>
-              <div v-if="item.categoryCode || item.bodyRegionCode || item.organCode" class="text-xs text-gray-400 truncate">
+              <div v-if="item.categoryCode || item.bodyRegionCode || item.organCode" class="text-xs text-dimmed truncate">
                 {{ [item.categoryCode, item.bodyRegionCode, item.organCode].filter(Boolean).join(' • ') }}
               </div>
             </div>
@@ -185,13 +185,13 @@ async function handleFavorite(item: DiagnosisSearchResult) {
 
         <template v-else-if="!query.trim()">
           <div v-if="favorites.length > 0" class="p-2">
-            <div class="text-xs font-semibold text-gray-400 px-2 py-1">
+            <div class="text-xs font-semibold text-dimmed px-2 py-1">
               {{ $t('diagnosisSettings.statusFavorite') }}
             </div>
             <button
               v-for="item in favorites"
               :key="'fav-' + item.id"
-              class="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-start gap-2 rounded-md"
+              class="w-full text-left px-3 py-2 hover:bg-muted flex items-start gap-2 rounded-md"
               :disabled="isAlreadySelected(item.id)"
               @click="addDiagnosis(item)"
             >
@@ -210,14 +210,14 @@ async function handleFavorite(item: DiagnosisSearchResult) {
               </div>
             </button>
           </div>
-          <div v-if="recents.length > 0" class="p-2 border-t border-gray-100 dark:border-gray-800">
-            <div class="text-xs font-semibold text-gray-400 px-2 py-1">
+          <div v-if="recents.length > 0" class="p-2 border-t border-default">
+            <div class="text-xs font-semibold text-dimmed px-2 py-1">
               {{ $t('diagnosisSettings.select') }}
             </div>
             <button
               v-for="item in recents"
               :key="'rec-' + item.id"
-              class="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-start gap-2 rounded-md"
+              class="w-full text-left px-3 py-2 hover:bg-muted flex items-start gap-2 rounded-md"
               :disabled="isAlreadySelected(item.id)"
               @click="addDiagnosis(item)"
             >
@@ -233,12 +233,12 @@ async function handleFavorite(item: DiagnosisSearchResult) {
               </div>
             </button>
           </div>
-          <div v-if="favorites.length === 0 && recents.length === 0" class="p-3 text-sm text-gray-500">
+          <div v-if="favorites.length === 0 && recents.length === 0" class="p-3 text-sm text-muted">
             {{ $t('diagnosisSettings.search') }}
           </div>
         </template>
 
-        <div v-else class="p-3 text-sm text-gray-500">
+        <div v-else class="p-3 text-sm text-muted">
           {{ $t('diagnosisSettings.noResults') }}
         </div>
       </div>
@@ -282,13 +282,13 @@ async function handleFavorite(item: DiagnosisSearchResult) {
         />
       </div>
 
-      <div v-if="secondaries.length > 0" class="text-xs font-semibold text-gray-400 uppercase tracking-wide pt-1">
+      <div v-if="secondaries.length > 0" class="text-xs font-semibold text-dimmed uppercase tracking-wide pt-1">
         {{ $t('diagnosisSettings.secondary') }}
       </div>
       <div
         v-for="(item, index) in secondaries"
         :key="'s-' + index"
-        class="flex items-center gap-2 p-2 rounded-lg border border-gray-200 dark:border-gray-800"
+        class="flex items-center gap-2 p-2 rounded-lg border border-default"
       >
         <span class="w-2 h-2 rounded-full border border-gray-400" />
         <div class="flex-1 min-w-0">

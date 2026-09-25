@@ -131,7 +131,7 @@ const columns = [
     </template>
     <template #body>
       <div class="space-y-6">
-        <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+        <div class="bg-muted p-4 rounded-lg">
           <h4 class="font-medium mb-4">
             Add New Salary Record
           </h4>
@@ -175,7 +175,7 @@ const columns = [
           <h4 class="font-medium mb-4">
             History
           </h4>
-          <div class="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-lg">
+          <div class="overflow-x-auto border border-default rounded-lg">
             <UTable
               :columns="columns"
               :data="salaries"
@@ -183,7 +183,7 @@ const columns = [
               class="w-full"
               :ui="{
                 td: 'py-2 px-4 text-sm',
-                th: 'py-2 px-4 font-semibold text-sm bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-left'
+                th: 'py-2 px-4 font-semibold text-sm bg-muted border-b border-default text-left'
               }"
             />
           </div>
