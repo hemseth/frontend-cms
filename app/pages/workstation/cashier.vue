@@ -23,7 +23,7 @@ onMounted(() => refreshData())
 
 const selected = ref<WorklistItem | null>(null)
 const queueOpen = ref(false)
-const STATUSES: WorkStatus[] = ['awaiting_payment', 'paid']
+const STATUSES: WorkStatus[] = ['in_consultation', 'awaiting_payment', 'paid']
 const METHODS = ['cash', 'aba', 'wing', 'acleda', 'bakong'] as const
 
 const consultationId = ref('')

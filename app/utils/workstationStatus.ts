@@ -10,6 +10,8 @@ export const WORK_STATUS_COLOR: Record<WorkStatus, ChipColor> = {
   awaiting_results: 'warning',
   results_ready: 'success',
   awaiting_payment: 'warning',
+  to_prepare: 'warning',
+  prepared: 'info',
   paid: 'success',
   requested: 'neutral',
   draft: 'info',

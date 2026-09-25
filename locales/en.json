@@ -125,6 +125,8 @@
       "other": "Other"
     },
     "status": {
+      "to_prepare": "To prepare",
+      "prepared": "Prepared",
       "waiting": "Waiting",
       "triaged": "Triaged",
       "in_consultation": "In consultation",
@@ -335,6 +337,12 @@
       "printReceipt": "Print receipt"
     },
     "pharmacy": {
+      "prepareWhileUnpaid": "You can prepare the medicine now; hand it over after the patient has paid.",
+      "prepare": "Prepare",
+      "preparedOk": "Medicine prepared",
+      "preparedAs": "Prepared {no}",
+      "discardPrepared": "Discard",
+      "handOver": "Hand over",
       "notPaid": "This visit is not paid yet. Dispense after payment.",
       "printLabels": "Print labels",
       "labels": "Medicine labels",

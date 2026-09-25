@@ -106,6 +106,13 @@ export function useDepartmentQueues() {
       }
       return toItem(v, status)
     })
+      // Patients whose results are back see the doctor again first (after emergencies).
+      .sort((a, b) => rank(a) - rank(b))
+  }
+
+  function rank(item: WorklistItem) {
+    if (item.priority === 'EMERGENCY') return 0
+    return item.status === 'results_ready' ? 1 : 2
   }
 
   /** Lab or echo queue: one row per order, so each department sees only its own orders. */
@@ -132,13 +139,21 @@ export function useDepartmentQueues() {
       })
   }
 
+  /**
+   * Cashier: a patient is waiting to pay once the doctor has finished, or when tests were
+   * ordered (clinics that take payment before the test). Others show as still with the doctor.
+   */
   async function cashierQueue(day: string): Promise<WorklistItem[]> {
-    const [visits, payments] = await Promise.all([visitsOfDay(day), paymentsByVisit()])
+    const [visits, payments, orders] = await Promise.all([visitsOfDay(day), paymentsByVisit(), ordersOfDay(day)])
+    const withOrders = new Set(orders.filter(o => o.status !== 'cancelled').map(o => o.visitId))
     return visits
       .filter(v => v.status !== 'cancelled')
       .map((v) => {
         const payment = payments.get(v._id)
-        return toItem(v, payment?.status === 'paid' ? 'paid' : 'awaiting_payment', payment?.invoiceNumber)
+        const status: WorkStatus = payment?.status === 'paid'
+          ? 'paid'
+          : v.status === 'completed' || withOrders.has(v._id) ? 'awaiting_payment' : 'in_consultation'
+        return toItem(v, status, payment?.invoiceNumber)
       })
   }
 
@@ -146,19 +161,33 @@ export function useDepartmentQueues() {
    * Pharmacy sees paid visits only. The backend does not enforce this: dispensing does not check
    * payment, so this filter is a workflow aid, not a control.
    */
+  /**
+   * Pharmacy: a patient appears as soon as the doctor has finished with a prescription, so the
+   * medicine can be prepared while they pay: To prepare → Prepared → Paid (hand over) → Dispensed.
+   * The server refuses the hand-over before payment in pharmacy-counter clinics.
+   */
   async function pharmacyQueue(day: string): Promise<WorklistItem[]> {
-    const [visits, payments, dispensings] = await Promise.all([
-      visitsOfDay(day),
+    const visits = await visitsOfDay(day)
+    if (!visits.length) return []
+    const [payments, dispensings, lines] = await Promise.all([
       paymentsByVisit(),
-      $api('/dispensings') as Promise<{ data?: DispensingRow[] }>
+      $api('/dispensings') as Promise<{ data?: DispensingRow[] }>,
+      $api('/prescriptions', { params: { visitIds: visits.map(v => v._id).join(','), limit: 200 } }) as Promise<{ data?: Array<{ visitId?: string }> }>
     ])
-    const dispensed = new Set((dispensings?.data ?? []).filter(d => d.status === 'DISPENSED').map(d => d.visitId))
+    const prescribed = new Set((lines?.data ?? []).map(l => String(l.visitId)))
+    const docs = dispensings?.data ?? []
+    const dispensed = new Set(docs.filter(d => d.status === 'DISPENSED').map(d => d.visitId))
+    const prepared = new Set(docs.filter(d => d.status === 'PREPARED').map(d => d.visitId))
     return visits
       .filter((v) => {
-        const payment = payments.get(v._id)
-        return payment?.status === 'paid' && payment.items?.some(item => item.category === 'medicine')
+        const paid = payments.get(v._id)?.status === 'paid'
+        return prescribed.has(v._id) && (v.status === 'completed' || paid)
       })
-      .map(v => toItem(v, dispensed.has(v._id) ? 'dispensed' : 'paid'))
+      .map((v) => {
+        const paid = payments.get(v._id)?.status === 'paid'
+        const status: WorkStatus = dispensed.has(v._id) ? 'dispensed' : paid ? 'paid' : prepared.has(v._id) ? 'prepared' : 'to_prepare'
+        return toItem(v, status)
+      })
   }
 
   return { triageQueue, doctorQueue, orderQueue, cashierQueue, pharmacyQueue }

@@ -18,7 +18,7 @@ const worklist = useWorklist(pharmacyQueue)
 const record = useVisitRecord()
 const selected = ref<WorklistItem | null>(null)
 const queueOpen = ref(false)
-const STATUSES: WorkStatus[] = ['paid', 'dispensed']
+const STATUSES: WorkStatus[] = ['to_prepare', 'prepared', 'paid', 'dispensed']
 
 const visit = computed(() => record.visit.value)
 const isPaid = computed(() => visit.value?.payment?.status === 'paid')
@@ -99,15 +99,17 @@ watch(() => worklist.day.value, () => {
     <template v-else-if="visit">
       <PatientHeader :patient="visit.patient" :visit-no="visit.visitId" />
       <div class="space-y-4 p-4">
+        <!-- Not paid yet: the medicine can be prepared; it is handed over after payment. -->
         <UAlert
           v-if="!isPaid"
           color="warning"
           variant="subtle"
           icon="i-lucide-wallet"
           :title="t('workstation.pharmacy.notPaid')"
+          :description="t('workstation.pharmacy.prepareWhileUnpaid')"
         />
-        <template v-else>
-          <div class="flex justify-end">
+        <template v-if="visit">
+          <div v-if="isPaid" class="flex justify-end">
             <UButton
               :label="t('workstation.pharmacy.printLabels')"
               icon="i-lucide-tag"
@@ -123,7 +125,9 @@ watch(() => worklist.day.value, () => {
             :visit-id="visit._id"
             :patient-id="visit.patientId"
             :allergies="visit.patient?.allergies || []"
+            :hold-until-paid="!isPaid"
             @dispensed="onDispensed"
+            @prepared="onDispensed"
           />
         </template>
       </div>

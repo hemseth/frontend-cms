@@ -125,6 +125,8 @@
       "other": "Other"
     },
     "status": {
+      "to_prepare": "ត្រូវរៀបចំ",
+      "prepared": "បានរៀបចំ",
       "waiting": "Waiting",
       "triaged": "Triaged",
       "in_consultation": "In consultation",
@@ -335,7 +337,13 @@
       "printReceipt": "Print receipt"
     },
     "pharmacy": {
-      "notPaid": "This visit is not paid yet. Dispense after payment.",
+      "prepareWhileUnpaid": "អាចរៀបចំថ្នាំឥឡូវនេះបាន ហើយប្រគល់ជូនបន្ទាប់ពីអ្នកជំងឺបង់ប្រាក់រួច។",
+      "prepare": "រៀបចំ",
+      "preparedOk": "បានរៀបចំថ្នាំ",
+      "preparedAs": "បានរៀបចំ {no}",
+      "discardPrepared": "បោះបង់",
+      "handOver": "ប្រគល់ថ្នាំ",
+      "notPaid": "ការពិនិត្យនេះមិនទាន់បង់ប្រាក់ទេ។ ប្រគល់ថ្នាំបន្ទាប់ពីបង់ប្រាក់។",
       "printLabels": "Print labels",
       "labels": "Medicine labels",
       "labelSchedule": "Morning {m} · Noon {a} · Evening {e} · Night {n}",

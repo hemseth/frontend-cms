@@ -19,17 +19,37 @@ const props = defineProps<{
   prescriptionId?: string
   /** Patient allergies, shown as a blocking-looking warning on every line. */
   allergies?: string[]
+  /**
+   * The visit's invoice is not paid yet: the pharmacist prepares the medicine (the dispensing
+   * is recorded, no stock moves) and hands it over once paid (docs/OPD_CLINIC_FLOW.md).
+   */
+  holdUntilPaid?: boolean
 }>()
 
 const emit = defineEmits<{
   dispensed: [payload: { id: string }]
+  prepared: [payload: { id: string }]
 }>()
 
 const { t } = useI18n()
 const toast = useToast()
 const auth = useAuth()
 const { fetchStock, summarise, fetchWarehouses } = useStock()
-const { dispense, isSubmitting, fetchPrescriptions, verifyPrescription } = useDispensing()
+const { dispense, isSubmitting, fetchPrescriptions, verifyPrescription, createDispensing, confirmDispensing, cancelDispensing } = useDispensing()
+
+/** A dispensing prepared earlier for this visit, waiting for payment. */
+const prepared = ref<{ _id: string, dispensingNo?: string, createdAt?: string } | null>(null)
+const isPreparing = ref(false)
+async function loadPrepared() {
+  prepared.value = null
+  if (!props.visitId) return
+  try {
+    const res: { data?: Array<{ _id: string, dispensingNo?: string, createdAt?: string, status?: string }> } = await $api('/dispensings', { params: { visitId: props.visitId, status: 'PREPARED' } })
+    prepared.value = res?.data?.[0] ?? null
+  } catch {
+    prepared.value = null
+  }
+}
 
 interface Line {
   key: string
@@ -159,7 +179,7 @@ async function load() {
       })
 
     lines.value = seeded
-    await refreshStock()
+    await Promise.all([refreshStock(), loadPrepared()])
   } catch (e) {
     loadError.value = getApiErrorMessage(e, t('pharmacy.loadPrescriptionFailed'))
   } finally {
@@ -230,6 +250,67 @@ async function verify(line: Line) {
     toast.add({ title: t('pharmacy.safety.verifyFailed'), description: getApiErrorMessage(e, t('pharmacy.safety.verifyFailed')), color: 'error' })
   } finally {
     line.verifying = false
+  }
+}
+
+function payloadItems() {
+  return selectedLines.value.map(l => ({
+    medicineId: l.medicineId,
+    prescriptionItemId: l.prescriptionItemId,
+    requestedQty: l.dispenseQty,
+    conversionFactorSnapshot: 1,
+    ...(!l.prescriptionItemId && l.allergyOverrideReason?.trim() ? { allergyOverrideReason: l.allergyOverrideReason.trim() } : {})
+  }))
+}
+
+/** Before payment: record what will be handed over; no stock moves yet. */
+async function prepare() {
+  if (!canSubmit.value) return
+  isPreparing.value = true
+  try {
+    const doc = await createDispensing({
+      warehouseId: warehouseId.value,
+      patientId: props.patientId,
+      visitId: props.visitId,
+      prescriptionId: props.prescriptionId,
+      items: payloadItems()
+    })
+    toast.add({ title: t('workstation.pharmacy.preparedOk'), description: t('workstation.pharmacy.prepareWhileUnpaid'), color: 'success' })
+    if (doc?._id) emit('prepared', { id: doc._id })
+    await loadPrepared()
+  } catch (e) {
+    toast.add({ title: t('pharmacy.dispenseFailed'), description: getApiErrorMessage(e, t('pharmacy.dispenseFailed')), color: 'error' })
+  } finally {
+    isPreparing.value = false
+  }
+}
+
+/** After payment: hand over what was prepared (stock moves now). */
+async function handOverPrepared() {
+  if (!prepared.value) return
+  isPreparing.value = true
+  try {
+    const result = await confirmDispensing(prepared.value._id)
+    lastDispensingId.value = prepared.value._id
+    const partial = (result?.shortages ?? []).length > 0
+    toast.add({ title: partial ? t('pharmacy.dispensedPartial') : t('pharmacy.dispensedOk'), color: partial ? 'warning' : 'success' })
+    emit('dispensed', { id: prepared.value._id })
+    await load()
+  } catch (e) {
+    toast.add({ title: t('pharmacy.dispenseFailed'), description: getApiErrorMessage(e, t('pharmacy.dispenseFailed')), color: 'error' })
+  } finally {
+    isPreparing.value = false
+  }
+}
+
+/** Discard a preparation (the prescription changed, or it was prepared by mistake). */
+async function discardPrepared() {
+  if (!prepared.value) return
+  try {
+    await cancelDispensing(prepared.value._id)
+    await loadPrepared()
+  } catch (e) {
+    toast.add({ title: t('common.error'), description: getApiErrorMessage(e, ''), color: 'error' })
   }
 }
 
@@ -528,7 +609,37 @@ onMounted(load)
           :to="`/print/medicine-label/${lastDispensingId}`"
           target="_blank"
         />
+        <template v-if="prepared">
+          <UBadge color="info" variant="subtle">
+            {{ t('workstation.pharmacy.preparedAs', { no: prepared.dispensingNo || '' }) }}
+          </UBadge>
+          <UButton
+            :label="t('workstation.pharmacy.discardPrepared')"
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            @click="discardPrepared"
+          />
+          <UButton
+            :label="t('workstation.pharmacy.handOver')"
+            icon="i-lucide-hand-helping"
+            color="primary"
+            :loading="isPreparing"
+            :disabled="holdUntilPaid"
+            @click="handOverPrepared"
+          />
+        </template>
         <UButton
+          v-else-if="holdUntilPaid"
+          :label="t('workstation.pharmacy.prepare')"
+          icon="i-lucide-package-check"
+          color="primary"
+          :loading="isPreparing"
+          :disabled="!canSubmit"
+          @click="prepare"
+        />
+        <UButton
+          v-else
           :label="t('pharmacy.confirmDispense')"
           icon="i-lucide-check"
           color="primary"

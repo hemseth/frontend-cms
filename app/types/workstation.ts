@@ -8,6 +8,8 @@ export type WorkStatus
     | 'awaiting_results'
     | 'results_ready'
     | 'awaiting_payment'
+    | 'to_prepare'
+    | 'prepared'
     | 'paid'
     | 'requested'
     | 'draft'
