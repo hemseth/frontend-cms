@@ -256,13 +256,25 @@
       "printAfterPayment": "Printing is available once the invoice is paid.",
       "orderMissing": "This order is no longer on the visit."
     },
+    "attachments": {
+      "title": "ឯកសារលទ្ធផល",
+      "hint": "រូបភាព (JPEG, PNG, WebP) ឬ PDF មិនលើស 10 MB ក្នុងមួយឯកសារ",
+      "upload": "បញ្ចូលរូបភាព / PDF",
+      "none": "មិនទាន់មានឯកសារ។",
+      "open": "បើក",
+      "remove": "លុបឯកសារ",
+      "removeConfirm": "លុប \"{name}\"?",
+      "uploaded": "បានបញ្ចូល {n} ឯកសារ",
+      "tooLarge": "{name} ធំជាង 10 MB",
+      "uploadFailed": "មិនអាចបញ្ចូលឯកសារបានទេ",
+      "openFailed": "មិនអាចបើកឯកសារបានទេ"
+    },
     "echo": {
       "chooseTemplate": "Report template",
       "findings": "Findings",
       "conclusion": "Conclusion",
       "conclusionRequired": "Enter a conclusion before submitting.",
       "replaceConfirm": "Replace the current text with the template?",
-      "imagesPending": "Image upload for echo reports needs backend support (the upload route requires a settings permission and the order has no image field).",
       "noReport": "No report yet.",
       "template": {
         "abdomen": {

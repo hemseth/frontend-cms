@@ -6,6 +6,7 @@ import WorklistQueue from '~/components/workstation/WorklistQueue.vue'
 import PatientHeader from '~/components/workstation/PatientHeader.vue'
 import WorkstationState from '~/components/workstation/WorkstationState.vue'
 import StatusChip from '~/components/workstation/StatusChip.vue'
+import LabAttachments from '~/components/workstation/LabAttachments.vue'
 
 const { t, locale } = useI18n()
 const toast = useToast()
@@ -27,30 +28,20 @@ const findings = ref('')
 const conclusion = ref('')
 const isSaving = ref(false)
 
-// The backend stores one free-text `result`; findings and conclusion are kept apart with
-// language-independent markers so the report can be reopened and edited.
-const FINDINGS = '[FINDINGS]'
-const CONCLUSION = '[CONCLUSION]'
-function parseReport(text = '') {
-  const f = text.indexOf(FINDINGS)
-  const c = text.indexOf(CONCLUSION)
-  if (f === -1 && c === -1) return { findings: text, conclusion: '' }
-  return {
-    findings: text.slice(f + FINDINGS.length, c === -1 ? undefined : c).trim(),
-    conclusion: c === -1 ? '' : text.slice(c + CONCLUSION.length).trim()
-  }
-}
-const buildReport = () => `${FINDINGS}\n${findings.value.trim()}\n\n${CONCLUSION}\n${conclusion.value.trim()}`
+// Findings and conclusion are stored in one `result` (utils/echoReport.ts).
+const buildReport = () => buildEchoReport(findings.value, conclusion.value)
 
 const order = computed<LabOrder | null>(() => record.visit.value?.labRequests.find(o => o._id === selected.value?.id) ?? null)
 const locked = computed(() => order.value?.status === 'completed' || order.value?.status === 'cancelled')
+// Images can still be added after the report is submitted, until a doctor verifies it.
+const filesEditable = computed(() => allowed.value && !!order.value && !order.value.verifiedAt && order.value.status !== 'cancelled')
 const isPaid = computed(() => record.visit.value?.payment?.status === 'paid')
 const templateOptions = computed(() => TEMPLATES.map(value => ({ label: t(`workstation.echo.template.${value}.name`), value })))
 
 async function select(item: WorklistItem) {
   selected.value = item
   await record.load(item.visitId)
-  const parsed = parseReport(order.value?.result)
+  const parsed = parseEchoReport(order.value?.result)
   findings.value = parsed.findings
   conclusion.value = parsed.conclusion
   template.value = undefined
@@ -173,13 +164,7 @@ watch(() => worklist.day.value, () => {
                 :disabled="locked"
               />
             </UFormField>
-            <UAlert
-              color="neutral"
-              variant="outline"
-              icon="i-lucide-image-up"
-              :title="t('workstation.pendingBackend')"
-              :description="t('workstation.echo.imagesPending')"
-            />
+            <LabAttachments :order="order" :editable="filesEditable" @changed="record.load(order.visitId)" />
           </div>
 
           <template #footer>

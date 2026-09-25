@@ -58,6 +58,15 @@ export interface LabParameter {
   value?: string
 }
 
+/** A result file on a lab / imaging order, served only through GET /labs/:id/attachments/:fileId. */
+export interface LabAttachment {
+  fileId: string
+  originalName?: string
+  mimeType?: string
+  size?: number
+  uploadedAt?: string
+}
+
 export interface LabOrder {
   _id: string
   visitId: string
@@ -77,6 +86,7 @@ export interface LabOrder {
   redacted?: boolean
   sampleCollectedAt?: string
   verifiedAt?: string
+  attachments?: LabAttachment[]
 }
 
 export interface Vitals {

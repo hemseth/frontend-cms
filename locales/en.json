@@ -259,13 +259,25 @@
       "printAfterPayment": "Printing is available once the invoice is paid.",
       "orderMissing": "This order is no longer on the visit."
     },
+    "attachments": {
+      "title": "Result files",
+      "hint": "Images (JPEG, PNG, WebP) or PDF, up to 10 MB each",
+      "upload": "Upload images / PDF",
+      "none": "No files yet.",
+      "open": "Open",
+      "remove": "Remove file",
+      "removeConfirm": "Remove \"{name}\"?",
+      "uploaded": "{n} file(s) added",
+      "tooLarge": "{name} is larger than 10 MB",
+      "uploadFailed": "Could not upload the file",
+      "openFailed": "Could not open the file"
+    },
     "echo": {
       "chooseTemplate": "Report template",
       "findings": "Findings",
       "conclusion": "Conclusion",
       "conclusionRequired": "Enter a conclusion before submitting.",
       "replaceConfirm": "Replace the current text with the template?",
-      "imagesPending": "Image upload for echo reports needs backend support (the upload route requires a settings permission and the order has no image field).",
       "noReport": "No report yet.",
       "template": {
         "abdomen": {

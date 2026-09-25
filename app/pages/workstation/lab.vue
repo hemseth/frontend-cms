@@ -7,12 +7,15 @@ import PatientHeader from '~/components/workstation/PatientHeader.vue'
 import WorkstationState from '~/components/workstation/WorkstationState.vue'
 import StatusChip from '~/components/workstation/StatusChip.vue'
 import LabResultTable from '~/components/workstation/LabResultTable.vue'
+import LabAttachments from '~/components/workstation/LabAttachments.vue'
 
 const { t, locale } = useI18n()
 const toast = useToast()
 const auth = useAuth()
 const allowed = computed(() => auth.can('laboratory', 'update'))
 const canVerify = computed(() => auth.can('laboratory', 'approve'))
+// A photo or PDF of the analyser printout can be added until a doctor verifies the result.
+const filesEditable = computed(() => allowed.value && !!order.value && !order.value.verifiedAt && order.value.status !== 'cancelled')
 
 const { orderQueue } = useDepartmentQueues()
 const worklist = useWorklist(day => orderQueue(day, 'laboratory'))
@@ -154,6 +157,13 @@ watch(() => worklist.day.value, () => {
               :disabled="locked"
             />
           </UFormField>
+
+          <LabAttachments
+            class="mt-4"
+            :order="order"
+            :editable="filesEditable"
+            @changed="record.load(order.visitId)"
+          />
 
           <template #footer>
             <div class="flex flex-wrap items-center justify-end gap-2">

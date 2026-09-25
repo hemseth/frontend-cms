@@ -9,6 +9,7 @@ import PatientHeader from '~/components/workstation/PatientHeader.vue'
 import WorkstationState from '~/components/workstation/WorkstationState.vue'
 import StatusChip from '~/components/workstation/StatusChip.vue'
 import LabResultTable from '~/components/workstation/LabResultTable.vue'
+import LabAttachments from '~/components/workstation/LabAttachments.vue'
 import OpdDiagnosisControls from '~/components/opd/partials/OpdDiagnosisControls.vue'
 import BodyMapClinical from '~/components/clinical/BodyMapClinical.vue'
 import MedicineAutocomplete from '~/components/pharmacy/MedicineAutocomplete.vue'
@@ -562,9 +563,28 @@ const vitalClass = (state: string | null) => (state === 'high' || state === 'inv
                 />
               </div>
               <LabResultTable v-if="order.category !== 'imaging'" :parameters="order.parameters || []" />
-              <p v-else class="whitespace-pre-line text-sm">
-                {{ order.result || t('workstation.echo.noReport') }}
+              <div v-else-if="order.result" class="space-y-2 text-sm">
+                <div v-if="parseEchoReport(order.result).findings">
+                  <p class="font-medium">
+                    {{ t('workstation.echo.findings') }}
+                  </p>
+                  <p class="whitespace-pre-line">
+                    {{ parseEchoReport(order.result).findings }}
+                  </p>
+                </div>
+                <div v-if="parseEchoReport(order.result).conclusion">
+                  <p class="font-medium">
+                    {{ t('workstation.echo.conclusion') }}
+                  </p>
+                  <p class="whitespace-pre-line">
+                    {{ parseEchoReport(order.result).conclusion }}
+                  </p>
+                </div>
+              </div>
+              <p v-else class="text-sm text-muted">
+                {{ t('workstation.echo.noReport') }}
               </p>
+              <LabAttachments v-if="order.attachments?.length" class="mt-3" :order="order" />
             </div>
           </div>
           <p v-if="allVerifiedOrDone" class="mt-3 text-sm text-success">
