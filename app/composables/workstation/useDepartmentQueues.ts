@@ -8,6 +8,12 @@ interface VisitRow {
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
   vitals?: Record<string, string>
   type?: string
+  queueNo?: number
+  triagePriority?: 'EMERGENCY' | 'URGENT' | 'NORMAL'
+  chiefComplaint?: string
+  doctorId?: string
+  doctorName?: string
+  consultRoom?: string
 }
 
 interface PaymentRow extends VisitPayment {
@@ -30,19 +36,18 @@ const hasVitals = (v: VisitRow) => Object.values(v.vitals || {}).some(value => S
 export function useDepartmentQueues() {
   const { ensure, get } = usePatientCache()
 
-  /** All visits of one day, oldest first, with their arrival-order number. */
+  /**
+   * The day's outpatient queue from the server (GET /visits/queue): queue numbers given at
+   * check-in, emergencies first, IPD visits excluded.
+   */
   async function visitsOfDay(day: string): Promise<Array<VisitRow & { queueNo: number, patient: QueuePatient }>> {
-    const res: { data?: VisitRow[] } = await $api('/visits', { params: { limit: 300 } })
-    const rows = (res?.data ?? [])
-      // An admission's IPD visit (docs/IPD.md) is not an outpatient waiting in a queue.
-      .filter(v => (v as { type?: string }).type !== 'ipd')
-      .filter(v => isSameLocalDay(v.dateIn || v.createdAt, day))
-      .sort((a, b) => new Date(a.dateIn || a.createdAt || 0).getTime() - new Date(b.dateIn || b.createdAt || 0).getTime())
+    const res: { data?: VisitRow[] } = await $api('/visits/queue', { params: { date: day, tzOffset: new Date().getTimezoneOffset() } })
+    const rows = res?.data ?? []
     await ensure(rows.map(v => idOf(v.patientId)))
     return rows.map((v, index) => {
       const pid = idOf(v.patientId)
       const base: QueuePatient = typeof v.patientId === 'object' ? v.patientId : { _id: pid }
-      return { ...v, queueNo: index + 1, patient: get(pid, { ...base, _id: pid }) }
+      return { ...v, queueNo: v.queueNo ?? index + 1, patient: get(pid, { ...base, _id: pid }) }
     })
   }
 
@@ -69,7 +74,9 @@ export function useDepartmentQueues() {
     queueNo: v.queueNo,
     arrivedAt: v.dateIn || v.createdAt || '',
     status,
-    subtitle
+    subtitle: subtitle ?? ([v.chiefComplaint, v.doctorName, v.consultRoom].filter(Boolean).join(' · ') || undefined),
+    priority: v.triagePriority,
+    doctorId: v.doctorId
   })
 
   function clinicalStatus(v: VisitRow): WorkStatus {

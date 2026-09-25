@@ -52,7 +52,7 @@ const draftLines = computed<PaymentItem[]>(() => {
   const consult = consultationServices.value.find(s => s._id === consultationId.value)
   if (consult) lines.push({ itemId: consult._id, name: consult.nameEn || consult.nameKh, price: consult.price || 0, quantity: 1, category: 'consultation' })
   for (const order of v.labRequests.filter(o => o.status !== 'cancelled')) {
-    lines.push({ itemId: order.serviceId, name: order.serviceName, price: order.price || 0, quantity: 1, category: order.category === 'imaging' ? 'imaging' : 'laboratory' })
+    lines.push({ itemId: order.serviceId, name: order.serviceName, price: order.price || 0, quantity: 1, category: order.category === 'imaging' ? 'imaging' : order.category === 'other' ? 'other' : 'laboratory' })
   }
   for (const med of v.medications) {
     lines.push({ itemId: med.medicineId, name: med.medication, price: med.unitPrice || 0, quantity: Math.max(1, med.quantity || 1), category: 'medicine' })

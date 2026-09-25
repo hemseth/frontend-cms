@@ -27,7 +27,8 @@ const schema = z.object({
   unit: z.string().optional(),
   referenceRange: z.string().optional(),
   parameters: z.array(z.any()).optional(),
-  status: z.enum(['active', 'inactive']).default('active')
+  status: z.enum(['active', 'inactive']).default('active'),
+  sensitive: z.boolean().optional()
 })
 
 const state = ref({
@@ -40,7 +41,8 @@ const state = ref({
   unit: '',
   referenceRange: '',
   parameters: [] as any[],
-  status: 'active' as 'active' | 'inactive'
+  status: 'active' as 'active' | 'inactive',
+  sensitive: false
 })
 
 watch(() => props.service, (newVal) => {
@@ -55,7 +57,8 @@ watch(() => props.service, (newVal) => {
       unit: newVal.unit || '',
       referenceRange: newVal.referenceRange || '',
       parameters: newVal.parameters ? [...newVal.parameters] : [],
-      status: newVal.status || 'active'
+      status: newVal.status || 'active',
+      sensitive: !!newVal.sensitive
     }
   } else {
     state.value = {
@@ -68,7 +71,8 @@ watch(() => props.service, (newVal) => {
       unit: '',
       referenceRange: '',
       parameters: [],
-      status: 'active'
+      status: 'active',
+      sensitive: false
     }
   }
 }, { immediate: true })
@@ -266,6 +270,13 @@ async function onSubmit() {
         <UFormField label="Status" name="status">
           <USelectMenu v-model="state.status" :options="['active', 'inactive']" class="w-full" />
         </UFormField>
+
+        <UCheckbox
+          v-model="state.sensitive"
+          name="sensitive"
+          :label="$t('settings.service.sensitive')"
+          :description="$t('settings.service.sensitiveHelp')"
+        />
 
         <div class="flex justify-end gap-2 pt-4">
           <UButton

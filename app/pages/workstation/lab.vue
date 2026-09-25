@@ -41,6 +41,31 @@ function setValue(index: number, value: string) {
   parameters.value[index] = { ...parameters.value[index], value }
 }
 
+const isCollecting = ref(false)
+async function collectSample() {
+  if (!order.value) return
+  isCollecting.value = true
+  try {
+    await record.collectSample(order.value._id)
+    await record.load(order.value.visitId)
+    await worklist.refresh()
+  } catch (err) {
+    toast.add({ title: t('common.error'), description: getApiErrorMessage(err, t('common.saveFailed')), color: 'error' })
+  } finally {
+    isCollecting.value = false
+  }
+}
+
+async function verify() {
+  if (!order.value) return
+  try {
+    await record.verifyOrder(order.value._id)
+    await record.load(order.value.visitId)
+  } catch (err) {
+    toast.add({ title: t('common.error'), description: getApiErrorMessage(err, t('common.saveFailed')), color: 'error' })
+  }
+}
+
 async function save(submit: boolean) {
   if (!order.value || locked.value) return
   if (submit && parameters.value.some(p => !String(p.value || '').trim()) && !window.confirm(t('workstation.lab.submitIncomplete'))) return
@@ -149,14 +174,27 @@ watch(() => worklist.day.value, () => {
                 :disabled="!isPaid"
                 @click="print"
               />
-              <UTooltip v-if="canVerify" :text="t('workstation.pendingBackend')">
-                <UButton
-                  :label="t('workstation.lab.verify')"
-                  icon="i-lucide-badge-check"
-                  variant="soft"
-                  disabled
-                />
-              </UTooltip>
+              <UButton
+                v-if="!order.sampleCollectedAt && !locked"
+                :label="t('workstation.lab.sampleCollected')"
+                icon="i-lucide-test-tube"
+                variant="outline"
+                :loading="isCollecting"
+                @click="collectSample"
+              />
+              <UBadge v-else-if="order.sampleCollectedAt" color="neutral" variant="outline">
+                {{ t('workstation.lab.sampleAt', { time: new Date(order.sampleCollectedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) }) }}
+              </UBadge>
+              <UBadge v-if="order.verifiedAt" color="success" variant="subtle">
+                {{ t('workstation.lab.verified') }}
+              </UBadge>
+              <UButton
+                v-else-if="canVerify && order.status === 'completed'"
+                :label="t('workstation.lab.verify')"
+                icon="i-lucide-badge-check"
+                variant="soft"
+                @click="verify"
+              />
               <UButton
                 :label="t('workstation.lab.saveDraft')"
                 icon="i-lucide-save"

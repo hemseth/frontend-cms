@@ -45,6 +45,11 @@ const links = computed(() => {
     value: 'workstations',
     defaultOpen: true,
     children: [{
+      label: t('workstation.pages.reception'),
+      to: '/workstation/reception',
+      icon: 'i-lucide-concierge-bell',
+      permission: 'visit:create'
+    }, {
       label: t('workstation.pages.triage'),
       to: '/workstation/triage',
       icon: 'i-lucide-activity',

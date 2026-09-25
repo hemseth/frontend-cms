@@ -56,6 +56,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!isPublicRoute && (accessToken.value || refreshToken.value)) {
     const routePermissions: Array<[string, string]> = [
       // Workstations: each page needs the permission its main action writes with.
+      ['/workstation/reception', 'visit:create'],
       ['/workstation/triage', 'visit:update'],
       ['/workstation/doctor', 'prescription:create'],
       ['/workstation/lab', 'laboratory:update'],

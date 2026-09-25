@@ -31,11 +31,12 @@ export function useVisitRecord() {
   }
 
   /** Visit PUT stores only the fields sent. */
-  async function updateVisit(patch: { vitals?: Vitals, notes?: string, diagnosis?: VisitDiagnosis[], bodyMarkers?: unknown[], bodyChartSnapshot?: string, status?: VisitDetail['status'], doctorId?: string }) {
+  async function updateVisit(patch: { vitals?: Vitals, notes?: string, chiefComplaint?: string, examination?: string, plan?: string, triagePriority?: VisitDetail['triagePriority'], diagnosis?: VisitDiagnosis[], bodyMarkers?: unknown[], bodyChartSnapshot?: string, status?: VisitDetail['status'], doctorId?: string }) {
     await $api(base(), { method: 'PUT', body: patch })
   }
 
-  async function addOrder(service: { _id: string, nameEn: string, nameKh?: string, price?: number, parameters?: LabOrder['parameters'] }, category: 'laboratory' | 'imaging') {
+  /** The server prices the order from the price list; a sensitive test needs `consent`. */
+  async function addOrder(service: { _id: string, nameEn: string, nameKh?: string, price?: number, parameters?: LabOrder['parameters'] }, category: 'laboratory' | 'imaging' | 'other', consent?: { counsellingNote?: string }) {
     const v = visit.value!
     await $api(`${base()}/labs`, {
       method: 'POST',
@@ -48,9 +49,18 @@ export function useVisitRecord() {
         serviceNameKh: service.nameKh,
         category,
         price: service.price ?? 0,
-        parameters: (service.parameters || []).map(p => ({ labelEn: p.labelEn, labelKh: p.labelKh, unit: p.unit, refRange: p.refRange }))
+        parameters: (service.parameters || []).map(p => ({ labelEn: p.labelEn, labelKh: p.labelKh, unit: p.unit, refRange: p.refRange })),
+        ...(consent ? { consentConfirmed: true, ...(consent.counsellingNote ? { counsellingNote: consent.counsellingNote } : {}) } : {})
       }
     })
+  }
+
+  async function collectSample(orderId: string) {
+    await $api(`/labs/${orderId}/sample`, { method: 'PUT' })
+  }
+
+  async function verifyOrder(orderId: string) {
+    await $api(`/labs/${orderId}/verify`, { method: 'POST' })
   }
 
   async function updateOrder(orderId: string, patch: { status?: LabOrder['status'], parameters?: LabOrder['parameters'], result?: string }) {
@@ -79,5 +89,7 @@ export function useVisitRecord() {
     return $api(`${base()}/payments/${paymentId}`, { method: 'PUT', body: patch })
   }
 
-  return { visit, isLoading, error, load, updateVisit, addOrder, updateOrder, addPrescription, removePrescription, createPayment, updatePayment }
+  return {
+    collectSample,
+    verifyOrder, visit, isLoading, error, load, updateVisit, addOrder, updateOrder, addPrescription, removePrescription, createPayment, updatePayment }
 }

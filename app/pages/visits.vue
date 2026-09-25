@@ -147,7 +147,7 @@ function deleteVisit(visit: any) {
 
 async function handleDelete() {
   try {
-    await $api(`/visits/${selectedVisit.value._id}`, {
+    await $api(`${visitPath(selectedVisit.value)}`, {
       method: 'DELETE'
     })
     toast.add({
@@ -165,15 +165,22 @@ async function handleDelete() {
   }
 }
 
+/** Visits are changed through their patient's route (there is no PUT/DELETE /visits/:id). */
+function visitPath(visit: { _id: string, patientId?: string | { _id?: string } }) {
+  const patientId = typeof visit.patientId === 'object' ? visit.patientId?._id : visit.patientId
+  return `/patients/${patientId}/visits/${visit._id}`
+}
+
 async function handleSave() {
   try {
     if (selectedVisit.value) {
-    await $api(`/visits/${selectedVisit.value._id}`, {
+      await $api(visitPath(selectedVisit.value), {
         method: 'PUT',
         body: form.value
       })
     } else {
-    await $api('/visits', {
+      // Visits live under their patient: /patients/:id/visits[/:visitId].
+      await $api(`/patients/${form.value.patientId}/visits`, {
         method: 'POST',
         body: form.value
       })

@@ -23,6 +23,9 @@ const STATUSES: WorkStatus[] = ['waiting', 'triaged', 'in_consultation', 'comple
 interface Form { systolic: string, diastolic: string, heartRate: string, respRate: string, temp: string, oxygen: string, weight: string, height: string, bsl: string, painScore: string }
 const empty = (): Form => ({ systolic: '', diastolic: '', heartRate: '', respRate: '', temp: '', oxygen: '', weight: '', height: '', bsl: '', painScore: '' })
 const form = ref<Form>(empty())
+const chiefComplaint = ref('')
+const priority = ref<'EMERGENCY' | 'URGENT' | 'NORMAL'>('NORMAL')
+const priorityOptions = computed(() => (['EMERGENCY', 'URGENT', 'NORMAL'] as const).map(p => ({ label: t(`workstation.priority.${p}`), value: p })))
 const isSaving = ref(false)
 
 const FIELDS: Array<{ key: Exclude<keyof Form, 'systolic' | 'diastolic'>, limit: VitalKey, unit: string }> = [
@@ -40,6 +43,8 @@ async function select(item: WorklistItem) {
   selected.value = item
   await record.load(item.visitId)
   const v = record.visit.value?.vitals || {}
+  chiefComplaint.value = record.visit.value?.chiefComplaint || ''
+  priority.value = record.visit.value?.triagePriority || 'NORMAL'
   const [sys, dia] = splitBp(v.bp)
   form.value = {
     ...empty(),
@@ -81,7 +86,7 @@ async function save(next = false) {
     weight: f.weight, height: f.height, bsl: f.bsl, painScore: f.painScore
   }
   try {
-    await record.updateVisit({ vitals })
+    await record.updateVisit({ vitals, chiefComplaint: chiefComplaint.value.trim(), triagePriority: priority.value })
     toast.add({ title: t(next ? 'workstation.triage.sent' : 'common.saved'), color: 'success' })
     await worklist.refresh()
     if (next) {
@@ -191,13 +196,30 @@ watch(() => worklist.day.value, () => {
           </p>
         </UCard>
 
-        <UAlert
-          color="neutral"
-          variant="outline"
-          icon="i-lucide-construction"
-          :title="t('workstation.pendingBackend')"
-          :description="t('workstation.triage.chiefComplaintPending')"
-        />
+        <UCard>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <UFormField :label="t('workstation.triage.chiefComplaint')" class="md:col-span-2">
+              <UTextarea
+                v-model="chiefComplaint"
+                :rows="2"
+                autoresize
+                class="w-full"
+                :maxlength="500"
+                :disabled="readOnly || !allowed"
+                :placeholder="t('workstation.triage.chiefComplaintPlaceholder')"
+              />
+            </UFormField>
+            <UFormField :label="t('workstation.priority.label')">
+              <USelect
+                v-model="priority"
+                :items="priorityOptions"
+                value-key="value"
+                class="w-full"
+                :disabled="readOnly || !allowed"
+              />
+            </UFormField>
+          </div>
+        </UCard>
 
         <div class="flex flex-wrap justify-end gap-2">
           <p v-if="invalidFields.length" class="mr-auto text-sm text-error">

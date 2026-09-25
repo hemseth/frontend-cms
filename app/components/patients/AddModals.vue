@@ -83,6 +83,7 @@ const emit = defineEmits<{
 }>()
 
 const toast = useToast()
+const { t } = useI18n()
 
 const isOpen = computed({
   get: () => props.open ?? false,
@@ -410,6 +411,22 @@ async function onSubmit(printAfter = false) {
       color: 'error'
     })
     return
+  }
+
+  // A new patient with the same phone, or the same name and birth date, may already exist.
+  if (!props.patient?._id) {
+    try {
+      const dup = await $api<{ data?: Array<{ pId?: number, nameKh?: string, nameEn?: string, phone?: string }> }>('/patients/duplicates', {
+        params: { nameKh: state.value.nameKh, nameEn: state.value.nameEn, dob: state.value.dob, phone: state.value.phone }
+      })
+      const matches = dup?.data ?? []
+      if (matches.length) {
+        const list = matches.map((p: { pId?: number, nameKh?: string, nameEn?: string, phone?: string }) => `• ${p.pId ? `P-${String(p.pId).padStart(6, '0')} ` : ''}${p.nameKh || p.nameEn || ''} ${p.phone || ''}`.trim()).join('\n')
+        if (!window.confirm(`${t('patient.possibleDuplicates')}\n\n${list}\n\n${t('patient.registerAnyway')}`)) return
+      }
+    } catch {
+      // The warning is a convenience; registration still works without it.
+    }
   }
 
   isSubmitting.value = true

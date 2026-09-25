@@ -28,16 +28,52 @@ const canVerify = computed(() => auth.can('laboratory', 'approve'))
 const canFollowUp = computed(() => auth.can('appointment', 'create'))
 
 const { doctorQueue } = useDepartmentQueues()
-const worklist = useWorklist(doctorQueue)
+// "My patients": a doctor picks themselves; visits not assigned to anyone stay visible.
+const DOCTOR_FILTER_KEY = 'workstation.doctorFilter'
+const readFilter = () => {
+  try {
+    return localStorage.getItem(DOCTOR_FILTER_KEY) || ''
+  } catch {
+    return ''
+  }
+}
+const doctorFilter = ref(import.meta.client ? readFilter() : '')
+const doctors = ref<Array<{ _id: string, nameEn?: string, nameKh?: string }>>([])
+const doctorOptions = computed(() => [
+  { label: t('workstation.doctor.allDoctors'), value: '' },
+  ...doctors.value.map(d => ({ label: d.nameKh || d.nameEn || '-', value: String(d._id) }))
+])
+const worklist = useWorklist(async (day: string) => {
+  const items = await doctorQueue(day)
+  return doctorFilter.value ? items.filter(i => !i.doctorId || i.doctorId === doctorFilter.value) : items
+})
+watch(doctorFilter, (value) => {
+  try {
+    localStorage.setItem(DOCTOR_FILTER_KEY, value)
+  } catch {
+    // Remembering the filter is only a convenience.
+  }
+  worklist.refresh(true)
+})
 const record = useVisitRecord()
-const { labServices, echoServices, refreshData } = useOpdData()
-onMounted(() => refreshData())
+const { labServices, echoServices, allServices, categoryMap, refreshData } = useOpdData()
+onMounted(async () => {
+  refreshData()
+  try {
+    doctors.value = ((await $api('/visits/doctors')) as { data?: typeof doctors.value })?.data ?? []
+  } catch {
+    doctors.value = []
+  }
+})
 
 const selected = ref<WorklistItem | null>(null)
 const queueOpen = ref(false)
 const STATUSES: WorkStatus[] = ['waiting', 'triaged', 'in_consultation', 'awaiting_results', 'results_ready', 'completed', 'cancelled']
 
 const notes = ref('')
+const chiefComplaint = ref('')
+const examination = ref('')
+const plan = ref('')
 const diagnosis = ref<VisitDiagnosis[]>([])
 const bodyMarkers = ref<unknown[]>([])
 const bodySnapshot = ref('')
@@ -60,6 +96,9 @@ async function reload() {
   await record.load(selected.value.visitId)
   const v = record.visit.value
   notes.value = v?.notes || ''
+  chiefComplaint.value = v?.chiefComplaint || ''
+  examination.value = v?.examination || ''
+  plan.value = v?.plan || ''
   diagnosis.value = [...(v?.diagnosis || [])]
   bodyMarkers.value = [...(v?.bodyMarkers || [])]
   selectedServices.value = new Set()
@@ -92,6 +131,9 @@ async function saveConsultation(status?: 'in-progress' | 'completed') {
     const dx = diagnosis.value.map((d, i) => ({ ...d, isPrimary: diagnosis.value.some(x => x.isPrimary) ? !!d.isPrimary : i === 0 }))
     await record.updateVisit({
       notes: notes.value,
+      chiefComplaint: chiefComplaint.value.trim(),
+      examination: examination.value,
+      plan: plan.value,
       diagnosis: dx,
       bodyMarkers: bodyMarkers.value,
       ...(bodySnapshot.value ? { bodyChartSnapshot: bodySnapshot.value } : {}),
@@ -111,10 +153,16 @@ function setPrimary(index: number) {
 }
 
 // ---- 4. Orders -----------------------------------------------------------------------
+// Procedures and nursing services (injection, dressing, nebulisation ...): billed like tests.
+const procedureServices = computed(() => (allServices.value as OpdService[]).filter((s) => {
+  const group = categoryMap.value.get(s.categoryId || (s as { category?: string }).category || '')?.group
+  return group === 'nursing' || group === 'other' || group === 'package'
+}))
 const orderedServiceIds = computed(() => new Set((visit.value?.labRequests || []).filter(o => o.status !== 'cancelled').map(o => o.serviceId)))
 const orderGroups = computed(() => [
   { key: 'laboratory' as const, label: t('workstation.doctor.groupLab'), services: labServices.value as OpdService[] },
-  { key: 'imaging' as const, label: t('workstation.doctor.groupImaging'), services: echoServices.value as OpdService[] }
+  { key: 'imaging' as const, label: t('workstation.doctor.groupImaging'), services: echoServices.value as OpdService[] },
+  { key: 'other' as const, label: t('workstation.doctor.groupProcedures'), services: procedureServices.value }
 ].filter(group => group.services.length))
 const serviceName = (s: OpdService) => (locale.value === 'km' ? s.nameKh || s.nameEn : s.nameEn || s.nameKh)
 const selectedTotal = computed(() => orderGroups.value.flatMap(g => g.services).filter(s => selectedServices.value.has(s._id)).reduce((sum, s) => sum + (s.price || 0), 0))
@@ -133,8 +181,14 @@ async function sendOrders() {
   const failed: string[] = []
   for (const group of orderGroups.value) {
     for (const service of group.services.filter(s => selectedServices.value.has(s._id))) {
+      // A sensitive test (e.g. HIV) is only ordered with the patient's consent.
+      let consent: { counsellingNote?: string } | undefined
+      if (service.sensitive) {
+        if (!window.confirm(t('workstation.doctor.consentConfirm', { test: serviceName(service) }))) continue
+        consent = { counsellingNote: window.prompt(t('workstation.doctor.counsellingPrompt'))?.trim() || undefined }
+      }
       try {
-        await record.addOrder(service, group.key)
+        await record.addOrder(service, group.key, consent)
       } catch (err) {
         failed.push(`${serviceName(service)}: ${getApiErrorMessage(err, t('common.saveFailed'))}`)
       }
@@ -215,6 +269,15 @@ async function bookFollowUp() {
   }
 }
 
+async function verify(orderId: string) {
+  try {
+    await record.verifyOrder(orderId)
+    await reload()
+  } catch (err) {
+    toast.add({ title: t('common.error'), description: getApiErrorMessage(err, t('common.saveFailed')), color: 'error' })
+  }
+}
+
 async function finishToCashier() {
   if (!window.confirm(t('workstation.doctor.finishConfirm'))) return
   await saveConsultation('completed')
@@ -235,6 +298,15 @@ const vitalClass = (state: string | null) => (state === 'high' || state === 'inv
 <template>
   <WorkstationLayout v-model:queue-open="queueOpen" :title="t('workstation.pages.doctor')" icon="i-lucide-stethoscope">
     <template #queue>
+      <div v-if="doctors.length" class="border-b border-default p-2">
+        <USelect
+          v-model="doctorFilter"
+          :items="doctorOptions"
+          value-key="value"
+          size="sm"
+          class="w-full"
+        />
+      </div>
       <WorklistQueue
         v-model:day="worklist.day.value"
         v-model:status="worklist.statusFilter.value"
@@ -315,14 +387,44 @@ const vitalClass = (state: string | null) => (state === 'high' || state === 'inv
               {{ t('workstation.doctor.historyExam') }}
             </h2>
           </template>
-          <UTextarea
-            v-model="notes"
-            :rows="5"
-            autoresize
-            class="w-full"
-            :disabled="readOnly || !canSaveVisit"
-            :placeholder="t('workstation.doctor.historyPlaceholder')"
-          />
+          <UFormField :label="t('workstation.triage.chiefComplaint')" class="mb-3">
+            <UInput
+              v-model="chiefComplaint"
+              class="w-full"
+              :maxlength="500"
+              :disabled="readOnly || !canSaveVisit"
+            />
+          </UFormField>
+          <UFormField :label="t('workstation.doctor.history')">
+            <UTextarea
+              v-model="notes"
+              :rows="4"
+              autoresize
+              class="w-full"
+              :disabled="readOnly || !canSaveVisit"
+              :placeholder="t('workstation.doctor.historyPlaceholder')"
+            />
+          </UFormField>
+          <UFormField :label="t('workstation.doctor.examination')" class="mt-3">
+            <UTextarea
+              v-model="examination"
+              :rows="3"
+              autoresize
+              class="w-full"
+              :maxlength="4000"
+              :disabled="readOnly || !canSaveVisit"
+            />
+          </UFormField>
+          <UFormField :label="t('workstation.doctor.plan')" class="mt-3">
+            <UTextarea
+              v-model="plan"
+              :rows="2"
+              autoresize
+              class="w-full"
+              :maxlength="4000"
+              :disabled="readOnly || !canSaveVisit"
+            />
+          </UFormField>
           <details class="mt-3">
             <summary class="cursor-pointer text-sm font-medium">
               {{ t('workstation.doctor.bodyChart') }}
@@ -439,16 +541,24 @@ const vitalClass = (state: string | null) => (state === 'high' || state === 'inv
               <div class="mb-2 flex flex-wrap items-center gap-2">
                 <span class="font-medium">{{ locale === 'km' ? order.serviceNameKh || order.serviceName : order.serviceName }}</span>
                 <StatusChip :status="orderStatus(order.status)" size="xs" />
-                <UTooltip v-if="canVerify && order.status === 'completed'" :text="t('workstation.pendingBackend')">
-                  <UButton
-                    size="xs"
-                    variant="soft"
-                    icon="i-lucide-badge-check"
-                    :label="t('workstation.lab.verify')"
-                    disabled
-                    class="ml-auto"
-                  />
-                </UTooltip>
+                <UBadge
+                  v-if="order.verifiedAt"
+                  color="success"
+                  variant="subtle"
+                  size="xs"
+                  class="ml-auto"
+                >
+                  {{ t('workstation.lab.verified') }}
+                </UBadge>
+                <UButton
+                  v-else-if="canVerify && order.status === 'completed' && !order.redacted"
+                  size="xs"
+                  variant="soft"
+                  icon="i-lucide-badge-check"
+                  :label="t('workstation.lab.verify')"
+                  class="ml-auto"
+                  @click="verify(order._id)"
+                />
               </div>
               <LabResultTable v-if="order.category !== 'imaging'" :parameters="order.parameters || []" />
               <p v-else class="whitespace-pre-line text-sm">

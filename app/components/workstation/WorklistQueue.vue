@@ -93,6 +93,15 @@ const sexLabel = (gender?: number) => (gender === 2 ? t('workstation.sex.femaleS
             • {{ t('workstation.waitingMinutes', { n: minutesSince(item.arrivedAt, now) }) }}
           </span>
           <span v-if="item.subtitle" class="block truncate text-xs text-muted">{{ item.subtitle }}</span>
+          <UBadge
+            v-if="item.priority && item.priority !== 'NORMAL'"
+            :color="item.priority === 'EMERGENCY' ? 'error' : 'warning'"
+            variant="solid"
+            size="xs"
+            class="mt-1"
+          >
+            {{ t(`workstation.priority.${item.priority}`) }}
+          </UBadge>
         </span>
         <StatusChip :status="item.status" size="xs" />
       </button>

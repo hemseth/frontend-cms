@@ -37,8 +37,10 @@ export interface WorklistItem {
   visitId: string
   patientId: string
   patient: QueuePatient
-  /** Position in the day's arrival order; the backend has no queue number yet. */
+  /** The day's queue number given at check-in (older visits: arrival order). */
   queueNo: number
+  priority?: 'EMERGENCY' | 'URGENT' | 'NORMAL'
+  doctorId?: string
   arrivedAt: string
   status: WorkStatus
   /** Extra line under the name, e.g. the ordered service. */
@@ -68,6 +70,11 @@ export interface LabOrder {
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
   requestedAt?: string
   completedAt?: string
+  sensitive?: boolean
+  /** A sensitive test shown without its name or result (docs/OPD_CLINIC_FLOW.md). */
+  redacted?: boolean
+  sampleCollectedAt?: string
+  verifiedAt?: string
 }
 
 export interface Vitals {
@@ -142,6 +149,12 @@ export interface VisitDetail {
   type?: 'opd' | 'ipd'
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
   notes?: string
+  chiefComplaint?: string
+  examination?: string
+  plan?: string
+  triagePriority?: 'EMERGENCY' | 'URGENT' | 'NORMAL'
+  queueNo?: number
+  consultRoom?: string
   vitals?: Vitals
   diagnosis?: VisitDiagnosis[]
   bodyMarkers?: unknown[]

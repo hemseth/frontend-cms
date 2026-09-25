@@ -63,8 +63,36 @@
     "deviceSessions": "Devices and sessions"
   },
   "workstation": {
+    "priority": {
+      "label": "Priority",
+      "EMERGENCY": "Emergency",
+      "URGENT": "Urgent",
+      "NORMAL": "Normal"
+    },
+    "reception": {
+      "anyDoctor": "Any doctor",
+      "checkedIn": "Checked in — queue number {no}",
+      "findFirst": "Booked by name only: find or register the patient first",
+      "selected": "No. {no} — {name}",
+      "printTicket": "Print ticket",
+      "findPatient": "Find patient",
+      "register": "Register new patient",
+      "searchPlaceholder": "Name, phone or patient number",
+      "checkIn": "Check in",
+      "noMatch": "No patient found. Register a new patient.",
+      "checkInTitle": "Check in {name}",
+      "doctor": "Doctor",
+      "room": "Room",
+      "checkInPrint": "Check in and print ticket",
+      "appointments": "Today's appointments"
+    },
+    "ticket": {
+      "queueNumber": "Queue number",
+      "pleaseWait": "Please wait until your number is called"
+    },
     "nav": "Workstations",
     "pages": {
+      "reception": "Reception",
       "triage": "Triage",
       "doctor": "Doctor",
       "lab": "Laboratory",
@@ -139,11 +167,20 @@
       "fixFields": "Check: {fields}"
     },
     "triage": {
+      "chiefComplaint": "Chief complaint",
+      "chiefComplaintPlaceholder": "What brings the patient today, and for how long",
       "sendToDoctor": "Send to doctor",
       "sent": "Vitals saved; the patient is in the doctor's queue",
       "chiefComplaintPending": "Chief complaint has no field on the visit yet."
     },
     "doctor": {
+      "allDoctors": "All doctors",
+      "groupProcedures": "Procedures & nursing",
+      "consentConfirm": "{test} is a sensitive test. Has the patient been counselled and given consent?",
+      "counsellingPrompt": "Counselling note (optional)",
+      "history": "History",
+      "examination": "Examination",
+      "plan": "Plan",
       "allergyReasonPrompt": "This medicine conflicts with the allergy \"{allergy}\". To prescribe it anyway, enter the reason:",
       "triageSummary": "Triage summary",
       "noVitals": "No vitals recorded yet.",
@@ -195,6 +232,9 @@
       "referOut": "Refer out"
     },
     "lab": {
+      "sampleCollected": "Sample collected",
+      "sampleAt": "Sample {time}",
+      "verified": "Verified",
       "parameter": "Parameter",
       "result": "Result",
       "unit": "Unit",
@@ -379,6 +419,8 @@
     }
   },
   "patient": {
+    "possibleDuplicates": "This patient may already be registered:",
+    "registerAnyway": "Register a new patient anyway?",
     "title": "Patients",
     "list": "Patient List",
     "search": "Search Patient",
@@ -754,6 +796,10 @@
     "pendingLab": "Pending Lab"
   },
   "settings": {
+    "service": {
+      "sensitive": "Sensitive test (e.g. HIV)",
+      "sensitiveHelp": "Ordering needs the patient's consent; the name and result are hidden from staff who do not handle lab results, and it prints as a confidential test on invoices."
+    },
     "title": "Settings",
     "general": "General",
     "profile": "Profile",

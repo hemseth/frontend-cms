@@ -154,6 +154,8 @@ export interface OpdMedicine {
 
 export interface OpdService {
   _id: string
+  /** Sensitive test (e.g. HIV): ordering needs the patient's consent. */
+  sensitive?: boolean
   code: string
   nameEn: string
   nameKh: string

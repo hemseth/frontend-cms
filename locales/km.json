@@ -63,8 +63,36 @@
     "deviceSessions": "ឧបករណ៍ និងវគ្គចូលប្រើ"
   },
   "workstation": {
+    "priority": {
+      "label": "អាទិភាព",
+      "EMERGENCY": "បន្ទាន់ខ្លាំង",
+      "URGENT": "បន្ទាន់",
+      "NORMAL": "ធម្មតា"
+    },
+    "reception": {
+      "anyDoctor": "វេជ្ជបណ្ឌិតណាក៏បាន",
+      "checkedIn": "បានចុះឈ្មោះ — លេខរង់ចាំ {no}",
+      "findFirst": "ការណាត់មានតែឈ្មោះ៖ សូមស្វែងរក ឬចុះឈ្មោះអ្នកជំងឺជាមុនសិន",
+      "selected": "លេខ {no} — {name}",
+      "printTicket": "បោះពុម្ពសំបុត្រ",
+      "findPatient": "ស្វែងរកអ្នកជំងឺ",
+      "register": "ចុះឈ្មោះអ្នកជំងឺថ្មី",
+      "searchPlaceholder": "ឈ្មោះ លេខទូរស័ព្ទ ឬលេខអ្នកជំងឺ",
+      "checkIn": "ចុះឈ្មោះពិនិត្យ",
+      "noMatch": "រកមិនឃើញអ្នកជំងឺ។ សូមចុះឈ្មោះអ្នកជំងឺថ្មី។",
+      "checkInTitle": "ចុះឈ្មោះពិនិត្យ {name}",
+      "doctor": "វេជ្ជបណ្ឌិត",
+      "room": "បន្ទប់",
+      "checkInPrint": "ចុះឈ្មោះ និងបោះពុម្ពសំបុត្រ",
+      "appointments": "ការណាត់ជួបថ្ងៃនេះ"
+    },
+    "ticket": {
+      "queueNumber": "លេខរង់ចាំ",
+      "pleaseWait": "សូមរង់ចាំរហូតដល់ហៅលេខរបស់អ្នក"
+    },
     "nav": "Workstations",
     "pages": {
+      "reception": "ទទួលភ្ញៀវ",
       "triage": "Triage",
       "doctor": "Doctor",
       "lab": "Laboratory",
@@ -139,11 +167,20 @@
       "fixFields": "Check: {fields}"
     },
     "triage": {
+      "chiefComplaint": "រោគសញ្ញាចម្បង",
+      "chiefComplaintPlaceholder": "មូលហេតុមកពិនិត្យថ្ងៃនេះ និងរយៈពេល",
       "sendToDoctor": "Send to doctor",
       "sent": "Vitals saved; the patient is in the doctor's queue",
       "chiefComplaintPending": "Chief complaint has no field on the visit yet."
     },
     "doctor": {
+      "allDoctors": "វេជ្ជបណ្ឌិតទាំងអស់",
+      "groupProcedures": "សេវាព្យាបាល និងថែទាំ",
+      "consentConfirm": "{test} ជាតេស្តសម្ងាត់។ តើអ្នកជំងឺបានទទួលការប្រឹក្សា និងយល់ព្រមហើយឬនៅ?",
+      "counsellingPrompt": "កំណត់ចំណាំការប្រឹក្សា (មិនចាំបាច់)",
+      "history": "ប្រវត្តិជំងឺ",
+      "examination": "ការពិនិត្យរាងកាយ",
+      "plan": "ផែនការព្យាបាល",
       "allergyReasonPrompt": "ថ្នាំនេះប៉ះនឹងប្រតិកម្ម \"{allergy}\"។ ដើម្បីចេញវេជ្ជបញ្ជាដដែល សូមបញ្ចូលមូលហេតុ៖",
       "triageSummary": "Triage summary",
       "noVitals": "No vitals recorded yet.",
@@ -195,6 +232,9 @@
       "referOut": "Refer out"
     },
     "lab": {
+      "sampleCollected": "បានយកសំណាក",
+      "sampleAt": "សំណាក {time}",
+      "verified": "បានផ្ទៀងផ្ទាត់",
       "parameter": "Parameter",
       "result": "Result",
       "unit": "Unit",
@@ -379,6 +419,8 @@
     }
   },
   "patient": {
+    "possibleDuplicates": "អ្នកជំងឺនេះប្រហែលជាបានចុះឈ្មោះរួចហើយ៖",
+    "registerAnyway": "ចុះឈ្មោះអ្នកជំងឺថ្មីទៀតឬ?",
     "title": "អ្នកជំងឺ",
     "list": "បញ្ជីអ្នកជំងឺ",
     "search": "ស្វែងរកអ្នកជំងឺ",
@@ -752,6 +794,10 @@
     "pendingLab": "កំពុងរង់ចាំ"
   },
   "settings": {
+    "service": {
+      "sensitive": "តេស្តសម្ងាត់ (ឧ. HIV)",
+      "sensitiveHelp": "ត្រូវការការយល់ព្រមពីអ្នកជំងឺ។ ឈ្មោះ និងលទ្ធផលត្រូវលាក់ពីបុគ្គលិកដែលមិនមែនជាអ្នកមន្ទីរពិសោធន៍ ហើយបោះពុម្ពជា «តេស្តសម្ងាត់» លើវិក្កយបត្រ។"
+    },
     "title": "ការកំណត់",
     "general": "ទូទៅ",
     "profile": "ព័ត៌មានផ្ទាល់ខ្លួន",
