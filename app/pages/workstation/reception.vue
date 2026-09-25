@@ -57,10 +57,11 @@ const isAddOpen = ref(false)
 const patient = ref<PatientRow | null>(null)
 const appointmentId = ref('')
 const doctors = ref<Array<{ _id: string, nameEn?: string, nameKh?: string }>>([])
-const form = reactive({ doctorId: '', consultRoom: '', triagePriority: 'NORMAL' as 'EMERGENCY' | 'URGENT' | 'NORMAL', chiefComplaint: '' })
+const ANY_DOCTOR = 'any'
+const form = reactive({ doctorId: ANY_DOCTOR, consultRoom: '', triagePriority: 'NORMAL' as 'EMERGENCY' | 'URGENT' | 'NORMAL', chiefComplaint: '' })
 const isCheckingIn = ref(false)
 const doctorOptions = computed(() => [
-  { label: t('workstation.reception.anyDoctor'), value: '' },
+  { label: t('workstation.reception.anyDoctor'), value: ANY_DOCTOR },
   ...doctors.value.map(d => ({ label: d.nameKh || d.nameEn || '-', value: String(d._id) }))
 ])
 const priorityOptions = computed(() => (['EMERGENCY', 'URGENT', 'NORMAL'] as const).map(p => ({ label: t(`workstation.priority.${p}`), value: p })))
@@ -69,7 +70,7 @@ function pick(row: PatientRow, fromAppointment?: AppointmentRow) {
   patient.value = row
   appointmentId.value = fromAppointment?._id || ''
   const doctor = fromAppointment?.doctorId
-  form.doctorId = doctor ? String(typeof doctor === 'object' ? doctor._id : doctor) : ''
+  form.doctorId = doctor ? String(typeof doctor === 'object' ? doctor._id : doctor) : ANY_DOCTOR
   form.consultRoom = ''
   form.triagePriority = 'NORMAL'
   form.chiefComplaint = fromAppointment?.reason || ''
@@ -87,7 +88,7 @@ async function checkIn() {
       method: 'POST',
       body: {
         tzOffset: new Date().getTimezoneOffset(),
-        ...(form.doctorId ? { doctorId: form.doctorId } : {}),
+        ...(form.doctorId && form.doctorId !== ANY_DOCTOR ? { doctorId: form.doctorId } : {}),
         ...(form.consultRoom.trim() ? { consultRoom: form.consultRoom.trim() } : {}),
         triagePriority: form.triagePriority,
         ...(form.chiefComplaint.trim() ? { chiefComplaint: form.chiefComplaint.trim() } : {}),

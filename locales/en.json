@@ -1,4 +1,7 @@
 {
+  "roles": {
+    "deleteConfirm": "Are you sure you want to delete this? This cannot be undone."
+  },
   "app": {
     "name": "Clinic Management System",
     "welcome": "Welcome",
@@ -473,6 +476,7 @@
     "name": "Name"
   },
   "visit": {
+    "admissionInfo": "Admission information",
     "title": "Visits",
     "new": "New Visit",
     "edit": "Edit Visit",
@@ -508,6 +512,7 @@
     "oxygen": "SpO2 (%)"
   },
   "medicine": {
+    "name": "Medicine name",
     "code":"Code",
     "title": "Medicines",
     "search": "Search Medicine",
@@ -634,6 +639,16 @@
     "total": "Total"
   },
   "common": {
+    "confirmDelete": "Are you sure you want to delete this?",
+    "endDate": "End date",
+    "equipment": "Equipment",
+    "nameEn": "Name (English)",
+    "nameKh": "Name (Khmer)",
+    "ordered": "Ordered",
+    "other": "Other",
+    "rent": "Rent",
+    "startDate": "Start date",
+    "utility": "Utilities",
     "number": "#",
     "add": "Add",
     "addNew":"Add New",
@@ -1108,6 +1123,9 @@
     "count": "Count"
   },
   "staff": {
+    "deleteFailed": "Could not delete the staff member",
+    "deleteSuccess": "Staff member deleted",
+    "salary": "Salary",
     "title": "Staff Management",
     "edit": "Edit Staff",
     "add": "Add New Staff",
@@ -1180,6 +1198,7 @@
     "search": "Search Supplier"
   },
   "purchase": {
+    "tax": "Tax",
     "title": "Purchases",
     "list": "Purchase List",
     "add": "Add Purchase",
@@ -1213,6 +1232,8 @@
     "noProduct": "No Product Found"
   },
   "revenue": {
+    "purchase": "Purchase",
+    "search": "Search revenues",
     "title": "Revenues",
     "list": "Revenue List",
     "add": "Add Revenue",
@@ -1226,6 +1247,7 @@
     "grandTotal": "Grand Total"
   },
   "expense": {
+    "search": "Search expenses",
     "title": "Expenses",
     "list": "Expense List",
     "add": "Add Expense",
@@ -1239,6 +1261,7 @@
     "grandTotal": "Grand Total"
   },
   "payroll": {
+    "addSalary": "Add salary",
     "title": "Payroll",
     "list": "Payroll List",
     "add": "Add Payroll",

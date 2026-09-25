@@ -30,22 +30,23 @@ const canFollowUp = computed(() => auth.can('appointment', 'create'))
 const { doctorQueue } = useDepartmentQueues()
 // "My patients": a doctor picks themselves; visits not assigned to anyone stay visible.
 const DOCTOR_FILTER_KEY = 'workstation.doctorFilter'
+const ALL_DOCTORS = 'all'
 const readFilter = () => {
   try {
-    return localStorage.getItem(DOCTOR_FILTER_KEY) || ''
+    return localStorage.getItem(DOCTOR_FILTER_KEY) || ALL_DOCTORS
   } catch {
-    return ''
+    return ALL_DOCTORS
   }
 }
-const doctorFilter = ref(import.meta.client ? readFilter() : '')
+const doctorFilter = ref(import.meta.client ? readFilter() : ALL_DOCTORS)
 const doctors = ref<Array<{ _id: string, nameEn?: string, nameKh?: string }>>([])
 const doctorOptions = computed(() => [
-  { label: t('workstation.doctor.allDoctors'), value: '' },
+  { label: t('workstation.doctor.allDoctors'), value: ALL_DOCTORS },
   ...doctors.value.map(d => ({ label: d.nameKh || d.nameEn || '-', value: String(d._id) }))
 ])
 const worklist = useWorklist(async (day: string) => {
   const items = await doctorQueue(day)
-  return doctorFilter.value ? items.filter(i => !i.doctorId || i.doctorId === doctorFilter.value) : items
+  return doctorFilter.value && doctorFilter.value !== ALL_DOCTORS ? items.filter(i => !i.doctorId || i.doctorId === doctorFilter.value) : items
 })
 watch(doctorFilter, (value) => {
   try {
@@ -677,9 +678,6 @@ const vitalClass = (state: string | null) => (state === 'high' || state === 'inv
               {{ t('workstation.doctor.planFollowUp') }}
             </h2>
           </template>
-          <p class="mb-3 text-sm text-muted">
-            {{ t('workstation.doctor.planPending') }}
-          </p>
           <div v-if="canFollowUp" class="flex flex-wrap items-end gap-2">
             <UFormField :label="t('workstation.doctor.followUpDate')">
               <UInput v-model="followUpDate" type="date" />

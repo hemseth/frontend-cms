@@ -138,14 +138,6 @@ watch(() => worklist.day.value, () => {
               <span v-if="order.requestedAt" class="text-xs text-muted">
                 {{ t('workstation.lab.requestedAt', { time: new Date(order.requestedAt).toLocaleString() }) }}
               </span>
-              <UTooltip :text="t('workstation.pendingBackend')" class="ml-auto">
-                <UButton
-                  :label="t('workstation.lab.collectSample')"
-                  icon="i-lucide-test-tube"
-                  variant="soft"
-                  disabled
-                />
-              </UTooltip>
             </div>
           </template>
 

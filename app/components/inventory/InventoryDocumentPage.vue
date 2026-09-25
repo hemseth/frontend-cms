@@ -34,7 +34,10 @@ const { fetchWarehouses, fetchBatches } = useStock()
 
 const docs = ref<InventoryDoc[]>([])
 const warehouses = ref<WarehouseRef[]>([])
-const statusFilter = ref('')
+// Select items may not have an empty value, so "all" / "any" have their own values.
+const ALL_STATUSES = 'ALL'
+const ANY_BATCH = '__any__'
+const statusFilter = ref(ALL_STATUSES)
 const isLoading = ref(true)
 const loadError = ref('')
 const busyId = ref('')
@@ -46,7 +49,7 @@ const warehouseName = (id: unknown) => {
 }
 const warehouseOptions = computed(() => warehouses.value.map(w => ({ label: warehouseName(w._id), value: w._id })))
 const statusOptions = computed(() => [
-  { label: t('pharmacy.docs.allStatuses'), value: '' },
+  { label: t('pharmacy.docs.allStatuses'), value: ALL_STATUSES },
   ...Object.keys(props.config.actions).concat(['COMPLETED', 'RECEIVED', 'POSTED', 'RETURNED', 'CANCELLED', 'REJECTED'])
     .filter((value, index, all) => all.indexOf(value) === index)
     .map(value => ({ label: value, value }))
@@ -57,7 +60,7 @@ async function load() {
   loadError.value = ''
   try {
     const [list, wh]: [{ data?: InventoryDoc[] }, WarehouseRef[]] = await Promise.all([
-      $api(props.config.endpoint, { params: statusFilter.value ? { status: statusFilter.value } : {} }),
+      $api(props.config.endpoint, { params: statusFilter.value && statusFilter.value !== ALL_STATUSES ? { status: statusFilter.value } : {} }),
       warehouses.value.length ? Promise.resolve(warehouses.value) : fetchWarehouses()
     ])
     docs.value = list?.data ?? []
@@ -158,7 +161,7 @@ const createError = computed(() => {
   for (const [index, line] of lines.value.entries()) {
     const n = index + 1
     if (!line.medicine) return t('pharmacy.docs.lineMedicine', { n })
-    if (props.config.batchRequired && !line.batchId) return t('pharmacy.docs.lineBatch', { n })
+    if (props.config.batchRequired && (!line.batchId || line.batchId === ANY_BATCH)) return t('pharmacy.docs.lineBatch', { n })
     const qty = Number(line.qty)
     if (!qty || (!props.config.allowNegativeQty && qty < 0)) return t('pharmacy.docs.lineQty', { n })
   }
@@ -179,7 +182,7 @@ function buildBody() {
     const qtyKey = props.config.qtyKey ?? 'qtyBase'
     body[props.config.linesKey] = lines.value.map(line => ({
       medicineId: line.medicine!._id,
-      ...(line.batchId ? { batchId: line.batchId } : {}),
+      ...(line.batchId && line.batchId !== ANY_BATCH ? { batchId: line.batchId } : {}),
       [qtyKey]: Number(line.qty)
     }))
   }
@@ -384,7 +387,7 @@ function statusColor(status: string) {
                 v-model="line.batchId"
                 class="sm:col-span-4"
                 :items="[
-                  ...(config.batchRequired ? [] : [{ label: t('pharmacy.docs.anyBatch'), value: '' }]),
+                  ...(config.batchRequired ? [] : [{ label: t('pharmacy.docs.anyBatch'), value: ANY_BATCH }]),
                   ...line.batches.map(batch => ({ label: batchLabel(batch), value: batch._id }))
                 ]"
                 :placeholder="t('pharmacy.docs.batch')"

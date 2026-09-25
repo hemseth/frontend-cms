@@ -65,6 +65,16 @@ function applyTemplate(value: (typeof TEMPLATES)[number]) {
   conclusion.value = t(`workstation.echo.template.${value}.conclusion`)
 }
 
+async function verify() {
+  if (!order.value) return
+  try {
+    await record.verifyOrder(order.value._id)
+    await record.load(order.value.visitId)
+  } catch (err) {
+    toast.add({ title: t('common.error'), description: getApiErrorMessage(err, t('common.saveFailed')), color: 'error' })
+  }
+}
+
 async function save(submit: boolean) {
   if (!order.value || locked.value) return
   if (submit && !conclusion.value.trim()) {
@@ -183,14 +193,16 @@ watch(() => worklist.day.value, () => {
                 :disabled="!isPaid"
                 @click="print"
               />
-              <UTooltip v-if="canVerify" :text="t('workstation.pendingBackend')">
-                <UButton
-                  :label="t('workstation.lab.verify')"
-                  icon="i-lucide-badge-check"
-                  variant="soft"
-                  disabled
-                />
-              </UTooltip>
+              <UBadge v-if="order.verifiedAt" color="success" variant="subtle">
+                {{ t('workstation.lab.verified') }}
+              </UBadge>
+              <UButton
+                v-else-if="canVerify && order.status === 'completed'"
+                :label="t('workstation.lab.verify')"
+                icon="i-lucide-badge-check"
+                variant="soft"
+                @click="verify"
+              />
               <UButton
                 :label="t('workstation.lab.saveDraft')"
                 icon="i-lucide-save"
