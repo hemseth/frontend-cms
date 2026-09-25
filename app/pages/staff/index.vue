@@ -312,11 +312,7 @@ async function exportToExcelFile() {
     status: s.active === 1 ? 'active' : 'inactive'
   }))
 
-  const XLSX = await import('xlsx')
-  const worksheet = XLSX.utils.json_to_sheet(data)
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Staff')
-  XLSX.writeFile(workbook, 'Staff_Export.xlsx')
+  await downloadExcel('Staff_Export.xlsx', 'Staff', headers, data)
 }
 
 async function handleImport(event: Event) {
@@ -325,14 +321,14 @@ async function handleImport(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
-  const XLSX = await import('xlsx')
-  const arrayBuffer = await file.arrayBuffer()
-  const workbook = XLSX.read(arrayBuffer)
-  const sheetName = workbook.SheetNames[0]
-  if (!sheetName) return
-  const worksheet = workbook.Sheets[sheetName]
-  if (!worksheet) return
-  const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet)
+  let jsonData: any[]
+  try {
+    jsonData = await readExcelFile(file)
+  } catch (err) {
+    toast.add({ title: t('excel.importFailed'), description: excelImportErrorMessage(err, t), color: 'error' })
+    if (fileInput.value) fileInput.value.value = ''
+    return
+  }
 
   let successCount = 0
   let errorCount = 0

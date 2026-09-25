@@ -32,6 +32,15 @@
     "diagnosisManagement": "Diagnosis Management",
     "administration": "Administration"
   },
+  "excel": {
+    "importFailed": "Import failed",
+    "errors": {
+      "fileTooLarge": "The file is larger than {max} MB.",
+      "invalidWorkbook": "This file could not be read as an Excel workbook.",
+      "tooManyRows": "The file has more than {max} rows. Split it into smaller files.",
+      "cellTooLong": "Row {row}, column \"{column}\" is longer than {max} characters."
+    }
+  },
   "patient": {
     "title": "Patients",
     "list": "Patient List",

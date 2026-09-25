@@ -14,8 +14,10 @@ export default defineNuxtConfig({
     ]
   },
 
+  // DevTools exposes an unauthenticated RPC (advisory: remote code execution), so it is only
+  // enabled for local development, never in a build that could be served elsewhere.
   devtools: {
-    enabled: true
+    enabled: process.env.NODE_ENV === 'development'
   },
 
   app: {

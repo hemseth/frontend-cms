@@ -1,5 +1,5 @@
 import { useCookie, useRuntimeConfig } from '#app'
-import { useAuth } from '~/composables/useAuth'
+import { useAuth, authCookieOptions } from '~/composables/useAuth'
 import type { FetchOptions } from 'ofetch'
 
 interface RefreshResponse {
@@ -12,7 +12,7 @@ let isRefreshing: Promise<RefreshResponse> | null = null
 export const $api = async <T = any>(path: string, options: FetchOptions = {}): Promise<any> => {
   const config = useRuntimeConfig()
   const { accessToken, refreshToken, logout, user } = useAuth()
-  const selectedClinicId = useCookie<string | null>('developer_clinic_id')
+  const selectedClinicId = useCookie<string | null>('developer_clinic_id', authCookieOptions())
 
   // The backend only allows a developer to select another clinic via
   // X-Clinic-Id (tenantMiddleware). Never send it for non-developers, even if

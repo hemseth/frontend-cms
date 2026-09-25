@@ -6,9 +6,7 @@ export interface ClinicContextOption {
 }
 
 export const useClinicContext = () => {
-  const selectedClinicId = useCookie<string | null>('developer_clinic_id', {
-    sameSite: 'lax'
-  })
+  const selectedClinicId = useCookie<string | null>('developer_clinic_id', authCookieOptions())
 
   const setSelectedClinicId = (clinicId: string | null) => {
     selectedClinicId.value = clinicId || null
