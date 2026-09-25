@@ -10,8 +10,8 @@ import WorkstationState from '~/components/workstation/WorkstationState.vue'
 const { t } = useI18n()
 const toast = useToast()
 const auth = useAuth()
-// Vitals are written through the visit update route, which the backend checks as patient:update.
-const allowed = computed(() => auth.can('visit', 'update') && auth.can('patient', 'update'))
+// Vitals are written through the visit update route, checked as visit:update.
+const allowed = computed(() => auth.can('visit', 'update'))
 
 const { triageQueue } = useDepartmentQueues()
 const worklist = useWorklist(triageQueue)

@@ -20,9 +20,10 @@ const auth = useAuth()
 // The backend checks these routes against the patient prefix as well as their own resource,
 // so each section is enabled only when both slugs are held (see the backend gap list).
 const allowed = computed(() => auth.can('prescription', 'create'))
-const canSaveVisit = computed(() => auth.can('patient', 'update'))
-const canOrder = computed(() => auth.can('laboratory', 'create') && auth.can('patient', 'create'))
-const canPrescribe = computed(() => auth.can('prescription', 'create') && auth.can('patient', 'create'))
+// Nested visit routes are checked by their own resource (visit/laboratory/prescription).
+const canSaveVisit = computed(() => auth.can('visit', 'update'))
+const canOrder = computed(() => auth.can('laboratory', 'create'))
+const canPrescribe = computed(() => auth.can('prescription', 'create'))
 const canVerify = computed(() => auth.can('laboratory', 'approve'))
 const canFollowUp = computed(() => auth.can('appointment', 'create'))
 
