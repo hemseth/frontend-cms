@@ -32,6 +32,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
+    // API address for server-side rendering, set at runtime with NUXT_API_BASE_SERVER. In Docker
+    // the public address (http://localhost:4000/api) points at the frontend container itself,
+    // so pages rendered on the server could not load their data. Empty = use the public address.
+    apiBaseServer: '',
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api',
       googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '35029038689-imi2e24d90vjici54dibhjehahiv8fea.apps.googleusercontent.com'

@@ -21,7 +21,8 @@ export const $api = async <T = any>(path: string, options: FetchOptions = {}): P
   const isDeveloper = user.value?.role === 'developer'
 
   const fetcher = $fetch.create({
-    baseURL: config.public.apiBase,
+    // On the server use the internal API address when one is configured (see nuxt.config.ts).
+    baseURL: import.meta.server && config.apiBaseServer ? String(config.apiBaseServer) : config.public.apiBase,
     onRequest({ request, options }: { request: any, options: FetchOptions }) {
       const isRefreshPath = typeof request === 'string' && request.includes('/auth/refresh')
       console.log(`[API Request] ${request} | Has Token: ${!!accessToken.value} | Is Refresh: ${isRefreshPath}`)

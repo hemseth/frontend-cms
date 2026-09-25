@@ -52,7 +52,11 @@ export function useDepartmentQueues() {
   }
 
   async function ordersOfDay(day: string): Promise<LabOrder[]> {
-    const res: { data?: LabOrder[] } = await $api('/labs', { params: { dateFrom: day, dateTo: day } })
+    // The local day's start and end as instants: the server may run in another timezone.
+    const [y, m, d] = day.split('-').map(Number)
+    const from = new Date(y!, m! - 1, d!, 0, 0, 0, 0).toISOString()
+    const to = new Date(y!, m! - 1, d!, 23, 59, 59, 999).toISOString()
+    const res: { data?: LabOrder[] } = await $api('/labs', { params: { dateFrom: from, dateTo: to } })
     return res?.data ?? []
   }
 
