@@ -34,6 +34,8 @@ export function useDepartmentQueues() {
   async function visitsOfDay(day: string): Promise<Array<VisitRow & { queueNo: number, patient: QueuePatient }>> {
     const res: { data?: VisitRow[] } = await $api('/visits', { params: { limit: 300 } })
     const rows = (res?.data ?? [])
+      // An admission's IPD visit (docs/IPD.md) is not an outpatient waiting in a queue.
+      .filter(v => (v as { type?: string }).type !== 'ipd')
       .filter(v => isSameLocalDay(v.dateIn || v.createdAt, day))
       .sort((a, b) => new Date(a.dateIn || a.createdAt || 0).getTime() - new Date(b.dateIn || b.createdAt || 0).getTime())
     await ensure(rows.map(v => idOf(v.patientId)))

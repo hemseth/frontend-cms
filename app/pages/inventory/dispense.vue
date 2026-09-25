@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DispensePrescriptionForm from '~/components/pharmacy/DispensePrescriptionForm.vue'
+import WardSupplyForm from '~/components/pharmacy/WardSupplyForm.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -9,6 +10,8 @@ const route = useRoute()
 // /inventory/dispense?visitId=...
 const visitId = ref(String(route.query.visitId || ''))
 const patientId = ref(String(route.query.patientId || ''))
+// /inventory/dispense?admissionId=... : ward supply for an admitted patient (docs/IPD.md).
+const admissionId = String(route.query.admissionId || '')
 const allergies = ref<string[]>([])
 
 const lastDispensingId = ref('')
@@ -36,7 +39,9 @@ onMounted(loadPatientAllergies)
       </h1>
     </div>
 
+    <WardSupplyForm v-if="admissionId" :admission-id="admissionId" />
     <DispensePrescriptionForm
+      v-else
       :visit-id="visitId || undefined"
       :patient-id="patientId || undefined"
       :allergies="allergies"

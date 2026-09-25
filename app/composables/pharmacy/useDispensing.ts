@@ -16,6 +16,8 @@ import type { DispenseShortage, DispensingDoc, FefoPreviewRow, MedicineLabelData
 export interface DispenseLineInput {
   medicineId: string
   prescriptionItemId?: string
+  /** Inpatient medication order this ward supply is for (docs/IPD.md). */
+  inpatientOrderId?: string
   /** Quantity in the unit `conversionFactorSnapshot` converts from. */
   requestedQty: number
   /** Base units per requested unit. 1 when the form already works in base units. */
@@ -29,6 +31,8 @@ export interface DispensePayload {
   patientId?: string
   visitId?: string
   prescriptionId?: string
+  /** Ward supply for an admitted patient, charged to the admission's bill. */
+  admissionId?: string
   items: DispenseLineInput[]
 }
 

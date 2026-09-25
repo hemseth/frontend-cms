@@ -164,75 +164,99 @@
         </div>
       </div>
 
-      <!-- Rounds -->
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-sm flex items-center gap-2">
-              <UIcon name="i-lucide-history" class="w-5 h-5 text-primary-500" />
-              ប្រវត្តិពិនិត្យជុំសាល (Clinical Rounds &amp; Progress Notes)
-            </h3>
-            <UButton
-              v-if="isActive"
-              label="បន្ថែម (Add Round)"
-              icon="i-lucide-plus"
-              size="xs"
-              @click="isRoundModalOpen = true"
-            />
-          </div>
+      <UTabs
+        v-model="activeTab"
+        :items="tabItems"
+        class="w-full"
+        :unmount-on-hide="false"
+      >
+        <template #orders>
+          <IpdOrdersTab :admission-id="admissionId" :active="isActive" :allergies="allergyList" />
         </template>
-
-        <UAlert
-          v-if="roundsError"
-          color="error"
-          variant="subtle"
-          icon="i-lucide-circle-alert"
-          :title="roundsError"
-        />
-        <p v-else-if="rounds.length === 0" class="text-sm text-muted text-center py-6">
-          មិនទាន់មានការពិនិត្យជុំសាលនៅឡើយទេ (No rounds recorded yet)
-        </p>
-        <div v-else class="space-y-4">
-          <div
-            v-for="round in rounds"
-            :key="round._id"
-            class="p-4 rounded-xl bg-muted/70 border border-default/80 space-y-3 text-xs"
-          >
-            <div class="flex items-center justify-between pb-2 border-b border-default">
-              <div class="flex items-center gap-2">
-                <span class="font-bold">
-                  {{ formatDate(round.roundDate) }} • {{ formatTime(round.roundDate) }}
-                </span>
-                <UBadge color="primary" variant="subtle" size="xs">
-                  {{ round.roundType }}
-                </UBadge>
+        <template #mar>
+          <IpdMarTab :admission-id="admissionId" :active="isActive" />
+        </template>
+        <template #chart>
+          <IpdChartTab :admission-id="admissionId" :active="isActive" />
+        </template>
+        <template #labs>
+          <IpdLabsTab :admission-id="admissionId" :active="isActive" />
+        </template>
+        <template #bill>
+          <IpdBillTab :admission-id="admissionId" />
+        </template>
+        <template #rounds>
+          <!-- Rounds -->
+          <UCard class="mt-3">
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                  <UIcon name="i-lucide-history" class="w-5 h-5 text-primary-500" />
+                  ប្រវត្តិពិនិត្យជុំសាល (Clinical Rounds &amp; Progress Notes)
+                </h3>
+                <UButton
+                  v-if="isActive"
+                  label="បន្ថែម (Add Round)"
+                  icon="i-lucide-plus"
+                  size="xs"
+                  @click="isRoundModalOpen = true"
+                />
               </div>
-              <span class="font-bold text-primary-700 dark:text-primary-400">
-                {{ round.doctorId?.nameKh || round.doctorId?.nameEn || '' }}
-              </span>
-            </div>
+            </template>
 
-            <div v-if="round.vitalsSnapshot" class="flex flex-wrap gap-x-4 gap-y-1 p-2.5 rounded-lg bg-default border border-default">
-              <span v-if="round.vitalsSnapshot.bp"><span class="text-muted">BP</span> <b>{{ round.vitalsSnapshot.bp }}</b></span>
-              <span v-if="round.vitalsSnapshot.temp"><span class="text-muted">Temp</span> <b>{{ round.vitalsSnapshot.temp }} °C</b></span>
-              <span v-if="round.vitalsSnapshot.pulse"><span class="text-muted">Pulse</span> <b>{{ round.vitalsSnapshot.pulse }}</b></span>
-              <span v-if="round.vitalsSnapshot.spo2"><span class="text-muted">SpO2</span> <b>{{ round.vitalsSnapshot.spo2 }} %</b></span>
-              <span v-if="round.vitalsSnapshot.respiratoryRate"><span class="text-muted">RR</span> <b>{{ round.vitalsSnapshot.respiratoryRate }}</b></span>
-            </div>
+            <UAlert
+              v-if="roundsError"
+              color="error"
+              variant="subtle"
+              icon="i-lucide-circle-alert"
+              :title="roundsError"
+            />
+            <p v-else-if="rounds.length === 0" class="text-sm text-muted text-center py-6">
+              មិនទាន់មានការពិនិត្យជុំសាលនៅឡើយទេ (No rounds recorded yet)
+            </p>
+            <div v-else class="space-y-4">
+              <div
+                v-for="round in rounds"
+                :key="round._id"
+                class="p-4 rounded-xl bg-muted/70 border border-default/80 space-y-3 text-xs"
+              >
+                <div class="flex items-center justify-between pb-2 border-b border-default">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold">
+                      {{ formatDate(round.roundDate) }} • {{ formatTime(round.roundDate) }}
+                    </span>
+                    <UBadge color="primary" variant="subtle" size="xs">
+                      {{ round.roundType }}
+                    </UBadge>
+                  </div>
+                  <span class="font-bold text-primary-700 dark:text-primary-400">
+                    {{ round.doctorId?.nameKh || round.doctorId?.nameEn || '' }}
+                  </span>
+                </div>
 
-            <dl class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div v-for="field in soapFields.filter(f => round[f.key])" :key="field.key">
-                <dt class="font-bold text-default">
-                  {{ field.label }}
-                </dt>
-                <dd class="text-toned mt-0.5 whitespace-pre-line">
-                  {{ round[field.key] }}
-                </dd>
+                <div v-if="round.vitalsSnapshot" class="flex flex-wrap gap-x-4 gap-y-1 p-2.5 rounded-lg bg-default border border-default">
+                  <span v-if="round.vitalsSnapshot.bp"><span class="text-muted">BP</span> <b>{{ round.vitalsSnapshot.bp }}</b></span>
+                  <span v-if="round.vitalsSnapshot.temp"><span class="text-muted">Temp</span> <b>{{ round.vitalsSnapshot.temp }} °C</b></span>
+                  <span v-if="round.vitalsSnapshot.pulse"><span class="text-muted">Pulse</span> <b>{{ round.vitalsSnapshot.pulse }}</b></span>
+                  <span v-if="round.vitalsSnapshot.spo2"><span class="text-muted">SpO2</span> <b>{{ round.vitalsSnapshot.spo2 }} %</b></span>
+                  <span v-if="round.vitalsSnapshot.respiratoryRate"><span class="text-muted">RR</span> <b>{{ round.vitalsSnapshot.respiratoryRate }}</b></span>
+                </div>
+
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div v-for="field in soapFields.filter(f => round[f.key])" :key="field.key">
+                    <dt class="font-bold text-default">
+                      {{ field.label }}
+                    </dt>
+                    <dd class="text-toned mt-0.5 whitespace-pre-line">
+                      {{ round[field.key] }}
+                    </dd>
+                  </div>
+                </dl>
               </div>
-            </dl>
-          </div>
-        </div>
-      </UCard>
+            </div>
+          </UCard>
+        </template>
+      </UTabs>
     </template>
 
     <TransferBedModal v-model:open="isTransferModalOpen" :admission="admission" @transferred="fetchDetails" />
@@ -248,6 +272,24 @@ import TransferBedModal from '~/components/inpatient/TransferBedModal.vue'
 import ChangeDoctorModal from '~/components/inpatient/ChangeDoctorModal.vue'
 import DischargeModal from '~/components/inpatient/DischargeModal.vue'
 import AdmissionRoundModal from '~/components/inpatient/AdmissionRoundModal.vue'
+import IpdOrdersTab from '~/components/inpatient/IpdOrdersTab.vue'
+import IpdMarTab from '~/components/inpatient/IpdMarTab.vue'
+import IpdChartTab from '~/components/inpatient/IpdChartTab.vue'
+import IpdLabsTab from '~/components/inpatient/IpdLabsTab.vue'
+import IpdBillTab from '~/components/inpatient/IpdBillTab.vue'
+
+const { t } = useI18n()
+const auth = useAuth()
+const activeTab = ref('rounds')
+// Treatment tabs (docs/IPD.md); the bill is shown to users who can see payments.
+const tabItems = computed(() => [
+  { label: t('ipd.tabs.rounds'), value: 'rounds', slot: 'rounds' as const, icon: 'i-lucide-history' },
+  { label: t('ipd.tabs.orders'), value: 'orders', slot: 'orders' as const, icon: 'i-lucide-pill' },
+  { label: t('ipd.tabs.mar'), value: 'mar', slot: 'mar' as const, icon: 'i-lucide-clipboard-check' },
+  { label: t('ipd.tabs.chart'), value: 'chart', slot: 'chart' as const, icon: 'i-lucide-activity' },
+  { label: t('ipd.tabs.labs'), value: 'labs', slot: 'labs' as const, icon: 'i-lucide-flask-conical' },
+  ...(auth.can('payment', 'read') ? [{ label: t('ipd.tabs.bill'), value: 'bill', slot: 'bill' as const, icon: 'i-lucide-receipt' }] : [])
+])
 
 const route = useRoute()
 const admissionId = String(route.params.id || '')
@@ -287,10 +329,10 @@ const diagnosisLabel = computed(() => {
   if (!dx) return ''
   return [dx.code, dx.nameKh || dx.nameEn].filter(Boolean).join(' • ')
 })
-const allergyLabel = computed(() => (admission.value?.patient?.allergies || [])
+const allergyList = computed<string[]>(() => (admission.value?.patient?.allergies || [])
   .map((a: any) => typeof a === 'string' ? a : (a.allergen || a.name || a.substance))
-  .filter(Boolean)
-  .join(', '))
+  .filter(Boolean))
+const allergyLabel = computed(() => allergyList.value.join(', '))
 
 async function fetchRounds() {
   roundsError.value = ''
