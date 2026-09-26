@@ -184,7 +184,14 @@ const columns: TableColumn<any>[] = [
   {
     accessorKey: 'price',
     header: t('medicine.price'),
-    cell: ({ row }) => `$${Number(row.original.price).toFixed(2)}`
+    // Prices are stored in the medicine's own currency; some are riel ('KHR', older data 'KH').
+    cell: ({ row }) => {
+      const price = Number(row.original.price) || 0
+      const currency = String(row.original.currency || 'USD').toUpperCase()
+      return currency === 'KHR' || currency === 'KH'
+        ? `${price.toLocaleString('en-US', { maximumFractionDigits: 0 })} ៛`
+        : `$${price.toFixed(2)}`
+    }
   },
   {
     accessorKey: 'stock',
