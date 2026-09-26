@@ -13,11 +13,14 @@ function handleToggle() {
 </script>
 
 <template>
+  <!-- Theme surface tokens (not fixed colours) so light and dark mode match the sidebar; h-16
+       lines the bottom border up with the sidebar's header row. -->
   <header
-    class="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 border-b border-default bg-primary-100 dark:bg-gray-900/75">
+    class="sticky top-0 z-40 w-full flex-none border-b border-default bg-default/75 backdrop-blur lg:z-50"
+  >
     <div class="max-w-8xl mx-auto">
-      <div class="py-4 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 mx-4 lg:mx-0">
-        <div class="relative flex items-center">
+      <div class="h-16 flex items-center px-4 lg:px-8">
+        <div class="relative flex w-full items-center">
           <!-- Left: Toggle (Mobile) -->
           <UButton class="lg:hidden mr-4" variant="ghost" color="primary" size="md" square
             :icon="open ? 'i-lucide-chevron-left' : 'i-lucide-chevron-right'" aria-label="Toggle sidebar"
