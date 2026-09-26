@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
+import type { StaffMember } from '~/utils/staffProfile'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -149,6 +150,11 @@ const columns: TableColumn<any>[] = [
       const hasAccount = userMap.value.has(row.original._id)
       const items = [
         {
+          label: t('staff.profile.view'),
+          icon: 'i-lucide-id-card',
+          onSelect: () => viewProfile(row.original)
+        },
+        {
           label: t('common.edit'),
           icon: 'i-lucide-pencil',
           onSelect: () => editStaff(row.original)
@@ -192,6 +198,7 @@ const isAddModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
 const isUserModalOpen = ref(false)
 const isSalaryModalOpen = ref(false)
+const isProfileModalOpen = ref(false)
 const isDeleting = ref(false)
 const selectedStaff = ref<any>(null)
 const selectedStaffIdForAccount = ref<string | undefined>()
@@ -217,6 +224,16 @@ function createAccountFromStaff(staffId: string) {
 function editStaff(staff: any) {
   selectedStaff.value = staff
   isAddModalOpen.value = true
+}
+
+function viewProfile(staff: StaffMember) {
+  selectedStaff.value = staff
+  isProfileModalOpen.value = true
+}
+
+function editFromProfile(staff: StaffMember) {
+  isProfileModalOpen.value = false
+  editStaff(staff)
 }
 
 function viewSalary(staff: any) {
@@ -249,9 +266,6 @@ function openAddModal() {
   selectedStaff.value = null
   isAddModalOpen.value = true
 }
-
-
-
 
 function handleSuccess() {
   refresh()
@@ -412,7 +426,7 @@ async function handleImport(event: Event) {
               accept=".xlsx,.xls"
               class="hidden"
               @change="handleImport"
-            />
+            >
             <UButton
               icon="i-lucide-download"
               :label="t('common.export')"
@@ -508,6 +522,9 @@ async function handleImport(event: Event) {
       :staff-id="selectedStaffIdForAccount"
       @success="refreshUserMapping"
     />
+
+    <!-- Profile: education, experience, positions here -->
+    <StaffProfileModal v-model:open="isProfileModalOpen" :staff-member="selectedStaff" @edit="editFromProfile" />
 
     <!-- Salary History Modal -->
     <StaffSalaryModal v-model:open="isSalaryModalOpen" :staff-member="selectedStaff" />
