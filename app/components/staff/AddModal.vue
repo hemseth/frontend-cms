@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue'
 import {
-  COUNTRIES, QUALIFICATION_LEVELS,
-  type StaffExperience, type StaffPosition, type StaffQualification
+  COUNTRIES, EMPLOYMENT_STATUSES, EMPLOYMENT_TYPES, QUALIFICATION_LEVELS, SENSITIVE_FIELDS,
+  type StaffExperience, type StaffMember, type StaffPosition, type StaffQualification
 } from '~/utils/staffProfile'
 
 const { t, locale } = useI18n()
@@ -61,8 +61,36 @@ const state = reactive({
   skills: [] as string[],
   qualifications: [] as StaffQualification[],
   experience: [] as StaffExperience[],
-  positionHistory: [] as StaffPosition[]
+  positionHistory: [] as StaffPosition[],
+  ...emptyEmployment()
 })
+
+/** Employment, identity and private fields; '' means not filled in. */
+function emptyEmployment() {
+  return {
+    employeeCode: '', nationality: '', email: '', licenseNo: '', licenseExpiry: '',
+    employmentType: undefined as typeof EMPLOYMENT_TYPES[number] | undefined,
+    employmentStatus: undefined as typeof EMPLOYMENT_STATUSES[number] | undefined,
+    department: '', supervisorId: '',
+    probationEndDate: '', contractEndDate: '', workLocation: '',
+    nationalId: '', passportNo: '', address: '',
+    emergencyContact: { name: '', relationship: '', phone: '' },
+    bankAccount: { bankName: '', accountName: '', accountNumber: '' }
+  }
+}
+const EMPLOYMENT_KEYS = ['employeeCode', 'nationality', 'email', 'licenseNo', 'licenseExpiry', 'employmentType', 'employmentStatus', 'department', 'supervisorId', 'probationEndDate', 'contractEndDate', 'workLocation', 'nationalId', 'passportNo', 'address'] as const
+
+// Private details (national ID, passport, address, emergency contact, bank) have their own permission.
+const auth = useAuth()
+const canSeePrivate = computed(() => auth.can('staffSensitive', 'read'))
+const canEditPrivate = computed(() => auth.can('staffSensitive', 'update'))
+
+const { data: supervisorsResult } = await useAsyncData('staff-modal-supervisors', () => $api<{ data: { data: StaffMember[] } }>('/staff', { params: { limit: 500 } }))
+const supervisorOptions = computed(() => (((supervisorsResult.value as { data?: { data?: StaffMember[] } } | null)?.data?.data) || [])
+  .filter(x => x._id !== state._id)
+  .map(x => ({ label: [x.employeeCode, locale.value === 'km' ? x.nameKh || x.nameEn : x.nameEn || x.nameKh].filter(Boolean).join(' · '), value: x._id })))
+const employmentTypeOptions = computed(() => EMPLOYMENT_TYPES.map(value => ({ label: t(`staff.employmentType.${value}`), value })))
+const employmentStatusOptions = computed(() => EMPLOYMENT_STATUSES.map(value => ({ label: t(`staff.employmentStatus.${value}`), value })))
 // The server keeps the position history when the position changes; it is sent only when
 // someone edited it on its tab.
 const historyEdited = ref(false)
@@ -87,6 +115,8 @@ const countryOptions = computed(() => {
 })
 const tabs = computed(() => [
   { label: t('staff.tabs.personal'), value: 'personal', slot: 'personal' as const, icon: 'i-lucide-user' },
+  { label: t('staff.tabs.employment'), value: 'employment', slot: 'employment' as const, icon: 'i-lucide-building-2' },
+  ...(canSeePrivate.value ? [{ label: t('staff.tabs.private'), value: 'private', slot: 'private' as const, icon: 'i-lucide-lock' }] : []),
   { label: t('staff.tabs.education'), value: 'education', slot: 'education' as const, icon: 'i-lucide-graduation-cap' },
   { label: t('staff.tabs.experience'), value: 'experience', slot: 'experience' as const, icon: 'i-lucide-briefcase' },
   { label: t('staff.tabs.history'), value: 'history', slot: 'history' as const, icon: 'i-lucide-history' }
@@ -109,7 +139,10 @@ watch(() => props.staffMember, (newVal) => {
       skills: Array.isArray(newVal.skills) ? [...newVal.skills] : [],
       qualifications: clone<StaffQualification>(newVal.qualifications),
       experience: clone<StaffExperience>(newVal.experience),
-      positionHistory: clone<StaffPosition>(newVal.positionHistory)
+      positionHistory: clone<StaffPosition>(newVal.positionHistory),
+      ...Object.fromEntries(EMPLOYMENT_KEYS.map(k => [k, newVal[k] ?? (k === 'employmentType' || k === 'employmentStatus' ? undefined : '')])),
+      emergencyContact: { ...emptyEmployment().emergencyContact, ...(newVal.emergencyContact || {}) },
+      bankAccount: { ...emptyEmployment().bankAccount, ...(newVal.bankAccount || {}) }
     })
   } else {
     isEditMode.value = false
@@ -132,7 +165,8 @@ function resetState() {
     skills: [],
     qualifications: [],
     experience: [],
-    positionHistory: []
+    positionHistory: [],
+    ...emptyEmployment()
   })
 }
 
@@ -203,6 +237,21 @@ async function handleSave() {
   if (!payload.specialization) delete payload.specialization
   if (!payload.dob) delete payload.dob
   if (!payload.hireDate) delete payload.hireDate
+  // Employment, identity and private fields: only the ones filled in are sent; the server refuses
+  // private fields from users without staffSensitive:update, so those users send none.
+  const skip = new Set<string>([...EMPLOYMENT_KEYS, 'emergencyContact', 'bankAccount'])
+  const filledIn: Record<string, unknown> = {}
+  for (const key of EMPLOYMENT_KEYS) {
+    const value = typeof state[key] === 'string' ? (state[key] as string).trim() : state[key]
+    if (value) filledIn[key] = value
+  }
+  for (const key of ['emergencyContact', 'bankAccount'] as const) {
+    const filled = Object.fromEntries(Object.entries(state[key]).map(([k, v]) => [k, String(v ?? '').trim()]).filter(([, v]) => v))
+    if (Object.keys(filled).length) filledIn[key] = filled
+  }
+  const allowed = Object.fromEntries(Object.entries(filledIn).filter(([key]) => canEditPrivate.value || !(SENSITIVE_FIELDS as readonly string[]).includes(key)))
+  for (const key of Object.keys(payload)) if (skip.has(key)) Reflect.deleteProperty(payload, key)
+  Object.assign(payload, allowed)
 
   payload.skills = state.skills.map(s => s.trim()).filter(Boolean)
   payload.qualifications = clean(state.qualifications).map(r => ({
@@ -215,6 +264,16 @@ async function handleSave() {
   if (historyEdited.value) payload.positionHistory = history
   else delete payload.positionHistory
 
+  if (payload.emergencyContact && !payload.emergencyContact.name) {
+    activeTab.value = 'private'
+    toast.add({ title: t('staff.private.contactNameRequired'), color: 'warning' })
+    return
+  }
+  if (payload.bankAccount && (!payload.bankAccount.bankName || !payload.bankAccount.accountNumber)) {
+    activeTab.value = 'private'
+    toast.add({ title: t('staff.private.bankRequired'), color: 'warning' })
+    return
+  }
   const problem = listProblem(payload.qualifications, payload.experience, historyEdited.value ? history : [])
   if (problem) {
     activeTab.value = problem.tab
@@ -489,6 +548,125 @@ function handleCancel() {
               :label="t('staff.profile.addPosition')"
               @click="addPosition"
             />
+          </div>
+        </template>
+        <!-- Employment -->
+        <template #employment>
+          <div class="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
+            <UFormField :label="t('staff.employment.code')" :help="isEditMode ? undefined : t('staff.employment.codeHelp')">
+              <UInput v-model="state.employeeCode" placeholder="EMP-0001" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.department')">
+              <UInput v-model="state.department" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.type')">
+              <USelect
+                v-model="state.employmentType"
+                :items="employmentTypeOptions"
+                :placeholder="t('common.select')"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField :label="t('staff.employment.status')">
+              <USelect
+                v-model="state.employmentStatus"
+                :items="employmentStatusOptions"
+                :placeholder="t('common.select')"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField :label="t('staff.employment.supervisor')">
+              <USelectMenu
+                v-model="state.supervisorId"
+                :items="supervisorOptions"
+                value-key="value"
+                :placeholder="t('common.select')"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField :label="t('staff.employment.workLocation')">
+              <UInput v-model="state.workLocation" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.probationEnd')">
+              <UInput v-model="state.probationEndDate" type="date" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.contractEnd')">
+              <UInput v-model="state.contractEndDate" type="date" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.licenseNo')" :help="t('staff.employment.licenseHelp')">
+              <UInput v-model="state.licenseNo" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.licenseExpiry')">
+              <UInput v-model="state.licenseExpiry" type="date" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.nationality')">
+              <UInput v-model="state.nationality" class="w-full" />
+            </UFormField>
+            <UFormField :label="t('staff.employment.email')">
+              <UInput v-model="state.email" type="email" class="w-full" />
+            </UFormField>
+          </div>
+        </template>
+
+        <!-- Private details: staffSensitive -->
+        <template #private>
+          <div class="space-y-4 pt-4">
+            <UAlert
+              color="neutral"
+              variant="subtle"
+              icon="i-lucide-lock"
+              :description="canEditPrivate ? t('staff.private.help') : t('staff.private.readOnly')"
+            />
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <UFormField :label="t('staff.private.nationalId')">
+                <UInput v-model="state.nationalId" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+              <UFormField :label="t('staff.private.passport')">
+                <UInput v-model="state.passportNo" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+              <UFormField :label="t('staff.private.address')" class="md:col-span-2">
+                <UTextarea
+                  v-model="state.address"
+                  :rows="2"
+                  autoresize
+                  :disabled="!canEditPrivate"
+                  class="w-full"
+                />
+              </UFormField>
+            </div>
+            <p class="text-sm font-medium">
+              {{ t('staff.private.emergency') }}
+            </p>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <UFormField :label="t('staff.private.contactName')">
+                <UInput v-model="state.emergencyContact.name" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+              <UFormField :label="t('staff.private.relationship')">
+                <UInput v-model="state.emergencyContact.relationship" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+              <UFormField :label="t('staff.phone')">
+                <UInput v-model="state.emergencyContact.phone" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+            </div>
+            <p class="text-sm font-medium">
+              {{ t('staff.private.bank') }}
+            </p>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <UFormField :label="t('staff.private.bankName')">
+                <UInput
+                  v-model="state.bankAccount.bankName"
+                  placeholder="ABA, ACLEDA, Wing…"
+                  :disabled="!canEditPrivate"
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField :label="t('staff.private.accountName')">
+                <UInput v-model="state.bankAccount.accountName" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+              <UFormField :label="t('staff.private.accountNumber')">
+                <UInput v-model="state.bankAccount.accountNumber" :disabled="!canEditPrivate" class="w-full" />
+              </UFormField>
+            </div>
           </div>
         </template>
       </UTabs>

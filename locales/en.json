@@ -1182,7 +1182,83 @@
     "count": "Count"
   },
   "staff": {
+    "employmentType": {
+      "full_time": "Full time",
+      "part_time": "Part time",
+      "contract": "Contract",
+      "intern": "Intern",
+      "volunteer": "Volunteer"
+    },
+    "employmentStatus": {
+      "probation": "Probation",
+      "active": "Active",
+      "on_leave": "On leave",
+      "suspended": "Suspended",
+      "resigned": "Resigned",
+      "terminated": "Terminated"
+    },
+    "employment": {
+      "code": "Employee ID",
+      "codeHelp": "Leave empty to number automatically (EMP-0001, EMP-0002 …).",
+      "department": "Department",
+      "type": "Employment type",
+      "status": "Employment status",
+      "supervisor": "Supervisor",
+      "workLocation": "Work location",
+      "probationEnd": "Probation ends",
+      "contractEnd": "Contract ends",
+      "licenseNo": "Licence number",
+      "licenseHelp": "e.g. Cambodian Medical Council or Nursing Council licence",
+      "licenseExpiry": "Licence expires",
+      "nationality": "Nationality",
+      "email": "Email"
+    },
+    "private": {
+      "help": "Only staff with the private-details permission can see or change these.",
+      "readOnly": "You can see these details but not change them.",
+      "nationalId": "National ID card number",
+      "passport": "Passport number",
+      "address": "Home address",
+      "emergency": "Emergency contact",
+      "contactName": "Name",
+      "relationship": "Relationship",
+      "bank": "Bank account for salary",
+      "bankName": "Bank",
+      "accountName": "Account name",
+      "accountNumber": "Account number",
+      "contactNameRequired": "Emergency contact: enter the name.",
+      "bankRequired": "Bank account: enter the bank and the account number."
+    },
+    "pay": {
+      "title": "Salary history · {name}",
+      "newChange": "New salary change",
+      "newChangeHelp": "A raise or any change starts on its effective date. Earlier salaries stay in the history unchanged.",
+      "effectiveFrom": "Effective from",
+      "currency": "Currency",
+      "base": "Basic salary",
+      "position": "Position allowance",
+      "transport": "Transport",
+      "housing": "Housing",
+      "other": "Other allowances",
+      "reason": "Reason",
+      "reasonPlaceholder": "e.g. Hired, annual raise, promotion",
+      "monthlyTotal": "Monthly total",
+      "record": "Record change",
+      "recorded": "Salary change recorded",
+      "baseRequired": "Enter the basic salary.",
+      "history": "History",
+      "none": "No salary recorded yet.",
+      "withdraw": "Withdraw",
+      "withdrawConfirm": "Withdraw the change planned for {date}?",
+      "state": {
+        "current": "Current",
+        "previous": "Previous",
+        "scheduled": "Scheduled"
+      }
+    },
     "tabs": {
+      "employment": "Employment",
+      "private": "Private details",
       "personal": "Personal",
       "education": "Education & training",
       "experience": "Work experience",

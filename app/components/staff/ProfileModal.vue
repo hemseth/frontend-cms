@@ -53,6 +53,15 @@ const yearsRange = (q: StaffQualification) => [q.startYear, q.endYear].filter(Bo
             <p v-if="s.hireDate" class="text-sm text-muted">
               {{ t('staff.profile.hereSince', { date: formatYearMonth(s.hireDate) }) }}
             </p>
+            <p class="text-sm text-muted">
+              {{ [
+                s.employeeCode,
+                s.department,
+                s.employmentType ? t(`staff.employmentType.${s.employmentType}`) : '',
+                s.employmentStatus ? t(`staff.employmentStatus.${s.employmentStatus}`) : '',
+                s.licenseNo ? `${t('staff.employment.licenseNo')}: ${s.licenseNo}` : ''
+              ].filter(Boolean).join(' · ') }}
+            </p>
           </div>
           <div class="flex flex-wrap gap-2">
             <UBadge

@@ -35,9 +35,32 @@ export interface StaffPosition {
   note?: string
 }
 
+export const EMPLOYMENT_TYPES = ['full_time', 'part_time', 'contract', 'intern', 'volunteer'] as const
+export const EMPLOYMENT_STATUSES = ['probation', 'active', 'on_leave', 'suspended', 'resigned', 'terminated'] as const
+
+/** Only returned to users with staffSensitive:read (see cms/src/routes/hr/staff.route.ts). */
+export const SENSITIVE_FIELDS = ['nationalId', 'passportNo', 'address', 'emergencyContact', 'bankAccount'] as const
+
 /** A staff record as the list returns it (fields used by the profile screens). */
 export interface StaffMember {
   _id: string
+  employeeCode?: string
+  nationality?: string
+  email?: string
+  licenseNo?: string
+  licenseExpiry?: string
+  employmentType?: typeof EMPLOYMENT_TYPES[number]
+  employmentStatus?: typeof EMPLOYMENT_STATUSES[number]
+  department?: string
+  supervisorId?: string
+  probationEndDate?: string
+  contractEndDate?: string
+  workLocation?: string
+  nationalId?: string
+  passportNo?: string
+  address?: string
+  emergencyContact?: { name?: string, relationship?: string, phone?: string }
+  bankAccount?: { bankName?: string, accountName?: string, accountNumber?: string }
   nameEn?: string
   nameKh?: string
   role?: string

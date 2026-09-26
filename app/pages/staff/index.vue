@@ -66,6 +66,11 @@ const columns: TableColumn<any>[] = [
     cell: ({ row }) => ((page.value - 1) * limit.value) + row.index + 1
   },
   {
+    accessorKey: 'employeeCode',
+    header: t('staff.employment.code'),
+    cell: ({ row }) => row.original.employeeCode || '-'
+  },
+  {
     accessorKey: 'nameKh',
     header: t('common.nameKh')
   },
