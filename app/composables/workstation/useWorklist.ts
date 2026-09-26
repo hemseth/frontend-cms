@@ -1,10 +1,12 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import type { WorklistItem, WorkStatus } from '~/types/workstation'
+import { useWorkflowAlerts } from '~/composables/shared/useWorkflowAlerts'
 
 const POLL_MS = 15_000
 
 /**
- * A department queue that reloads every 15 s (no websockets: the server is small). Polling
+ * A department queue that reloads at once when a workflow alert arrives (Server-Sent Events,
+ * docs/REALTIME_ALERTS.md) and every 15 s as a fallback. Polling
  * pauses while the browser tab is hidden and resumes, with an immediate reload, when it is shown.
  * Filtering by status and search happens here; `load` receives the chosen day.
  */
@@ -66,6 +68,8 @@ export function useWorklist(load: (day: string) => Promise<WorklistItem[]>) {
     document.removeEventListener('visibilitychange', onVisibility)
   })
   watch(day, () => refresh(true))
+  const alerts = useWorkflowAlerts()
+  watch(() => alerts.state.value.seq, () => refresh())
 
   const filtered = computed(() => {
     const q = search.value.trim().toLowerCase()

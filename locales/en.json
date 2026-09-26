@@ -1,4 +1,48 @@
 {
+  "alerts": {
+    "open": "Open",
+    "aPatient": "A patient",
+    "live": "Live alerts on",
+    "offline": "Live alerts reconnecting…",
+    "mute": "Mute alert sound",
+    "unmute": "Turn alert sound on",
+    "visit": {
+      "checked_in": {
+        "title": "New patient checked in",
+        "body": "{name} · queue {queue}"
+      },
+      "triaged": {
+        "title": "Ready for the doctor",
+        "body": "{name} · queue {queue} · triage done"
+      },
+      "results_ready": {
+        "title": "Results ready",
+        "body": "All results are back for {name} · queue {queue}"
+      },
+      "to_cashier": {
+        "title": "Patient coming to pay",
+        "body": "{name} · queue {queue}"
+      }
+    },
+    "lab": {
+      "ordered": {
+        "title": "New test ordered",
+        "body": "{service} for {name} · queue {queue}"
+      }
+    },
+    "prescription": {
+      "to_prepare": {
+        "title": "Prescription to prepare",
+        "body": "{name} · queue {queue}"
+      }
+    },
+    "payment": {
+      "paid": {
+        "title": "Paid: hand over the medicines",
+        "body": "{name} · queue {queue} has paid"
+      }
+    }
+  },
   "roles": {
     "deleteConfirm": "Are you sure you want to delete this? This cannot be undone."
   },
