@@ -107,6 +107,7 @@ type Schema = z.output<typeof schema>
 
 // ── State ────────────────────────────────────────────────────────────────────
 
+const rielPriceNote = ref('')
 const state = reactive({
   code: '',
   atcCode: '',
@@ -180,9 +181,15 @@ watch(() => props.medicine, (medicine) => {
     medicine.unit?._id || medicine.unit,
     (unitsResult.value as any)?.data || []
   )
-  state.retailPrice = medicine.retailPrice ?? medicine.price ?? 0
-  state.wholesalePrice = medicine.wholesalePrice ?? 0
-  state.currency = medicine.currency || 'USD'
+  // Prices are USD only (invoices are in USD). A record still priced in riel is shown with its
+  // old price and must be re-entered in dollars, so the riel number is never saved as dollars.
+  const oldCurrency = String(medicine.currency || 'USD').toUpperCase()
+  rielPriceNote.value = oldCurrency === 'USD'
+    ? ''
+    : `${Number(medicine.retailPrice ?? medicine.price ?? 0).toLocaleString('en-US')} ៛ / ${Number(medicine.wholesalePrice ?? 0).toLocaleString('en-US')} ៛`
+  state.retailPrice = rielPriceNote.value ? 0 : medicine.retailPrice ?? medicine.price ?? 0
+  state.wholesalePrice = rielPriceNote.value ? 0 : medicine.wholesalePrice ?? 0
+  state.currency = 'USD'
   state.stock = medicine.stock ?? 0
   state.conversionRate = medicine.conversionRate ?? 1
   state.baseUnit = medicine.baseUnit || 'pill'
@@ -517,22 +524,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
               <!-- ── STEP 4: Stock ─────────────────────────────────────────── -->
               <div v-else-if="activeStep === 'stock'" class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-5">
-                <UFormField label="Currency" name="currency" class="md:col-span-2">
-                  <div class="flex gap-3">
-                    <button
-                      v-for="cur in ['USD', 'KHR', 'KH']"
-                      :key="cur"
-                      type="button"
-                      class="flex-1 py-2.5 rounded-lg border text-sm font-semibold transition-all"
-                      :class="state.currency === cur
-                        ? 'bg-primary-50 border-primary-300 text-primary-700 dark:bg-primary-950 dark:border-primary-700 dark:text-primary-300'
-                        : 'bg-default border-default text-dimmed hover:border-accented'"
-                      @click="state.currency = cur"
-                    >
-                      {{ cur }}
-                    </button>
-                  </div>
-                </UFormField>
+                <div class="md:col-span-2 space-y-2">
+                  <p class="text-sm text-muted">
+                    {{ t('medicine.pricesInUsd') }}
+                  </p>
+                  <UAlert
+                    v-if="rielPriceNote"
+                    color="warning"
+                    variant="subtle"
+                    icon="i-lucide-circle-dollar-sign"
+                    :title="t('medicine.rielPriceTitle')"
+                    :description="t('medicine.rielPriceBody', { old: rielPriceNote })"
+                  />
+                </div>
 
                 <div class="rounded-xl border border-default p-4 space-y-2">
                   <div

@@ -524,6 +524,9 @@
     "oxygen": "SpO2 (%)"
   },
   "medicine": {
+    "pricesInUsd": "Prices are in US dollars (USD). Invoices are in USD.",
+    "rielPriceTitle": "This price was in riel",
+    "rielPriceBody": "The old price was {old}. Enter the price in US dollars.",
     "name": "Medicine name",
     "code":"Code",
     "title": "Medicines",
