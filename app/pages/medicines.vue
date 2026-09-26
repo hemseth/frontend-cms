@@ -21,7 +21,7 @@ const { data: categoriesResult } = await useAsyncData('medicine-categories-list'
   default: () => ({ data: [] })
 })
 
-const { data: dosageFormsResult } = await useAsyncData('dosage-forms-list', () => $api('/dosage-forms'), {
+const { data: dosageFormsResult } = await useAsyncData('dosage-forms-list', () => $api('/dosage-forms', { params: { limit: 500 } }), {
   default: () => ({ data: [] })
 })
 
@@ -41,7 +41,7 @@ const dosageFormOptions = computed(() => {
   }))
 })
 
-const { data: unitsResult } = await useAsyncData('units-list-medicines', () => $api('/units'), {
+const { data: unitsResult } = await useAsyncData('units-list-medicines', () => $api('/units', { params: { limit: 500 } }), {
   default: () => ({ data: [] })
 })
 
@@ -344,15 +344,28 @@ async function exportToExcelFile() {
     { header: 'Status', key: 'status', width: 10 }
   ]
 
+  // Medicines store ids for type, form and unit; the sheet shows the English name, which the
+  // import below resolves back to the id. An id with no matching record is left as it is.
+  type Named = { _id?: string, key?: string, nameEn?: string, nameKh?: string }
+  const nameOf = (value: unknown, items: Named[]): string => {
+    if (!value) return ''
+    if (typeof value === 'object') return (value as Named).nameEn || (value as Named).nameKh || ''
+    const found = items.find(item => item._id === value || item.key === value)
+    return found?.nameEn || found?.nameKh || String(value)
+  }
+  const listOf = (res: unknown): Named[] => (res as { data?: Named[] } | null)?.data || []
+  const categories = listOf(categoriesResult.value)
+  const dosageForms = listOf(dosageFormsResult.value)
+  const units = listOf(unitsResult.value)
   const data = allMedicines.map((m: any) => ({
     id: m._id || '',
     code: m.code || '',
     nameEn: m.nameEn || '',
     nameKh: m.nameKh || '',
     dosage: m.dosage || '',
-    category: typeof m.category === 'object' ? m.category?.nameEn : m.category,
-    dosageForm: typeof m.dosageForm === 'object' ? m.dosageForm?.nameEn : m.dosageForm,
-    unit: typeof m.unit === 'object' ? m.unit?.nameEn : m.unit,
+    category: nameOf(m.category ?? m.categoryId, categories),
+    dosageForm: nameOf(m.dosageForm ?? m.dosageFormId, dosageForms),
+    unit: nameOf(m.unit, units),
     price: m.price || 0,
     stock: m.stock || 0,
     status: m.status || 'active'

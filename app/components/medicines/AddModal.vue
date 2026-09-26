@@ -52,7 +52,7 @@ const medicineCategoryOptions = computed(() =>
   }))
 )
 
-const { data: dosageFormsResult } = await useAsyncData('dosage-forms-modal', () => $api('/dosage-forms'), {
+const { data: dosageFormsResult } = await useAsyncData('dosage-forms-modal', () => $api('/dosage-forms', { params: { limit: 500 } }), {
   default: () => ({ data: [] })
 })
 
@@ -63,7 +63,7 @@ const dosageFormOptions = computed(() =>
   }))
 )
 
-const { data: unitsResult } = await useAsyncData('units-list-modal', () => $api('/units'), {
+const { data: unitsResult } = await useAsyncData('units-list-modal', () => $api('/units', { params: { limit: 500 } }), {
   default: () => ({ data: [] })
 })
 
