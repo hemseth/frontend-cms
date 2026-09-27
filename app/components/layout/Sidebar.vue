@@ -40,6 +40,17 @@ const links = computed(() => {
     icon: 'i-lucide-house',
     to: '/'
   }, {
+    // Self-service for every signed-in staff member (own record only).
+    label: t('hr.my.nav'),
+    icon: 'i-lucide-user-round-check',
+    value: 'my-work',
+    defaultOpen: false,
+    children: [{
+      label: t('hr.my.attendanceTitle'),
+      to: '/my/attendance',
+      icon: 'i-lucide-clock'
+    }]
+  }, {
     label: t('workstation.nav'),
     icon: 'i-lucide-monitor-check',
     value: 'workstations',
@@ -409,6 +420,10 @@ const links = computed(() => {
       to: '/settings/specializations',
       icon: 'i-lucide-graduation-cap'
     }, {
+      label: t('hr.attendance.title'),
+      to: '/hr/attendance',
+      icon: 'i-lucide-calendar-check'
+    }, {
       label: t('payroll.title'),
       to: '/payrolls',
       icon: 'i-lucide-banknote'
@@ -476,6 +491,7 @@ const links = computed(() => {
     if (path.startsWith('/purchases')) return 'purchase'
     if (path.startsWith('/revenues')) return 'revenue'
     if (path.startsWith('/expenses')) return 'expense'
+    if (path.startsWith('/hr/attendance')) return 'attendance'
     if (path.startsWith('/payrolls') || path.startsWith('/hr')) return 'payroll'
     if (path.startsWith('/pharmacy')) return 'pharmacy'
     if (path.startsWith('/payments')) return 'payment'

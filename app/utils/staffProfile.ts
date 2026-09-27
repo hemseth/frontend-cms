@@ -56,6 +56,7 @@ export interface StaffMember {
   probationEndDate?: string
   contractEndDate?: string
   workLocation?: string
+  shiftId?: string
   nationalId?: string
   passportNo?: string
   address?: string

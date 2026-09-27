@@ -72,13 +72,13 @@ function emptyEmployment() {
     employmentType: undefined as typeof EMPLOYMENT_TYPES[number] | undefined,
     employmentStatus: undefined as typeof EMPLOYMENT_STATUSES[number] | undefined,
     department: '', supervisorId: '',
-    probationEndDate: '', contractEndDate: '', workLocation: '',
+    probationEndDate: '', contractEndDate: '', workLocation: '', shiftId: '',
     nationalId: '', passportNo: '', address: '',
     emergencyContact: { name: '', relationship: '', phone: '' },
     bankAccount: { bankName: '', accountName: '', accountNumber: '' }
   }
 }
-const EMPLOYMENT_KEYS = ['employeeCode', 'nationality', 'email', 'licenseNo', 'licenseExpiry', 'employmentType', 'employmentStatus', 'department', 'supervisorId', 'probationEndDate', 'contractEndDate', 'workLocation', 'nationalId', 'passportNo', 'address'] as const
+const EMPLOYMENT_KEYS = ['employeeCode', 'nationality', 'email', 'licenseNo', 'licenseExpiry', 'employmentType', 'employmentStatus', 'department', 'supervisorId', 'probationEndDate', 'contractEndDate', 'workLocation', 'shiftId', 'nationalId', 'passportNo', 'address'] as const
 
 // Private details (national ID, passport, address, emergency contact, bank) have their own permission.
 const auth = useAuth()
@@ -90,6 +90,10 @@ const { data: supervisorsResult } = await useAsyncData('staff-modal-supervisors'
 const supervisorOptions = computed(() => (((supervisorsResult.value as { data?: { data?: StaffMember[] } } | null)?.data?.data) || [])
   .filter(x => x._id !== state._id)
   .map(x => ({ label: [x.employeeCode, locale.value === 'km' ? x.nameKh || x.nameEn : x.nameEn || x.nameKh].filter(Boolean).join(' · '), value: x._id })))
+const { data: shiftsResult } = await useAsyncData('staff-modal-shifts', () => $api<{ data: Array<{ _id: string, code: string, nameEn: string, nameKh?: string, startTime: string, endTime: string, status: string }> }>('/shifts').catch(() => ({ data: [] })))
+const shiftOptions = computed(() => ((shiftsResult.value as { data?: Array<{ _id: string, code: string, nameEn: string, nameKh?: string, startTime: string, endTime: string, status: string }> } | null)?.data || [])
+  .filter(x => x.status === 'active')
+  .map(x => ({ label: `${x.code} · ${locale.value === 'km' ? x.nameKh || x.nameEn : x.nameEn} (${x.startTime}–${x.endTime})`, value: x._id })))
 const employmentTypeOptions = computed(() => EMPLOYMENT_TYPES.map(value => ({ label: t(`staff.employmentType.${value}`), value })))
 const employmentStatusOptions = computed(() => EMPLOYMENT_STATUSES.map(value => ({ label: t(`staff.employmentStatus.${value}`), value })))
 // The server keeps the position history when the position changes; it is sent only when
@@ -582,6 +586,14 @@ function handleCancel() {
                 v-model="state.supervisorId"
                 :items="supervisorOptions"
                 value-key="value"
+                :placeholder="t('common.select')"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField :label="t('staff.employment.shift')" :help="t('staff.employment.shiftHelp')">
+              <USelect
+                v-model="state.shiftId"
+                :items="shiftOptions"
                 :placeholder="t('common.select')"
                 class="w-full"
               />

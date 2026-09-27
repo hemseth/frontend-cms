@@ -1274,6 +1274,8 @@
       "terminated": "Terminated"
     },
     "employment": {
+      "shift": "Default shift",
+      "shiftHelp": "Used for attendance on days without a roster entry.",
       "code": "Employee ID",
       "codeHelp": "Leave empty to number automatically (EMP-0001, EMP-0002 …).",
       "department": "Department",
@@ -2053,6 +2055,113 @@
     "errNoCounts": "Enter at least one counted quantity"
   },
   "hr": {
+    "my": {
+      "nav": "My work",
+      "attendanceTitle": "My attendance",
+      "noShift": "No shift set",
+      "clockIn": "Clock in",
+      "clockOut": "Clock out",
+      "breakStart": "Start break",
+      "breakEnd": "End break",
+      "clockOutConfirm": "Clock out now?",
+      "state": {
+        "out": "Not clocked in yet",
+        "in": "Working",
+        "break": "On break",
+        "done": "Finished for today"
+      },
+      "done": {
+        "clock-in": "Clocked in",
+        "clock-out": "Clocked out",
+        "break-start": "Break started",
+        "break-end": "Back to work"
+      }
+    },
+    "attendance": {
+      "title": "Attendance",
+      "tabs": {
+        "daily": "Day",
+        "roster": "Roster",
+        "timesheet": "Timesheet",
+        "shifts": "Shifts"
+      },
+      "clockIn": "In",
+      "clockOut": "Out",
+      "break": "Break",
+      "breaks": "Breaks",
+      "worked": "Worked",
+      "late": "Late",
+      "earlyLeave": "Left early",
+      "overtime": "Overtime",
+      "missing": "Short",
+      "shift": "Shift",
+      "statusLabel": "Status",
+      "status": {
+        "present": "Present",
+        "late": "Late",
+        "incomplete": "No clock-out",
+        "absent": "Absent",
+        "leave": "Leave",
+        "holiday": "Holiday",
+        "off": "Day off"
+      },
+      "notRecorded": "Not recorded",
+      "noShift": "No shift",
+      "editTitle": "{name} · {date}",
+      "lunchStart": "Break from",
+      "lunchEnd": "Break until",
+      "dayStatus": "Day without clock-in",
+      "dayStatusHelp": "Absent, leave, holiday or day off; leave empty when there is a clock-in.",
+      "fromClock": "From the clock times",
+      "note": "Note",
+      "count": {
+        "present": "{n} present",
+        "late": "{n} late",
+        "absent": "{n} absent",
+        "leave": "{n} on leave",
+        "missing": "{n} not recorded"
+      },
+      "timesheetHelp": "Totals of the recorded days. Overtime here is time worked; paid overtime needs an approved request."
+    },
+    "shift": {
+      "help": "Shift times, breaks, grace time and when extra time counts as overtime. A shift that ends before it starts runs overnight.",
+      "add": "Add shift",
+      "edit": "Edit shift",
+      "none": "No shifts yet.",
+      "code": "Code",
+      "typeLabel": "Type",
+      "start": "Start",
+      "end": "End",
+      "overnight": "overnight",
+      "overnightHelp": "Ends the next day",
+      "grace": "Grace (min)",
+      "graceHelp": "Clocking in this many minutes late is still on time.",
+      "earlyGrace": "Early-leave grace (min)",
+      "overtimeAfter": "Overtime after (min)",
+      "overtimeAfterHelp": "Extra time below this is not reported as overtime.",
+      "breakName": "Break",
+      "paidBreak": "Paid",
+      "addBreak": "Add break",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "type": {
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "night": "Night",
+        "rotating": "Rotating",
+        "split": "Split",
+        "custom": "Custom"
+      }
+    },
+    "roster": {
+      "noShifts": "Add shifts first (Shifts tab).",
+      "save": "Save roster",
+      "saved": "Roster saved ({n} changes)",
+      "unsaved": "{n} unsaved changes",
+      "onLeave": "This person is on leave that day.",
+      "unknownShift": "Unknown shift."
+    },
     "periodLabel": "Period",
     "employee": "Employee",
     "employees": "{count} employee(s)",

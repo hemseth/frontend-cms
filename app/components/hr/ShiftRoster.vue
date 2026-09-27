@@ -4,8 +4,8 @@
  * day, drag an assigned shift to move it, or use the menu in each cell (which
  * also works by keyboard and on touch screens, where drag and drop does not).
  *
- * Fully controlled: the backend has no shift model, so assignments arrive as
- * `modelValue` and every change is emitted; nothing here stores anything.
+ * Fully controlled: assignments arrive as `modelValue` and every change is
+ * emitted; RosterPanel.vue loads and saves them.
  */
 import { computed, ref } from 'vue'
 import type { StaffRef } from '~/types/hr'
@@ -56,8 +56,16 @@ function chipClass(code: string): string {
   return SHIFT_CLASS[code] ?? FALLBACK_CLASS
 }
 
+/** 7 → "07", 7.5 → "07:30". */
 function pad(hour: number): string {
-  return String(Math.floor(hour) % 24).padStart(2, '0')
+  const h = String(Math.floor(hour) % 24).padStart(2, '0')
+  const m = Math.round((hour % 1) * 60)
+  return m ? `${h}:${String(m).padStart(2, '0')}` : h
+}
+
+function labelOf(code?: string): string {
+  if (!code) return ''
+  return shiftByCode.value.get(code)?.label ?? t(`hr.shift_${code}`)
 }
 
 function shiftRange(shift: ShiftDef): string {
@@ -238,7 +246,7 @@ function move(weeks: number) {
         :class="chipClass(shift.code)"
         @dragstart="startPaletteDrag($event, shift.code)"
       >
-        {{ t(`hr.shift_${shift.code}`) }}
+        {{ labelOf(shift.code) }}
         <span class="opacity-70">{{ shiftRange(shift) }}</span>
         <UBadge
           v-if="nightHoursOf(shift) > 0"
@@ -327,7 +335,7 @@ function move(weeks: number) {
                   :class="[chipClass(findShift(modelValue, person._id, date)!), readonly ? '' : 'cursor-grab active:cursor-grabbing']"
                   @dragstart="startCellDrag($event, person._id, date)"
                 >
-                  {{ t(`hr.shift_${findShift(modelValue, person._id, date)}`) }}
+                  {{ labelOf(findShift(modelValue, person._id, date)) }}
                 </div>
 
                 <select
@@ -341,7 +349,7 @@ function move(weeks: number) {
                     {{ t('hr.noShift') }}
                   </option>
                   <option v-for="shift in shifts" :key="shift.code" :value="shift.code">
-                    {{ t(`hr.shift_${shift.code}`) }} ({{ shiftRange(shift) }})
+                    {{ labelOf(shift.code) }} ({{ shiftRange(shift) }})
                   </option>
                 </select>
               </template>

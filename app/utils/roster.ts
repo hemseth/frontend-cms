@@ -2,13 +2,16 @@
  * Weekly shift roster logic. Pure functions: the component owns the drag and
  * drop, this owns what an assignment means.
  *
- * The backend has no shift model, so assignments are props in and events out;
- * nothing here persists anything.
+ * Assignments are props in and events out; nothing here persists anything.
+ * components/hr/RosterPanel.vue loads and saves them (GET/PUT /attendance/roster)
+ * with the clinic's own shifts (/shifts).
  */
 
 export interface ShiftDef {
-  /** Stable key, also used as the i18n suffix (`hr.shift.MORNING`). */
+  /** Stable key; the i18n suffix (`hr.shift_MORNING`) when there is no `label`. */
   code: string
+  /** Display name of a clinic-defined shift. */
+  label?: string
   /** 0 to 24. A shift whose end is before its start runs past midnight. */
   startHour: number
   endHour: number
