@@ -1182,6 +1182,82 @@
     "count": "Count"
   },
   "staff": {
+    "family": {
+      "saveStaffFirst": "Save the staff member first, then add the family.",
+      "spouse": "Spouse",
+      "children": "Children",
+      "dependents": "Other dependents",
+      "addSpouse": "Add spouse",
+      "addChild": "Add child",
+      "addDependent": "Add dependent",
+      "save": "Save family",
+      "saved": "Family saved",
+      "statusLabel": "Status",
+      "relationshipLabel": "Relationship",
+      "marriageDate": "Marriage date",
+      "occupation": "Occupation",
+      "employer": "Employer",
+      "isCurrent": "Current spouse",
+      "hasIncome": "Has own income",
+      "school": "School",
+      "educationLevel": "Education level",
+      "birthCertificateNo": "Birth certificate no.",
+      "dependencyStart": "Dependent from",
+      "dependencyEnd": "Dependent until",
+      "flagsHelp": "Eligibility is set by HR. \"Counts for tax\" is what payroll uses for the dependent allowance, if the clinic payroll rules use one.",
+      "documents": "Family documents",
+      "documentType": {
+        "marriage_certificate": "Marriage certificate",
+        "birth_certificate": "Birth certificate",
+        "adoption_certificate": "Adoption certificate",
+        "national_id": "National ID",
+        "passport": "Passport",
+        "insurance": "Insurance document",
+        "dependent_proof": "Proof of dependency",
+        "other": "Other"
+      },
+      "member": "Family member",
+      "wholeFamily": "Whole family",
+      "flags": {
+        "isDependent": "Dependent",
+        "taxDependent": "Counts for tax",
+        "insuranceEligible": "Insurance",
+        "benefitEligible": "Benefits"
+      },
+      "spouseStatus": {
+        "married": "Married",
+        "separated": "Separated",
+        "divorced": "Divorced",
+        "widowed": "Widowed",
+        "deceased": "Deceased"
+      },
+      "childRelationship": {
+        "son": "Son",
+        "daughter": "Daughter",
+        "adopted": "Adopted child",
+        "stepchild": "Stepchild",
+        "other": "Other"
+      },
+      "dependentRelationship": {
+        "father": "Father",
+        "mother": "Mother",
+        "grandparent": "Grandparent",
+        "sibling": "Brother or sister",
+        "disabled": "Disabled dependent",
+        "other": "Other"
+      },
+      "memberStatus": {
+        "active": "Active",
+        "ended": "No longer dependent",
+        "deceased": "Deceased"
+      },
+      "summary": {
+        "children": "{n} children",
+        "dependents": "{n} dependents",
+        "taxDependents": "{n} count for tax",
+        "insurance": "{n} insured"
+      }
+    },
     "employmentType": {
       "full_time": "Full time",
       "part_time": "Part time",
@@ -1257,6 +1333,7 @@
       }
     },
     "tabs": {
+      "family": "Family",
       "employment": "Employment",
       "private": "Private details",
       "personal": "Personal",

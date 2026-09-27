@@ -1182,6 +1182,82 @@
     "count": "ចំនួន"
   },
   "staff": {
+    "family": {
+      "saveStaffFirst": "សូមរក្សាទុកបុគ្គលិកជាមុនសិន បន្ទាប់មកបន្ថែមព័ត៌មានគ្រួសារ។",
+      "spouse": "ប្ដី ឬប្រពន្ធ",
+      "children": "កូន",
+      "dependents": "អ្នកនៅក្នុងបន្ទុកផ្សេងទៀត",
+      "addSpouse": "បន្ថែមប្ដី ឬប្រពន្ធ",
+      "addChild": "បន្ថែមកូន",
+      "addDependent": "បន្ថែមអ្នកនៅក្នុងបន្ទុក",
+      "save": "រក្សាទុកព័ត៌មានគ្រួសារ",
+      "saved": "បានរក្សាទុកព័ត៌មានគ្រួសារ",
+      "statusLabel": "ស្ថានភាព",
+      "relationshipLabel": "ត្រូវជា",
+      "marriageDate": "ថ្ងៃរៀបការ",
+      "occupation": "មុខរបរ",
+      "employer": "កន្លែងធ្វើការ",
+      "isCurrent": "ប្ដី/ប្រពន្ធបច្ចុប្បន្ន",
+      "hasIncome": "មានប្រាក់ចំណូលផ្ទាល់ខ្លួន",
+      "school": "សាលារៀន",
+      "educationLevel": "កម្រិតសិក្សា",
+      "birthCertificateNo": "លេខសំបុត្រកំណើត",
+      "dependencyStart": "នៅក្នុងបន្ទុកពី",
+      "dependencyEnd": "នៅក្នុងបន្ទុកដល់",
+      "flagsHelp": "សិទ្ធិទាំងនេះកំណត់ដោយផ្នែកធនធានមនុស្ស។ «គិតក្នុងពន្ធ» ត្រូវបានប្រើដោយប្រាក់ខែសម្រាប់ការកាត់បន្ថយអ្នកនៅក្នុងបន្ទុក ប្រសិនបើច្បាប់ប្រាក់ខែរបស់គ្លីនិកប្រើវា។",
+      "documents": "ឯកសារគ្រួសារ",
+      "documentType": {
+        "marriage_certificate": "សំបុត្រអាពាហ៍ពិពាហ៍",
+        "birth_certificate": "សំបុត្រកំណើត",
+        "adoption_certificate": "លិខិតសុំកូនចិញ្ចឹម",
+        "national_id": "អត្តសញ្ញាណប័ណ្ណ",
+        "passport": "លិខិតឆ្លងដែន",
+        "insurance": "ឯកសារធានារ៉ាប់រង",
+        "dependent_proof": "ភស្តុតាងនៃការនៅក្នុងបន្ទុក",
+        "other": "ផ្សេងៗ"
+      },
+      "member": "សមាជិកគ្រួសារ",
+      "wholeFamily": "គ្រួសារទាំងមូល",
+      "flags": {
+        "isDependent": "នៅក្នុងបន្ទុក",
+        "taxDependent": "គិតក្នុងពន្ធ",
+        "insuranceEligible": "ធានារ៉ាប់រង",
+        "benefitEligible": "អត្ថប្រយោជន៍"
+      },
+      "spouseStatus": {
+        "married": "រៀបការ",
+        "separated": "រស់នៅដាច់ពីគ្នា",
+        "divorced": "លែងលះ",
+        "widowed": "មេម៉ាយ/ពោះម៉ាយ",
+        "deceased": "ទទួលមរណភាព"
+      },
+      "childRelationship": {
+        "son": "កូនប្រុស",
+        "daughter": "កូនស្រី",
+        "adopted": "កូនចិញ្ចឹម",
+        "stepchild": "កូនចុង",
+        "other": "ផ្សេងៗ"
+      },
+      "dependentRelationship": {
+        "father": "ឪពុក",
+        "mother": "ម្ដាយ",
+        "grandparent": "ជីដូនជីតា",
+        "sibling": "បងប្អូន",
+        "disabled": "អ្នកពិការនៅក្នុងបន្ទុក",
+        "other": "ផ្សេងៗ"
+      },
+      "memberStatus": {
+        "active": "នៅក្នុងបន្ទុក",
+        "ended": "លែងនៅក្នុងបន្ទុក",
+        "deceased": "ទទួលមរណភាព"
+      },
+      "summary": {
+        "children": "កូន {n} នាក់",
+        "dependents": "អ្នកនៅក្នុងបន្ទុក {n} នាក់",
+        "taxDependents": "{n} នាក់គិតក្នុងពន្ធ",
+        "insurance": "{n} នាក់មានធានារ៉ាប់រង"
+      }
+    },
     "employmentType": {
       "full_time": "ពេញម៉ោង",
       "part_time": "ក្រៅម៉ោង",
@@ -1257,6 +1333,7 @@
       }
     },
     "tabs": {
+      "family": "គ្រួសារ",
       "employment": "ការងារ",
       "private": "ព័ត៌មានឯកជន",
       "personal": "ព័ត៌មានផ្ទាល់ខ្លួន",

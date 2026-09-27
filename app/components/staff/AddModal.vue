@@ -84,6 +84,7 @@ const EMPLOYMENT_KEYS = ['employeeCode', 'nationality', 'email', 'licenseNo', 'l
 const auth = useAuth()
 const canSeePrivate = computed(() => auth.can('staffSensitive', 'read'))
 const canEditPrivate = computed(() => auth.can('staffSensitive', 'update'))
+const canSeeFamily = computed(() => auth.can('family', 'read'))
 
 const { data: supervisorsResult } = await useAsyncData('staff-modal-supervisors', () => $api<{ data: { data: StaffMember[] } }>('/staff', { params: { limit: 500 } }))
 const supervisorOptions = computed(() => (((supervisorsResult.value as { data?: { data?: StaffMember[] } } | null)?.data?.data) || [])
@@ -117,6 +118,7 @@ const tabs = computed(() => [
   { label: t('staff.tabs.personal'), value: 'personal', slot: 'personal' as const, icon: 'i-lucide-user' },
   { label: t('staff.tabs.employment'), value: 'employment', slot: 'employment' as const, icon: 'i-lucide-building-2' },
   ...(canSeePrivate.value ? [{ label: t('staff.tabs.private'), value: 'private', slot: 'private' as const, icon: 'i-lucide-lock' }] : []),
+  ...(canSeeFamily.value ? [{ label: t('staff.tabs.family'), value: 'family', slot: 'family' as const, icon: 'i-lucide-users' }] : []),
   { label: t('staff.tabs.education'), value: 'education', slot: 'education' as const, icon: 'i-lucide-graduation-cap' },
   { label: t('staff.tabs.experience'), value: 'experience', slot: 'experience' as const, icon: 'i-lucide-briefcase' },
   { label: t('staff.tabs.history'), value: 'history', slot: 'history' as const, icon: 'i-lucide-history' }
@@ -606,6 +608,19 @@ function handleCancel() {
               <UInput v-model="state.email" type="email" class="w-full" />
             </UFormField>
           </div>
+        </template>
+
+        <!-- Family & dependents: family permission, saved separately -->
+        <template #family>
+          <StaffFamilyPanel v-if="isEditMode && state._id" :staff-id="state._id" />
+          <UAlert
+            v-else
+            class="mt-4"
+            color="neutral"
+            variant="subtle"
+            icon="i-lucide-info"
+            :description="t('staff.family.saveStaffFirst')"
+          />
         </template>
 
         <!-- Private details: staffSensitive -->
