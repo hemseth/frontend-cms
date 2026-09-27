@@ -83,6 +83,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
       ['/inpatient', 'admission:read'],
       ['/positions', 'staff:read'],
       ['/hr/attendance', 'attendance:read'],
+      ['/hr/leave', 'leave:read'],
+      ['/hr/overtime', 'overtime:read'],
       ['/payrolls', 'payroll:read'],
       ['/staff', 'staff:read'],
       ['/suppliers', 'supplier:read'],

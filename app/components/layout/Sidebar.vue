@@ -49,6 +49,10 @@ const links = computed(() => {
       label: t('hr.my.attendanceTitle'),
       to: '/my/attendance',
       icon: 'i-lucide-clock'
+    }, {
+      label: t('hr.my.leaveTitle'),
+      to: '/my/leave',
+      icon: 'i-lucide-plane'
     }]
   }, {
     label: t('workstation.nav'),
@@ -424,6 +428,14 @@ const links = computed(() => {
       to: '/hr/attendance',
       icon: 'i-lucide-calendar-check'
     }, {
+      label: t('hr.leave.title'),
+      to: '/hr/leave',
+      icon: 'i-lucide-plane'
+    }, {
+      label: t('hr.ot.title'),
+      to: '/hr/overtime',
+      icon: 'i-lucide-timer'
+    }, {
       label: t('payroll.title'),
       to: '/payrolls',
       icon: 'i-lucide-banknote'
@@ -492,6 +504,8 @@ const links = computed(() => {
     if (path.startsWith('/revenues')) return 'revenue'
     if (path.startsWith('/expenses')) return 'expense'
     if (path.startsWith('/hr/attendance')) return 'attendance'
+    if (path.startsWith('/hr/leave')) return 'leave'
+    if (path.startsWith('/hr/overtime')) return 'overtime'
     if (path.startsWith('/payrolls') || path.startsWith('/hr')) return 'payroll'
     if (path.startsWith('/pharmacy')) return 'pharmacy'
     if (path.startsWith('/payments')) return 'payment'

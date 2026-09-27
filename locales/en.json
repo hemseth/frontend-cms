@@ -2055,7 +2055,95 @@
     "errNoCounts": "Enter at least one counted quantity"
   },
   "hr": {
+    "leave": {
+      "title": "Leave",
+      "tabs": {
+        "requests": "Requests",
+        "calendar": "Calendar",
+        "balances": "Balances",
+        "types": "Leave types",
+        "settings": "Working week & holidays"
+      },
+      "filter": {
+        "pending": "Waiting for a decision"
+      },
+      "status": {
+        "pending_supervisor": "Waiting for supervisor",
+        "pending_hr": "Waiting for HR",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      },
+      "half": {
+        "none": "Full day",
+        "am": "Morning",
+        "pm": "Afternoon"
+      },
+      "daysCount": "{n} day(s)",
+      "none": "No requests.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectReason": "Reason for rejecting (optional):",
+      "cancelConfirm": "Cancel this request?",
+      "new": "Record leave",
+      "requested": "Leave requested",
+      "type": "Leave type",
+      "from": "From",
+      "to": "To",
+      "halfDay": "Half day",
+      "reason": "Reason",
+      "submit": "Send request",
+      "documentNeeded": "A supporting document is needed (e.g. medical certificate).",
+      "pendingDays": "{n} pending",
+      "balanceHelp": "Remaining / entitlement this year. Annual leave is earned per month worked (from the start date at this clinic).",
+      "typesHelp": "Entitlement, pay and counting per leave type. The first set is a starting point: confirm it with HR.",
+      "addType": "Add leave type",
+      "editType": "Edit leave type",
+      "accrues": "{n} days per month (max {max})",
+      "perYear": "{n} days per year",
+      "noLimit": "no fixed limit",
+      "paid": "{n}% paid",
+      "calendarDays": "Counts calendar days",
+      "category": "Calendar colour group",
+      "annualDays": "Days per year",
+      "annualDaysHelp": "0 = no fixed entitlement (tracked only).",
+      "accruesPerMonth": "Earned per month",
+      "payPercent": "Paid (%)",
+      "payPercentHelp": "Share of the daily wage paid; the rest is deducted in payroll.",
+      "onlyForLabel": "For",
+      "onlyFor": {
+        "any": "Everyone",
+        "female": "Women",
+        "male": "Men"
+      },
+      "requiresDocument": "Needs a document",
+      "weekend": "Weekly days off (not counted as leave)",
+      "addHoliday": "Add public holiday",
+      "settingsSaved": "Settings saved",
+      "settingsHelp": "Public holidays and weekly days off are skipped when counting leave days (except calendar-day leave such as maternity)."
+    },
+    "ot": {
+      "title": "Overtime",
+      "new": "Record overtime",
+      "requested": "Overtime requested",
+      "date": "Date",
+      "typeLabel": "Type",
+      "type": {
+        "normal": "Normal",
+        "weekend": "Weekend",
+        "holiday": "Public holiday",
+        "night": "Night",
+        "emergency": "Emergency"
+      },
+      "approvedTotals": "Approved overtime this month",
+      "help": "Only approved overtime is paid, at the rates set in the payroll rules."
+    },
     "my": {
+      "leaveTitle": "My leave & overtime",
+      "requestLeave": "Leave",
+      "requestOvertime": "Overtime",
+      "teamTitle": "My team: waiting for me",
       "nav": "My work",
       "attendanceTitle": "My attendance",
       "noShift": "No shift set",
