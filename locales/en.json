@@ -248,6 +248,8 @@
   },
   "common": {
     "number": "#",
+    "nameEn": "Name (English)",
+    "nameKh": "Name (Khmer)",
     "add": "Add",
     "addNew":"Add New",
     "choose_all":"Choose All",
@@ -632,7 +634,14 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
-    "deleteConfirm": "Are you sure you want to delete staff member {name}?"
+    "deleteConfirm": "Are you sure you want to delete staff member {name}?",
+    "family": "Family Info",
+    "spouse": "Spouse",
+    "children": "Children",
+    "occupation": "Occupation",
+    "nameRequired": "English name is required",
+    "familyDeleteConfirm": "Are you sure you want to delete this record?",
+    "familyDeleted": "Record deleted"
   },
   "position": {
     "title": "Positions",

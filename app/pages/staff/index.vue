@@ -74,7 +74,13 @@ const columns: TableColumn<any>[] = [
   },
   {
     accessorKey: 'gender',
-    header: t('staff.gender')
+    header: t('staff.gender'),
+    cell: ({ row }) => {
+      const g = row.original.gender
+      if (g === '1') return t('patient.male')
+      if (g === '2') return t('patient.female')
+      return '-'
+    }
   },
   {
     accessorKey: 'role',
@@ -159,6 +165,11 @@ const columns: TableColumn<any>[] = [
           onSelect: () => viewSalary(row.original)
         },
         {
+          label: t('staff.family'),
+          icon: 'i-lucide-users',
+          onSelect: () => viewFamily(row.original)
+        },
+        {
           label: hasAccount ? 'View Account' : 'Create User Account',
           icon: hasAccount ? 'i-lucide-user' : 'i-lucide-user-plus',
           onSelect: () => hasAccount ? viewAccount(row.original._id) : createAccountFromStaff(row.original._id)
@@ -192,6 +203,7 @@ const isAddModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
 const isUserModalOpen = ref(false)
 const isSalaryModalOpen = ref(false)
+const isFamilyModalOpen = ref(false)
 const isDeleting = ref(false)
 const selectedStaff = ref<any>(null)
 const selectedStaffIdForAccount = ref<string | undefined>()
@@ -222,6 +234,11 @@ function editStaff(staff: any) {
 function viewSalary(staff: any) {
   selectedStaff.value = staff
   isSalaryModalOpen.value = true
+}
+
+function viewFamily(staff: any) {
+  selectedStaff.value = staff
+  isFamilyModalOpen.value = true
 }
 
 function confirmDelete(staff: any) {
@@ -511,5 +528,8 @@ async function handleImport(event: Event) {
 
     <!-- Salary History Modal -->
     <StaffSalaryModal v-model:open="isSalaryModalOpen" :staff-member="selectedStaff" />
+
+    <!-- Family Info Modal -->
+    <StaffFamilyModal v-model:open="isFamilyModalOpen" :staff-member="selectedStaff" />
   </div>
 </template>

@@ -46,7 +46,7 @@ const state = reactive({
   _id: '',
   nameEn: '',
   nameKh: '',
-  gender: 'Male',
+  gender: '1',
   dob: '',
   phone: '',
   role: 'Doctor',
@@ -54,7 +54,10 @@ const state = reactive({
   active: 1
 })
 
-const genderOptions = ['Male', 'Female', 'Other']
+const genderOptions = [
+  { label: t('patient.male'), value: '1' },
+  { label: t('patient.female'), value: '2' }
+]
 const activeOptions = [
   { label: t('staff.active'), value: 1 },
   { label: t('staff.inactive'), value: 0 }
@@ -75,7 +78,7 @@ function resetState() {
     _id: '',
     nameEn: '',
     nameKh: '',
-    gender: 'Male',
+    gender: '1',
     dob: '',
     phone: '',
     role: 'Doctor',
@@ -158,11 +161,9 @@ function handleCancel() {
               t('staff.gender') }}</label>
             <USelect
               v-model="state.gender"
-              :options="[
-                { label: t('patient.male'), value: 'Male' },
-                { label: t('patient.female'), value: 'Female' },
-                { label: t('common.other'), value: 'Other' }
-              ]"
+              :items="genderOptions"
+              value-key="value"
+              label-key="label"
               class="w-full"
             />
           </div>
@@ -205,7 +206,13 @@ function handleCancel() {
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
               t('staff.status') }}</label>
-            <USelect v-model.number="state.active" :options="activeOptions" class="w-full" />
+            <USelect
+              v-model.number="state.active"
+              :items="activeOptions"
+              value-key="value"
+              label-key="label"
+              class="w-full"
+            />
           </div>
         </div>
 
