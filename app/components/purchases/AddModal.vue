@@ -228,15 +228,21 @@ function handleOpenChange(open: boolean) {
           </UFormField>
 
           <UFormField :label="t('purchase.paymentStatus')">
-            <USelect v-model="form.paymentStatus" :options="paymentStatusOptions" />
+            <USelect v-model="form.paymentStatus" :items="paymentStatusOptions"
+            value-key="value"
+            label-key="label" />
           </UFormField>
 
           <UFormField :label="t('purchase.paymentMethod')">
-            <USelect v-model="form.paymentMethod" :options="paymentMethodOptions" />
+            <USelect v-model="form.paymentMethod" :items="paymentMethodOptions"
+            value-key="value"
+            label-key="label" />
           </UFormField>
 
           <UFormField v-if="purchase?._id" :label="t('common.status')">
-            <USelect v-model="form.status" :options="statusOptions" />
+            <USelect v-model="form.status" :items="statusOptions"
+            value-key="value"
+            label-key="label" />
           </UFormField>
         </div>
 

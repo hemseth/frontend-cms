@@ -271,7 +271,9 @@ async function handleSave() {
           <UFormField label="Patient" required>
             <USelectMenu
               v-model="form.patientId"
-              :options="patients?.data?.map((p: any) => ({ label: p.nameEn || p.nameKh, value: p._id })) || []"
+              :items="patients?.data?.map((p: any) => ({ label: p.nameEn || p.nameKh, value: p._id })) || []"
+              value-key="value"
+              label-key="label"
               placeholder="Select patient"
             />
           </UFormField>
@@ -279,10 +281,12 @@ async function handleSave() {
           <UFormField label="Type" required>
             <USelectMenu
               v-model="form.type"
-              :options="[
+              :items="[
                 { label: 'OPD (Outpatient)', value: 'opd' },
                 { label: 'IPD (Inpatient)', value: 'ipd' }
               ]"
+              value-key="value"
+              label-key="label"
             />
           </UFormField>
 

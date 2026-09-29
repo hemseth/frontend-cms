@@ -91,7 +91,9 @@ function printReport() {
       <div v-if="showPatientSelect" class="relative">
         <USelect
           v-model="selectedPatientId"
-          :options="patients.map(p => ({ label: `${p.nameKh} (${p.pId || p._id})`, value: p._id }))"
+          :items="patients.map(p => ({ label: `${p.nameKh} (${p.pId || p._id})`, value: p._id }))"
+          value-key="value"
+          label-key="label"
           :placeholder="t('report.selectPatient')"
           searchable
           class="w-48"

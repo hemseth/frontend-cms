@@ -187,7 +187,7 @@ async function onSubmit() {
             />
           </UFormField>
           <UFormField label="Currency" name="currency">
-            <USelectMenu v-model="state.currency" :options="['USD', 'KHR']" class="w-full" />
+            <USelectMenu v-model="state.currency" :items="['USD', 'KHR']" class="w-full" />
           </UFormField>
         </div>
 
@@ -264,7 +264,7 @@ async function onSubmit() {
         </div>
 
         <UFormField label="Status" name="status">
-          <USelectMenu v-model="state.status" :options="['active', 'inactive']" class="w-full" />
+          <USelectMenu v-model="state.status" :items="['active', 'inactive']" class="w-full" />
         </UFormField>
 
         <div class="flex justify-end gap-2 pt-4">

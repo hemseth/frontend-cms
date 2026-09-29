@@ -117,10 +117,12 @@ function handleCancel() {
         <UFormField label="Gender" required>
           <USelectMenu
             v-model="form.gender"
-            :options="[
+            :items="[
               { label: 'Male', value: '1' },
               { label: 'Female', value: '2' }
             ]"
+            value-key="value"
+            label-key="label"
           />
         </UFormField>
 

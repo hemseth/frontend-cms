@@ -292,6 +292,10 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
+    "ordered": "Ordered",
+    "utility": "Utility",
+    "rent": "Rent",
+    "equipment": "Equipment",
     "date": "Date",
     "time": "Time",
     "total": "Total",
@@ -620,6 +624,7 @@
     "count": "Count"
   },
   "staff": {
+    "salary": "Salary",
     "title": "Staff Management",
     "edit": "Edit Staff",
     "add": "Add New Staff",
@@ -699,6 +704,7 @@
     "search": "Search Supplier"
   },
   "purchase": {
+    "tax": "Tax",
     "title": "Purchases",
     "list": "Purchase List",
     "add": "Add Purchase",
@@ -732,6 +738,7 @@
     "noProduct": "No Product Found"
   },
   "revenue": {
+    "purchase": "Purchase",
     "title": "Revenues",
     "list": "Revenue List",
     "add": "Add Revenue",

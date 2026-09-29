@@ -163,12 +163,14 @@ async function saveResults() {
         <div class="w-px h-6 bg-slate-200 dark:bg-slate-800 mx-1" />
         <USelect
           v-model="statusFilter"
-          :options="[
+          :items="[
             { label: 'All Status', value: '' },
             { label: 'Pending', value: 'pending' },
             { label: 'In Progress', value: 'in-progress' },
             { label: 'Completed', value: 'completed' }
           ]"
+          value-key="value"
+          label-key="label"
           size="sm"
           variant="none"
         />
