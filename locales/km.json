@@ -245,6 +245,7 @@
     "total": "សរុប"
   },
   "common": {
+    "next": "បន្ទាប់",
     "confirmDelete": "បញ្ជាក់ការលុប",
     "number": "#",
     "nameEn": "ឈ្មោះ (អង់គ្លេស)",
@@ -627,6 +628,17 @@
     "count": "ចំនួន"
   },
   "staff": {
+    "stepEmployment": "ការងារ",
+    "stepAddress": "អាសយដ្ឋាន",
+    "stepBirthPlace": "ទីកន្លែងកំណើត",
+    "stepContact": "ទំនាក់ទំនង",
+    "stepPersonal": "ព័ត៌មានផ្ទាល់ខ្លួន",
+    "streetNum": "ផ្លូវលេខ",
+    "groupNum": "ក្រុមលេខ",
+    "houseNum": "ផ្ទះលេខ",
+    "whatApp": "WhatsApp",
+    "telegram": "តេលេក្រាម",
+    "email": "អ៊ីមែល",
     "deleteFailed": "មិនអាចលុបបុគ្គលិកបានទេ",
     "deleteSuccess": "បានលុបបុគ្គលិកដោយជោគជ័យ",
     "salary": "ប្រាក់ខែ",

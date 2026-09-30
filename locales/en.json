@@ -248,6 +248,7 @@
     "total": "Total"
   },
   "common": {
+    "next": "Next",
     "confirmDelete": "Confirm delete",
     "number": "#",
     "nameEn": "Name (English)",
@@ -628,6 +629,17 @@
     "count": "Count"
   },
   "staff": {
+    "stepEmployment": "Employment",
+    "stepAddress": "Address",
+    "stepBirthPlace": "Place of Birth",
+    "stepContact": "Contact",
+    "stepPersonal": "Personal",
+    "streetNum": "Street No.",
+    "groupNum": "Group No.",
+    "houseNum": "House No.",
+    "whatApp": "WhatsApp",
+    "telegram": "Telegram",
+    "email": "Email",
     "deleteFailed": "Failed to delete staff",
     "deleteSuccess": "Staff deleted successfully",
     "salary": "Salary",
