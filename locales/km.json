@@ -8,6 +8,7 @@
     "register": "ចុះឈ្មោះ"
   },
   "nav": {
+    "hr": "ធនធានមនុស្ស",
     "home": "ទំព័រដើម",
     "patients": "អ្នកជំងឺ",
     "patientManagement": "គ្រប់គ្រងអ្នកជំងឺ",
@@ -421,6 +422,8 @@
     "pendingLab": "កំពុងរង់ចាំ"
   },
   "settings": {
+    "serviceCategories": "ប្រភេទសេវាកម្ម",
+    "dosageForms": "ទម្រង់ថ្នាំ",
     "title": "ការកំណត់",
     "general": "ទូទៅ",
     "profile": "ព័ត៌មានផ្ទាល់ខ្លួន",

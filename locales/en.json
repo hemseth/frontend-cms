@@ -8,6 +8,7 @@
     "register": "Register"
   },
   "nav": {
+    "hr": "Human Resources",
     "home": "Home",
     "patients": "Patients",
     "patientManagement": "Patient Management",
@@ -424,6 +425,8 @@
     "pendingLab": "Pending Lab"
   },
   "settings": {
+    "serviceCategories": "Service Categories",
+    "dosageForms": "Dosage Forms",
     "title": "Settings",
     "general": "General",
     "profile": "Profile",
