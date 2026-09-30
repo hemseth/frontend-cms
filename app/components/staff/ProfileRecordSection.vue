@@ -40,6 +40,15 @@ const blankForm = () => Object.fromEntries(
 
 const form = ref<Record<string, any>>(blankForm())
 
+// Adding happens in a modal rather than an always-open form, so a tab shows
+// what already exists first and the fields only appear once asked for.
+const isFormOpen = ref(false)
+
+function openForm() {
+  form.value = blankForm()
+  isFormOpen.value = true
+}
+
 async function load() {
   if (!props.staffId) return
   loading.value = true
@@ -72,6 +81,7 @@ async function add() {
     await $api(`/${props.endpoint}`, { method: 'POST', body: payload })
     toast.add({ title: t('common.success'), description: t('messages.createSuccess'), color: 'success' })
     form.value = blankForm()
+    isFormOpen.value = false
     await load()
   } catch (error: any) {
     toast.add({ title: t('common.error'), description: error.data?.message || t('messages.errorOccurred'), color: 'error' })
@@ -122,46 +132,13 @@ const tableColumns = computed(() => [
 
 <template>
   <div class="space-y-4">
-    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <UFormField
-          v-for="field in fields"
-          :key="field.key"
-          :label="field.label"
-          :required="field.required"
-          :class="field.full ? 'md:col-span-2' : ''"
-        >
-          <USelect
-            v-if="field.type === 'select'"
-            v-model="form[field.key]"
-            :items="field.items || []"
-            value-key="value"
-            label-key="label"
-            class="w-full"
-          />
-          <UTextarea
-            v-else-if="field.type === 'textarea'"
-            v-model="form[field.key]"
-            :rows="2"
-            class="w-full"
-          />
-          <UInput
-            v-else
-            v-model="form[field.key]"
-            :type="field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'"
-            class="w-full"
-          />
-        </UFormField>
-      </div>
-      <div class="mt-4 flex justify-end">
-        <UButton
-          :loading="submitting"
-          :label="addLabel || t('common.addNew')"
-          icon="i-lucide-plus"
-          :disabled="!staffId"
-          @click="add"
-        />
-      </div>
+    <div class="flex justify-end">
+      <UButton
+        :label="addLabel || t('common.addNew')"
+        icon="i-lucide-plus"
+        :disabled="!staffId"
+        @click="openForm"
+      />
     </div>
 
     <div class="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-lg">
@@ -176,5 +153,59 @@ const tableColumns = computed(() => [
         }"
       />
     </div>
+
+    <UModal v-model:open="isFormOpen" size="xl">
+      <template #header>
+        <h3 class="text-lg font-semibold">
+          {{ addLabel || t('common.addNew') }}
+        </h3>
+      </template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <UFormField
+            v-for="field in fields"
+            :key="field.key"
+            :label="field.label"
+            :required="field.required"
+            :class="field.full ? 'md:col-span-2' : ''"
+          >
+            <USelect
+              v-if="field.type === 'select'"
+              v-model="form[field.key]"
+              :items="field.items || []"
+              value-key="value"
+              label-key="label"
+              class="w-full"
+            />
+            <UTextarea
+              v-else-if="field.type === 'textarea'"
+              v-model="form[field.key]"
+              :rows="2"
+              class="w-full"
+            />
+            <UInput
+              v-else
+              v-model="form[field.key]"
+              :type="field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+        <div class="mt-6 flex justify-end gap-2">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            :label="t('common.cancel')"
+            :disabled="submitting"
+            @click="isFormOpen = false"
+          />
+          <UButton
+            :loading="submitting"
+            :label="t('common.save')"
+            @click="add"
+          />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
