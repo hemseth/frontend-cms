@@ -467,19 +467,24 @@ function handleCancel() {
           @click="handleCancel"
         />
         <div class="flex items-center gap-2">
+          <!-- Arrows only: the step strip above already names where you are,
+               so the labels were repeating it. aria-label keeps them readable
+               to a screen reader. -->
           <UButton
             v-if="!isFirstStep"
-            :label="t('common.back')"
+            icon="i-lucide-chevron-left"
             color="neutral"
             variant="subtle"
-            icon="i-lucide-chevron-left"
+            :aria-label="t('common.back')"
+            :title="t('common.back')"
             @click="step--"
           />
           <UButton
             v-if="!isLastStep"
-            :label="t('common.next')"
+            icon="i-lucide-chevron-right"
             color="primary"
-            trailing-icon="i-lucide-chevron-right"
+            :aria-label="t('common.next')"
+            :title="t('common.next')"
             @click="step++"
           />
           <UButton
