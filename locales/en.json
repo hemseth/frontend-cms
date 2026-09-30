@@ -247,6 +247,7 @@
     "total": "Total"
   },
   "common": {
+    "confirmDelete": "Confirm delete",
     "number": "#",
     "nameEn": "Name (English)",
     "nameKh": "Name (Khmer)",
@@ -624,6 +625,8 @@
     "count": "Count"
   },
   "staff": {
+    "deleteFailed": "Failed to delete staff",
+    "deleteSuccess": "Staff deleted successfully",
     "salary": "Salary",
     "title": "Staff Management",
     "edit": "Edit Staff",
