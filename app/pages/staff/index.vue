@@ -149,6 +149,11 @@ const columns: TableColumn<any>[] = [
       const hasAccount = userMap.value.has(row.original._id)
       const items = [
         {
+          label: t('staff.profile'),
+          icon: 'i-lucide-id-card',
+          onSelect: () => navigateTo(`/staff/${row.original._id}`)
+        },
+        {
           label: t('common.edit'),
           icon: 'i-lucide-pencil',
           onSelect: () => editStaff(row.original)
