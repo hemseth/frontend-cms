@@ -124,11 +124,21 @@ function handleClose() {
           </UFormField>
 
           <UFormField :label="t('expense.category')">
-            <USelect v-model="form.category" :options="categoryOptions" />
+            <USelect
+              v-model="form.category"
+              :items="categoryOptions"
+              value-key="value"
+              label-key="label"
+            />
           </UFormField>
 
           <UFormField :label="t('expense.paymentMethod')">
-            <USelect v-model="form.paymentMethod" :options="paymentMethodOptions" />
+            <USelect
+              v-model="form.paymentMethod"
+              :items="paymentMethodOptions"
+              value-key="value"
+              label-key="label"
+            />
           </UFormField>
 
           <UFormField :label="t('expense.reference')" class="col-span-2">

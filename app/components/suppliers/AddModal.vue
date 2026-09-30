@@ -144,7 +144,12 @@ function handleClose() {
           </UFormField>
 
           <UFormField :label="t('common.status')">
-            <USelect v-model="form.status" :options="statusOptions" />
+            <USelect
+              v-model="form.status"
+              :items="statusOptions"
+              value-key="value"
+              label-key="label"
+            />
           </UFormField>
 
           <UFormField :label="t('supplier.notes')" class="col-span-2">

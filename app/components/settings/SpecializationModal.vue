@@ -96,7 +96,7 @@ async function handleSave() {
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{
               t('specialization.status') }}</label>
-            <USelect v-model="state.status" :options="['active', 'inactive']" class="w-full" />
+            <USelect v-model="state.status" :items="['active', 'inactive']" class="w-full" />
           </div>
         </div>
 

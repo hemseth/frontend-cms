@@ -53,7 +53,7 @@
 
         <div class="hidden">
           <label class="khmer-label block text-sm mb-1 font-bold">{{ t('visit.department') }}</label>
-          <USelect :options="['OPD', 'IPD']" class="w-full" :model-value="'OPD'" />
+          <USelect :items="['OPD', 'IPD']" class="w-full" :model-value="'OPD'" />
         </div>
         <div class="hidden">
           <label class="khmer-label block text-sm mb-1 font-bold">{{ t('visit.refNo') }}</label>

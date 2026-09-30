@@ -192,7 +192,7 @@ function getDropdownItems(row: any) {
             <span class="text-sm text-gray-500">{{ t('pagination.perPage') }}:</span>
             <USelectMenu
               v-model="pageCount"
-              :options="pageSizes"
+              :items="pageSizes"
               class="w-20"
               size="sm"
               :ui-menu="{ width: 'w-20' }"

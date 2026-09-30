@@ -114,7 +114,9 @@ function printInvoice() {
         />
         <USelect
           v-model="selectedPaymentId"
-          :options="payments.map(p => ({ label: `Invoice #${p.paymentId || p._id} - ${p.patientId}`, value: p._id }))"
+          :items="payments.map(p => ({ label: `Invoice #${p.paymentId || p._id} - ${p.patientId}`, value: p._id }))"
+          value-key="value"
+          label-key="label"
           :placeholder="'Select Invoice'"
           class="w-full"
         />

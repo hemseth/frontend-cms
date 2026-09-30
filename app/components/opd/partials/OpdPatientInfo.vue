@@ -59,7 +59,9 @@
         <label class="khmer-label block text-sm mb-1">{{ t('patient.gender') }}</label>
         <USelect
           :model-value="patientGender"
-          :options="genderOptions"
+          :items="genderOptions"
+          value-key="value"
+          label-key="label"
           class="w-full"
           @update:model-value="emit('update:patientGender', $event)"
         />

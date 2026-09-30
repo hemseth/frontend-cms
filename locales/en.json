@@ -8,6 +8,7 @@
     "register": "Register"
   },
   "nav": {
+    "hr": "Human Resources",
     "home": "Home",
     "patients": "Patients",
     "patientManagement": "Patient Management",
@@ -247,7 +248,11 @@
     "total": "Total"
   },
   "common": {
+    "next": "Next",
+    "confirmDelete": "Confirm delete",
     "number": "#",
+    "nameEn": "Name (English)",
+    "nameKh": "Name (Khmer)",
     "add": "Add",
     "addNew":"Add New",
     "choose_all":"Choose All",
@@ -290,6 +295,10 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
+    "ordered": "Ordered",
+    "utility": "Utility",
+    "rent": "Rent",
+    "equipment": "Equipment",
     "date": "Date",
     "time": "Time",
     "total": "Total",
@@ -417,6 +426,8 @@
     "pendingLab": "Pending Lab"
   },
   "settings": {
+    "serviceCategories": "Service Categories",
+    "dosageForms": "Dosage Forms",
     "title": "Settings",
     "general": "General",
     "profile": "Profile",
@@ -618,6 +629,20 @@
     "count": "Count"
   },
   "staff": {
+    "stepEmployment": "Employment",
+    "stepAddress": "Address",
+    "stepBirthPlace": "Place of Birth",
+    "stepContact": "Contact",
+    "stepPersonal": "Personal",
+    "streetNum": "Street No.",
+    "groupNum": "Group No.",
+    "houseNum": "House No.",
+    "whatApp": "WhatsApp",
+    "telegram": "Telegram",
+    "email": "Email",
+    "deleteFailed": "Failed to delete staff",
+    "deleteSuccess": "Staff deleted successfully",
+    "salary": "Salary",
     "title": "Staff Management",
     "edit": "Edit Staff",
     "add": "Add New Staff",
@@ -632,7 +657,14 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
-    "deleteConfirm": "Are you sure you want to delete staff member {name}?"
+    "deleteConfirm": "Are you sure you want to delete staff member {name}?",
+    "family": "Family Info",
+    "spouse": "Spouse",
+    "children": "Children",
+    "occupation": "Occupation",
+    "nameRequired": "English name is required",
+    "familyDeleteConfirm": "Are you sure you want to delete this record?",
+    "familyDeleted": "Record deleted"
   },
   "position": {
     "title": "Positions",
@@ -690,6 +722,7 @@
     "search": "Search Supplier"
   },
   "purchase": {
+    "tax": "Tax",
     "title": "Purchases",
     "list": "Purchase List",
     "add": "Add Purchase",
@@ -723,6 +756,7 @@
     "noProduct": "No Product Found"
   },
   "revenue": {
+    "purchase": "Purchase",
     "title": "Revenues",
     "list": "Revenue List",
     "add": "Add Revenue",

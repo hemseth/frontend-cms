@@ -211,10 +211,12 @@ async function handleSave() {
             <UFormField label="Currency" required>
               <USelectMenu
                 v-model="form.currency"
-                :options="[
+                :items="[
                   { label: 'USD', value: 'USD' },
                   { label: 'KHR', value: 'KHR' }
                 ]"
+                value-key="value"
+                label-key="label"
               />
             </UFormField>
           </div>
@@ -222,10 +224,12 @@ async function handleSave() {
           <UFormField label="Status" required>
             <USelectMenu
               v-model="form.status"
-              :options="[
+              :items="[
                 { label: 'Active', value: 'active' },
                 { label: 'Inactive', value: 'inactive' }
               ]"
+              value-key="value"
+              label-key="label"
             />
           </UFormField>
         </form>
