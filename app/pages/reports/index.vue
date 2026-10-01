@@ -28,7 +28,8 @@ const reportCategories = [
       { title: t('report.dailyRevenueReport'), description: 'Daily revenue summary', icon: 'i-lucide-calendar', link: '/reports/daily' },
       { title: t('report.financialReport'), description: 'Revenue, expenses and cash flow', icon: 'i-lucide-bar-chart-2', link: '/reports/financial' },
       { title: t('report.financeAnalysis'), description: 'Revenue by service, profitability and cash flow', icon: 'i-lucide-chart-pie', link: '/reports/finance-analysis' },
-      { title: t('report.pharmacyReports'), description: 'Stock value, expiry, movement and price variance', icon: 'i-lucide-pill', link: '/reports/pharmacy' }
+      { title: t('report.pharmacyReports'), description: 'Stock value, expiry, movement and price variance', icon: 'i-lucide-pill', link: '/reports/pharmacy' },
+      { title: t('report.coverageReport'), description: 'Payer mix and HEF/NSSF/IDPoor claim lines', icon: 'i-lucide-shield-check', link: '/reports/coverage' }
     ]
   },
   {

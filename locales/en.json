@@ -855,6 +855,9 @@
     "managementReports": "Management Reports",
     "pharmacyReports": "Pharmacy reports",
     "financeAnalysis": "Finance analysis",
+    "coverageReport": "Coverage and claims",
+    "payerMix": "Payer mix",
+    "claimLines": "Claim lines",
     "pharmacyTabs": {
       "valuation": "Inventory valuation",
       "expiry": "Expiry alerts",
@@ -873,6 +876,9 @@
     "cashFlowScope": "Cash received on invoices less recorded expenses. Investing and financing activities and opening balances are not tracked.",
     "profitabilityScope": "Expenses are matched to a service only when the expense category has the same name; the rest are shown as unallocated.",
     "cols": {
+      "coverageType": "Coverage",
+      "beneficiaryNumber": "Beneficiary no.",
+      "patients": "Patients",
       "code": "Code",
       "medicine": "Medicine",
       "stockQty": "In stock",
