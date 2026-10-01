@@ -837,6 +837,10 @@
     "validateVillage": "Please select a valid village"
   },
   "report": {
+    "reportPeriod": "Reporting period",
+    "madeAt": "Made at",
+    "preparedBy": "Prepared by",
+    "director": "Director",
     "title": "Reports",
     "allReports": "All Reports",
     "dailyReport": "Daily Report",

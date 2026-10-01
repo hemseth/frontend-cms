@@ -69,7 +69,7 @@ function printReport() {
   <div class="p-6 space-y-6">
     <UBreadcrumb :items="breadcrumbItems" />
 
-    <PrintLayout :title="t('report.topDiseases')" :show-signature="true">
+    <PrintLayout :title="t('report.topDiseases')" :date-range="dateRange" :show-signature="true">
       <div class="flex items-center justify-between mb-6 no-print">
         <div>
           <h1 class="text-2xl font-bold">

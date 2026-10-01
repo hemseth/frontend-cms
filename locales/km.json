@@ -832,6 +832,10 @@
     "validateVillage": "សូមជ្រើសរើសភូមិឱ្យបានត្រឹមត្រូវ"
   },
   "report": {
+    "reportPeriod": "រយៈពេលរបាយការណ៍",
+    "madeAt": "ធ្វើនៅ",
+    "preparedBy": "រៀបចំដោយ",
+    "director": "ប្រធាន",
     "title": "របាយការណ៍",
     "allReports": "របាយការណ៍ទាំងអស់",
     "dailyReport": "របាយការណ៍ប្រចាំថ្ងៃ",
