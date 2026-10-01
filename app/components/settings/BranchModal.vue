@@ -170,10 +170,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </UFormField>
 
           <UFormField name="isActive" class="flex-none">
-            <div class="flex items-center gap-2">
-              <UCheckbox v-model="state.isActive" />
-              <span class="text-sm">Active</span>
-            </div>
+            <USwitch v-model="state.isActive" label="Active" />
           </UFormField>
         </div>
 

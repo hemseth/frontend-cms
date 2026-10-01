@@ -20,11 +20,6 @@ const auth = useAuth()
 
 const TYPES = ['MAIN', 'PHARMACY', 'EMERGENCY', 'LAB', 'COLD_CHAIN', 'DISPENSING', 'OTHER']
 const typeOptions = computed(() => TYPES.map(value => ({ label: t(`pharmacy.docs.warehouseType.${value}`), value })))
-const statusOptions = computed(() => [
-  { label: t('common.active'), value: 'active' },
-  { label: t('common.inactive'), value: 'inactive' }
-])
-
 const warehouses = ref<Warehouse[]>([])
 const isLoading = ref(true)
 const loadError = ref('')
@@ -213,7 +208,12 @@ async function remove(warehouse: Warehouse) {
             <UCheckbox v-model="form.allowIssue" :label="t('pharmacy.docs.allowIssue')" />
           </div>
           <UFormField :label="t('common.status')">
-            <USelect v-model="form.active" :items="statusOptions" class="w-full" />
+            <USwitch
+              v-model="form.active"
+              true-value="active"
+              false-value="inactive"
+              :label="form.active === 'active' ? t('common.active') : t('common.inactive')"
+            />
           </UFormField>
           <UFormField :label="t('common.notes')">
             <UTextarea v-model="form.notes" :rows="2" class="w-full" />

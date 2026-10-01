@@ -55,11 +55,6 @@ const state = reactive({
 })
 
 const genderOptions = ['Male', 'Female', 'Other']
-const activeOptions = [
-  { label: t('staff.active'), value: 1 },
-  { label: t('staff.inactive'), value: 0 }
-]
-
 watch(() => props.staffMember, (newVal) => {
   if (newVal) {
     isEditMode.value = true
@@ -205,7 +200,12 @@ function handleCancel() {
           <div>
             <label class="block text-sm font-medium text-default mb-1">{{
               t('staff.status') }}</label>
-            <USelect v-model.number="state.active" :options="activeOptions" class="w-full" />
+            <USwitch
+              v-model="state.active"
+              :true-value="1"
+              :false-value="0"
+              :label="state.active === 1 ? t('staff.active') : t('staff.inactive')"
+            />
           </div>
         </div>
 

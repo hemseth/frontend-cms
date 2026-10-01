@@ -408,12 +408,11 @@ async function handleSave() {
                 <label class="block font-semibold text-default mb-1">
                   ស្ថានភាពគណនី (Status)
                 </label>
-                <USelect
+                <USwitch
                   v-model="state.active"
-                  :items="[{ label: 'Active (សកម្ម)', value: 1 }, { label: 'Inactive (អសកម្ម)', value: 0 }]"
-                  value-key="value"
-                  label-key="label"
-                  class="w-full"
+                  :true-value="1"
+                  :false-value="0"
+                  :label="state.active === 1 ? 'Active (សកម្ម)' : 'Inactive (អសកម្ម)'"
                 />
               </div>
             </div>
