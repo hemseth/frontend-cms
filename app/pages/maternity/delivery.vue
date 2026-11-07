@@ -108,7 +108,7 @@ const fetchDeliveries = async () => {
     const res = await $api('/maternity/deliveries', { query: { limit: 50 } })
     deliveries.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'បរាជ័យក្នុងការទាញទិន្នន័យ', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.loadFailed'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -116,7 +116,7 @@ const fetchDeliveries = async () => {
 
 const handleCreateDelivery = async () => {
   if (!deliveryForm.value.patientId) {
-    toast.add({ title: 'សូមជ្រើសរើសអ្នកជំងឺ', color: 'warning' })
+    toast.add({ title: t('maternity.common.selectPatientToast'), color: 'warning' })
     return
   }
 
@@ -125,11 +125,11 @@ const handleCreateDelivery = async () => {
       method: 'POST',
       body: deliveryForm.value
     })
-    toast.add({ title: 'បានកត់ត្រាការសម្រាលជោគជ័យ', color: 'success' })
+    toast.add({ title: t('maternity.delivery.recorded'), color: 'success' })
     isDeliveryModalOpen.value = false
     fetchDeliveries()
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -149,12 +149,12 @@ const handleRecordPartograph = async () => {
       method: 'POST',
       body: partographForm.value
     })
-    toast.add({ title: 'បានកត់ត្រាចំណុច Partograph ជោគជ័យ', color: 'success' })
+    toast.add({ title: t('maternity.delivery.partographRecorded'), color: 'success' })
     // Refresh partograph
     const res = await $api(`/maternity/partograph/${selectedDelivery.value._id}`)
     selectedDelivery.value.partographEntries = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -173,14 +173,14 @@ const handleRegisterNewborn = async () => {
       method: 'POST',
       body: newbornForm.value
     })
-    toast.add({ title: `បានចុះបញ្ជីទារកទី ${newbornForm.value.birthOrder} ជោគជ័យ`, color: 'success' })
+    toast.add({ title: t('maternity.delivery.newbornRegistered', { order: newbornForm.value.birthOrder }), color: 'success' })
     isNewbornModalOpen.value = false
     fetchDeliveries()
     // Open birth slip for printing
     selectedNewborn.value = res.data
     isBirthSlipModalOpen.value = true
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -197,10 +197,10 @@ onMounted(() => {
       <div>
         <h1 class="text-2xl font-bold text-highlighted flex items-center gap-2">
           <UIcon name="i-lucide-baby" class="w-7 h-7 text-pink-500" />
-          បន្ទប់សម្រាលកូន និងទារកទើបនឹងកើត (Labor &amp; Delivery Station)
+          {{ t('maternity.delivery.title') }}
         </h1>
         <p class="text-sm text-muted mt-1">
-          ក្រាហ្វិកសម្រាល Partograph, ការសម្រាលកូន, គាំទ្រកូនភ្លោះ (Twin/Triplet), និងចេញលិខិតសំបុត្រកំណើត
+          {{ t('maternity.delivery.subtitle') }}
         </p>
       </div>
       <div class="flex items-center gap-3">
@@ -209,7 +209,7 @@ onMounted(() => {
           color="primary"
           @click="isDeliveryModalOpen = true"
         >
-          កត់ត្រាការសម្រាលថ្មី (Record Delivery)
+          {{ t('maternity.delivery.recordDelivery') }}
         </UButton>
       </div>
     </div>
@@ -220,13 +220,13 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-muted">
           <thead class="text-xs uppercase bg-muted text-default">
             <tr>
-              <th class="px-4 py-3">លេខកូដសម្រាល</th>
-              <th class="px-4 py-3">ឈ្មោះម្តាយ</th>
-              <th class="px-4 py-3">វិធីសម្រាល</th>
-              <th class="px-4 py-3">កូនភ្លោះ/ទោល</th>
-              <th class="px-4 py-3">បរិមាណឈាមបាត់បង់</th>
-              <th class="px-4 py-3">ទារកចុះបញ្ជី</th>
-              <th class="px-4 py-3 text-right">សកម្មភាព</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colDeliveryCode') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colMotherName') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colMode') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colPlurality') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colBloodLoss') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.delivery.colNewborns') }}</th>
+              <th class="px-4 py-3 text-right">{{ t('maternity.common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
@@ -237,7 +237,7 @@ onMounted(() => {
             </tr>
             <tr v-else-if="deliveries.length === 0">
               <td colspan="7" class="text-center py-8 text-dimmed">
-                មិនមានកំណត់ត្រាសម្រាលកូនឡើយ
+                {{ t('maternity.delivery.empty') }}
               </td>
             </tr>
             <tr v-for="del in deliveries" :key="del._id" class="hover:bg-muted">
@@ -269,7 +269,7 @@ onMounted(() => {
               </td>
               <td class="px-4 py-3">
                 <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300">
-                  {{ del.newborns?.length || 0 }} ទារក
+                  {{ t('maternity.delivery.babiesCount', { count: del.newborns?.length || 0 }) }}
                 </span>
               </td>
               <td class="px-4 py-3 text-right">
@@ -290,7 +290,7 @@ onMounted(() => {
                     icon="i-lucide-baby"
                     @click="openNewbornModal(del)"
                   >
-                    ចុះឈ្មោះទារក
+                    {{ t('maternity.delivery.registerBaby') }}
                   </UButton>
                 </div>
               </td>
@@ -301,16 +301,16 @@ onMounted(() => {
     </UCard>
 
     <!-- Modal: Record Delivery -->
-    <UModal v-model:open="isDeliveryModalOpen" title="កត់ត្រាការសម្រាលកូន (Record Delivery Event)">
+    <UModal v-model:open="isDeliveryModalOpen" :title="t('maternity.delivery.recordModalTitle')">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleCreateDelivery">
           <div>
-            <label class="block text-xs font-semibold mb-1">ជ្រើសរើសអ្នកជំងឺ (ម្តាយ) *</label>
+            <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.selectMother') }}</label>
             <select
               v-model="deliveryForm.patientId"
               class="w-full rounded-lg border border-accented bg-default px-3 py-2 text-sm text-highlighted"
             >
-              <option value="" disabled>-- ជ្រើសរើសអ្នកជំងឺ --</option>
+              <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
               <option v-for="p in patientsList" :key="p._id" :value="p._id">
                 {{ p.khmerName || p.englishName }} ({{ p.patientCode }})
               </option>
@@ -319,41 +319,41 @@ onMounted(() => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">វិធីសាស្ត្រសម្រាល (Mode)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.mode') }}</label>
               <select
                 v-model="deliveryForm.deliveryMode"
                 class="w-full rounded-lg border border-accented bg-default px-3 py-2 text-sm text-highlighted"
               >
-                <option value="SPONTANEOUS_VAGINAL">សម្រាលធម្មជាតិ (SVD)</option>
-                <option value="CESAREAN">វះកាត់សម្រាល (C-Section)</option>
-                <option value="VACUUM_EXTRACTION">បូមទាញក្បាល (Vacuum)</option>
-                <option value="FORCEPS">ដង្កាប់ (Forceps)</option>
-                <option value="BREECH_EXTRACTION">សម្រាលបញ្ច្រាស (Breech)</option>
+                <option value="SPONTANEOUS_VAGINAL">{{ t('maternity.delivery.modeSvd') }}</option>
+                <option value="CESAREAN">{{ t('maternity.delivery.modeCesarean') }}</option>
+                <option value="VACUUM_EXTRACTION">{{ t('maternity.delivery.modeVacuum') }}</option>
+                <option value="FORCEPS">{{ t('maternity.delivery.modeForceps') }}</option>
+                <option value="BREECH_EXTRACTION">{{ t('maternity.delivery.modeBreech') }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ចំនួនទារក (Plurality)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.plurality') }}</label>
               <select
                 v-model="deliveryForm.plurality"
                 class="w-full rounded-lg border border-accented bg-default px-3 py-2 text-sm text-highlighted"
               >
-                <option value="SINGLETON">កូនទោល (Singleton)</option>
-                <option value="TWIN">កូនភ្លោះពីរ (Twin)</option>
-                <option value="TRIPLET">កូនភ្លោះបី (Triplet)</option>
+                <option value="SINGLETON">{{ t('maternity.delivery.singleton') }}</option>
+                <option value="TWIN">{{ t('maternity.delivery.twin') }}</option>
+                <option value="TRIPLET">{{ t('maternity.delivery.triplet') }}</option>
               </select>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">ឈាមបាត់បង់ប៉ាន់ស្មាន (Blood Loss mL)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.bloodLoss') }}</label>
               <UInput v-model.number="deliveryForm.estimatedBloodLossMl" type="number" step="10" />
               <span v-if="deliveryForm.estimatedBloodLossMl >= 500" class="text-xs text-red-500 font-bold">
-                ⚠️ កម្រិតធ្លាក់ឈាមលើស 500ml នឹងត្រូវបានចាត់ជា PPH!
+                {{ t('maternity.delivery.pphWarning') }}
               </span>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ថ្នាំសម្រួលស្បូន (Uterotonic)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.uterotonic') }}</label>
               <select
                 v-model="deliveryForm.uterotonicAdministered"
                 class="w-full rounded-lg border border-accented bg-default px-3 py-2 text-sm text-highlighted"
@@ -367,22 +367,22 @@ onMounted(() => {
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isDeliveryModalOpen = false">បោះបង់</UButton>
-            <UButton type="submit" color="primary">កត់ត្រាការសម្រាល</UButton>
+            <UButton variant="ghost" color="neutral" @click="isDeliveryModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton type="submit" color="primary">{{ t('maternity.delivery.submitDelivery') }}</UButton>
           </div>
         </form>
       </template>
     </UModal>
 
     <!-- Modal: Partograph Entry & Visual Graph -->
-    <UModal v-model:open="isPartographModalOpen" title="ក្រាហ្វិកតាមដានការឈឺពោះសម្រាល Partograph" size="lg">
+    <UModal v-model:open="isPartographModalOpen" :title="t('maternity.delivery.partographModalTitle')" size="lg">
       <template #body>
         <div class="space-y-4">
           <div class="p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg text-xs flex justify-between items-center">
             <span class="font-bold text-pink-700 dark:text-pink-300">
-              ម្តាយ: {{ selectedDelivery?.patientId?.khmerName || selectedDelivery?.patientId?.englishName }}
+              {{ t('maternity.delivery.motherValue', { name: selectedDelivery?.patientId?.khmerName || selectedDelivery?.patientId?.englishName }) }}
             </span>
-            <span class="text-muted">សម្រាល: {{ selectedDelivery?.deliveryNumber }}</span>
+            <span class="text-muted">{{ t('maternity.delivery.deliveryValue', { code: selectedDelivery?.deliveryNumber }) }}</span>
           </div>
 
           <!-- Existing Partograph Records -->
@@ -390,12 +390,12 @@ onMounted(() => {
             <table class="w-full text-xs text-left">
               <thead class="bg-elevated">
                 <tr>
-                  <th class="p-2">ម៉ោង</th>
-                  <th class="p-2">មាត់ស្បូនបើក (Dilation cm)</th>
-                  <th class="p-2">បេះដូងកូន (FHR bpm)</th>
-                  <th class="p-2">ការកន្ត្រាក់/10mn</th>
-                  <th class="p-2">ទឹកភ្លោះ</th>
-                  <th class="p-2">BP ម្តាយ</th>
+                  <th class="p-2">{{ t('maternity.delivery.colTime') }}</th>
+                  <th class="p-2">{{ t('maternity.delivery.colDilation') }}</th>
+                  <th class="p-2">{{ t('maternity.delivery.colFhr') }}</th>
+                  <th class="p-2">{{ t('maternity.delivery.colContractions') }}</th>
+                  <th class="p-2">{{ t('maternity.delivery.colAmnioticFluid') }}</th>
+                  <th class="p-2">{{ t('maternity.delivery.colMaternalBp') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -405,7 +405,7 @@ onMounted(() => {
                     {{ p.cervicalDilationCm }} cm
                   </td>
                   <td class="p-2">{{ p.fetalHeartRateBpm }} bpm</td>
-                  <td class="p-2">{{ p.contractionsPer10Min }} ដង</td>
+                  <td class="p-2">{{ t('maternity.delivery.contractionsTimes', { count: p.contractionsPer10Min }) }}</td>
                   <td class="p-2">{{ p.amnioticFluidStatus }}</td>
                   <td class="p-2">{{ p.maternalSystolicBp }}/{{ p.maternalDiastolicBp }}</td>
                 </tr>
@@ -417,7 +417,7 @@ onMounted(() => {
           <form class="space-y-3 pt-2 border-t" @submit.prevent="handleRecordPartograph">
             <div class="grid grid-cols-4 gap-2">
               <div>
-                <label class="block text-[11px] font-semibold mb-1">មាត់ស្បូនបើក (cm)</label>
+                <label class="block text-[11px] font-semibold mb-1">{{ t('maternity.delivery.dilationCm') }}</label>
                 <UInput v-model.number="partographForm.cervicalDilationCm" type="number" min="0" max="10" step="0.5" />
               </div>
               <div>
@@ -425,23 +425,23 @@ onMounted(() => {
                 <UInput v-model.number="partographForm.fetalHeartRateBpm" type="number" placeholder="110-160" />
               </div>
               <div>
-                <label class="block text-[11px] font-semibold mb-1">កន្ត្រាក់/10mn</label>
+                <label class="block text-[11px] font-semibold mb-1">{{ t('maternity.delivery.contractions') }}</label>
                 <UInput v-model.number="partographForm.contractionsPer10Min" type="number" min="0" max="5" />
               </div>
               <div>
-                <label class="block text-[11px] font-semibold mb-1">ទឹកភ្លោះ</label>
+                <label class="block text-[11px] font-semibold mb-1">{{ t('maternity.delivery.amnioticFluid') }}</label>
                 <select v-model="partographForm.amnioticFluidStatus" class="w-full rounded border p-1 text-xs bg-default">
-                  <option value="CLEAR">ថ្លា (Clear)</option>
-                  <option value="MECONIUM">លាមកព្រៃ (Meconium)</option>
-                  <option value="BLOOD">ឈាម (Blood)</option>
-                  <option value="INTACT">នៅស្រោម (Intact)</option>
+                  <option value="CLEAR">{{ t('maternity.delivery.fluidClear') }}</option>
+                  <option value="MECONIUM">{{ t('maternity.delivery.fluidMeconium') }}</option>
+                  <option value="BLOOD">{{ t('maternity.delivery.fluidBlood') }}</option>
+                  <option value="INTACT">{{ t('maternity.delivery.fluidIntact') }}</option>
                 </select>
               </div>
             </div>
 
             <div class="flex justify-end gap-2">
-              <UButton size="xs" variant="ghost" @click="isPartographModalOpen = false">បិទ</UButton>
-              <UButton size="xs" type="submit" color="primary">កត់ត្រាចំណុច</UButton>
+              <UButton size="xs" variant="ghost" @click="isPartographModalOpen = false">{{ t('maternity.common.close') }}</UButton>
+              <UButton size="xs" type="submit" color="primary">{{ t('maternity.delivery.recordPoint') }}</UButton>
             </div>
           </form>
         </div>
@@ -449,60 +449,60 @@ onMounted(() => {
     </UModal>
 
     <!-- Modal: Register Newborn (Twin / Triplet Support) -->
-    <UModal v-model:open="isNewbornModalOpen" title="ចុះបញ្ជីទារកទើបនឹងកើត (Register Newborn)">
+    <UModal v-model:open="isNewbornModalOpen" :title="t('maternity.delivery.newbornModalTitle')">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleRegisterNewborn">
           <div class="p-2.5 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-xs flex justify-between">
             <span class="font-bold text-blue-700 dark:text-blue-300">
-              សម្រាល: {{ selectedDelivery?.deliveryNumber }} ({{ selectedDelivery?.plurality }})
+              {{ t('maternity.delivery.deliveryValue', { code: selectedDelivery?.deliveryNumber }) }} ({{ selectedDelivery?.plurality }})
             </span>
-            <span class="font-bold text-pink-600">លំដាប់កូនទី (Birth Order): {{ newbornForm.birthOrder }}</span>
+            <span class="font-bold text-pink-600">{{ t('maternity.delivery.birthOrderValue', { order: newbornForm.birthOrder }) }}</span>
           </div>
 
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">លំដាប់កូនទី (Birth Order) *</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.birthOrder') }}</label>
               <UInput v-model.number="newbornForm.birthOrder" type="number" min="1" max="10" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ភេទ (Gender) *</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.gender') }}</label>
               <select v-model="newbornForm.gender" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-                <option value="FEMALE">ស្រី (Female)</option>
-                <option value="MALE">ប្រុស (Male)</option>
-                <option value="AMBIGUOUS">មិនច្បាស់ (Ambiguous)</option>
+                <option value="FEMALE">{{ t('maternity.delivery.female') }}</option>
+                <option value="MALE">{{ t('maternity.delivery.male') }}</option>
+                <option value="AMBIGUOUS">{{ t('maternity.delivery.ambiguous') }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ទម្ងន់កំណើត (Weight Grams) *</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.birthWeight') }}</label>
               <UInput v-model.number="newbornForm.weightGrams" type="number" placeholder="3000" />
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">ប្រវែង (Length cm)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.length') }}</label>
               <UInput v-model.number="newbornForm.lengthCm" type="number" step="0.5" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ទំហំក្បាល (Head Circ cm)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.headCirc') }}</label>
               <UInput v-model.number="newbornForm.headCircumferenceCm" type="number" step="0.5" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ទំហំទ្រូង (Chest Circ cm)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.delivery.chestCirc') }}</label>
               <UInput v-model.number="newbornForm.chestCircumferenceCm" type="number" step="0.5" />
             </div>
           </div>
 
           <!-- APGAR Score 1 min and 5 min -->
           <div class="p-3 border rounded-xl space-y-2 bg-muted/50">
-            <div class="font-semibold text-xs text-default">ពិន្ទុវាយតម្លៃ APGAR Score</div>
+            <div class="font-semibold text-xs text-default">{{ t('maternity.delivery.apgarScore') }}</div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-[11px] text-muted mb-1">APGAR នៅនាទីទី ១ (0 - 10)</label>
+                <label class="block text-[11px] text-muted mb-1">{{ t('maternity.delivery.apgar1') }}</label>
                 <UInput v-model.number="newbornForm.apgar1Min.score" type="number" min="0" max="10" />
               </div>
               <div>
-                <label class="block text-[11px] text-muted mb-1">APGAR នៅនាទីទី ៥ (0 - 10)</label>
+                <label class="block text-[11px] text-muted mb-1">{{ t('maternity.delivery.apgar5') }}</label>
                 <UInput v-model.number="newbornForm.apgar5Min.score" type="number" min="0" max="10" />
               </div>
             </div>
@@ -512,58 +512,58 @@ onMounted(() => {
           <div class="grid grid-cols-2 gap-2 text-xs">
             <label class="flex items-center gap-1.5">
               <input v-model="newbornForm.immediateSkinToSkinContact" type="checkbox" class="rounded text-primary-600" />
-              ស្បែកប៉ះស្បែក (Skin-to-Skin)
+              {{ t('maternity.delivery.skinToSkin') }}
             </label>
             <label class="flex items-center gap-1.5">
               <input v-model="newbornForm.delayedCordClamping" type="checkbox" class="rounded text-primary-600" />
-              ពន្យារកាត់ទងផ្ចិត (Delayed Clamping)
+              {{ t('maternity.delivery.delayedClamping') }}
             </label>
             <label class="flex items-center gap-1.5">
               <input v-model="newbornForm.vitaminK1Administered" type="checkbox" class="rounded text-primary-600" />
-              ចាក់វីតាមីន K1 (Vitamin K1)
+              {{ t('maternity.delivery.vitaminK1') }}
             </label>
             <label class="flex items-center gap-1.5">
               <input v-model="newbornForm.tetracyclineEyeOintmentGiven" type="checkbox" class="rounded text-primary-600" />
-              លាបថ្នាំភ្នែកតេត្រាស៊ីគ្លីន
+              {{ t('maternity.delivery.tetracycline') }}
             </label>
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isNewbornModalOpen = false">បោះបង់</UButton>
-            <UButton type="submit" color="primary">ចុះបញ្ជីទារក</UButton>
+            <UButton variant="ghost" color="neutral" @click="isNewbornModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton type="submit" color="primary">{{ t('maternity.delivery.submitNewborn') }}</UButton>
           </div>
         </form>
       </template>
     </UModal>
 
     <!-- Modal: Birth Slip Certificate with Verification Hash -->
-    <UModal v-model:open="isBirthSlipModalOpen" title="លិខិតបញ្ជាក់កំណើត (Civil Registry Birth Slip)">
+    <UModal v-model:open="isBirthSlipModalOpen" :title="t('maternity.delivery.birthSlipModalTitle')">
       <template #body>
         <div class="p-6 bg-default border rounded-2xl space-y-4 text-center">
           <div class="border-b pb-4">
-            <div class="text-sm font-bold uppercase tracking-widest text-muted">ព្រះរាជាណាចក្រកម្ពុជា</div>
-            <div class="text-xs text-dimmed">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-            <h2 class="text-lg font-bold text-pink-600 mt-2">លិខិតបញ្ជាក់កំណើតទារក (Birth Slip)</h2>
+            <div class="text-sm font-bold uppercase tracking-widest text-muted">{{ t('maternity.common.kingdomOfCambodia') }}</div>
+            <div class="text-xs text-dimmed">{{ t('maternity.delivery.nationalMotto') }}</div>
+            <h2 class="text-lg font-bold text-pink-600 mt-2">{{ t('maternity.delivery.birthSlipHeading') }}</h2>
           </div>
 
           <div class="grid grid-cols-2 gap-4 text-left text-xs">
-            <div><span class="text-dimmed">លេខកូដទារក:</span> <span class="font-bold">{{ selectedNewborn?.newbornCode }}</span></div>
-            <div><span class="text-dimmed">លំដាប់កូនទី:</span> <span class="font-bold">កូនទី {{ selectedNewborn?.birthOrder }}</span></div>
-            <div><span class="text-dimmed">ភេទ:</span> <span class="font-bold">{{ selectedNewborn?.gender }}</span></div>
-            <div><span class="text-dimmed">ទម្ងន់:</span> <span class="font-bold">{{ selectedNewborn?.weightGrams }} ក្រាម</span></div>
+            <div><span class="text-dimmed">{{ t('maternity.delivery.slipNewbornCode') }}</span> <span class="font-bold">{{ selectedNewborn?.newbornCode }}</span></div>
+            <div><span class="text-dimmed">{{ t('maternity.delivery.slipBirthOrder') }}</span> <span class="font-bold">{{ t('maternity.delivery.slipBirthOrderValue', { order: selectedNewborn?.birthOrder }) }}</span></div>
+            <div><span class="text-dimmed">{{ t('maternity.delivery.slipGender') }}</span> <span class="font-bold">{{ selectedNewborn?.gender }}</span></div>
+            <div><span class="text-dimmed">{{ t('maternity.delivery.slipWeight') }}</span> <span class="font-bold">{{ t('maternity.delivery.slipWeightValue', { grams: selectedNewborn?.weightGrams }) }}</span></div>
             <div><span class="text-dimmed">APGAR (1/5):</span> <span class="font-bold">{{ selectedNewborn?.apgar1Min?.score }} / {{ selectedNewborn?.apgar5Min?.score }}</span></div>
-            <div><span class="text-dimmed">កាលបរិច្ឆេទ:</span> <span class="font-bold">{{ new Date(selectedNewborn?.birthTime || Date.now()).toLocaleDateString() }}</span></div>
+            <div><span class="text-dimmed">{{ t('maternity.delivery.slipDate') }}</span> <span class="font-bold">{{ new Date(selectedNewborn?.birthTime || Date.now()).toLocaleDateString() }}</span></div>
           </div>
 
           <!-- Civil Registry Phase 1 SHA-256 Hash Display -->
           <div class="p-3 bg-muted rounded-lg text-left text-[11px] font-mono break-all">
-            <div class="text-[10px] text-dimmed uppercase font-sans font-bold mb-1">SHA-256 Civil Registry Verification Hash:</div>
+            <div class="text-[10px] text-dimmed uppercase font-sans font-bold mb-1">{{ t('maternity.delivery.verificationHash') }}</div>
             {{ selectedNewborn?.birthSlipQrHash }}
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
-            <UButton variant="ghost" color="neutral" @click="isBirthSlipModalOpen = false">បិទ</UButton>
-            <UButton color="primary" icon="i-lucide-printer" @click="window.print()">បោះពុម្ពលិខិត (Print)</UButton>
+            <UButton variant="ghost" color="neutral" @click="isBirthSlipModalOpen = false">{{ t('maternity.common.close') }}</UButton>
+            <UButton color="primary" icon="i-lucide-printer" @click="window.print()">{{ t('maternity.delivery.printSlip') }}</UButton>
           </div>
         </div>
       </template>

@@ -8,6 +8,7 @@
     "register": "Register"
   },
   "nav": {
+    "chat": "Chat",
     "home": "Home",
     "patients": "Patients",
     "patientManagement": "Patient Management",
@@ -835,6 +836,24 @@
     "validateDistrict": "Please select a valid district",
     "validateCommune": "Please select a valid commune",
     "validateVillage": "Please select a valid village"
+  },
+  "chat": {
+    "title": "Chat",
+    "newConversation": "New conversation",
+    "noConversations": "No conversations yet",
+    "selectConversation": "Select a conversation",
+    "typeMessage": "Type a message",
+    "send": "Send",
+    "members": "Members",
+    "groupName": "Group name",
+    "start": "Start",
+    "loadOlder": "Load older messages",
+    "offline": "Reconnecting"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications"
   },
   "report": {
     "reportPeriod": "Reporting period",

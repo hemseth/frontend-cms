@@ -67,20 +67,20 @@ onUnmounted(() => {
         <div class="flex items-center gap-3">
           <h1 class="text-2xl font-bold text-highlighted flex items-center gap-2">
             <UIcon name="i-lucide-activity" class="w-7 h-7 text-pink-500 animate-pulse" />
-            ផ្ទាំងគ្រប់គ្រងសម្ភព (Hospital Director Maternal Dashboard)
+            {{ t('maternity.dashboard.title') }}
           </h1>
           <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            ផ្សាយផ្ទាល់ (Live 60s)
+            {{ t('maternity.dashboard.live') }}
           </span>
         </div>
         <p class="text-sm text-muted mt-1">
-          តាមដានស្ថានភាពបន្ទប់សម្ភព ទារកទើបនឹងកើត និងសូចនាករគ្លីនិកប្រចាំថ្ងៃ
+          {{ t('maternity.dashboard.subtitle') }}
         </p>
       </div>
       <div class="flex items-center gap-3">
         <span class="text-xs text-dimmed">
-          បានកែប្រែចុងក្រោយ: {{ lastRefreshed.toLocaleTimeString() }}
+          {{ t('maternity.dashboard.lastUpdated', { time: lastRefreshed.toLocaleTimeString() }) }}
         </span>
         <UButton
           icon="i-lucide-refresh-cw"
@@ -89,7 +89,7 @@ onUnmounted(() => {
           :loading="loading"
           @click="fetchDashboard"
         >
-          ធ្វើបច្ចុប្បន្នភាព
+          {{ t('maternity.common.refresh') }}
         </UButton>
       </div>
     </div>
@@ -118,13 +118,13 @@ onUnmounted(() => {
     <div>
       <h2 class="text-lg font-semibold text-highlighted mb-3 flex items-center gap-2">
         <UIcon name="i-lucide-bed" class="w-5 h-5 text-indigo-500" />
-        ស្ថានភាពបន្ទប់ និងអ្នកជំងឺសម្រាក (Current Ward Status)
+        {{ t('maternity.dashboard.wardStatus') }}
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <UCard class="border border-pink-100 dark:border-gray-800">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs font-medium text-muted uppercase tracking-wider">អ្នកជំងឺ ANC សកម្ម</div>
+              <div class="text-xs font-medium text-muted uppercase tracking-wider">{{ t('maternity.dashboard.activeAnc') }}</div>
               <div class="text-3xl font-extrabold text-pink-600 mt-1">{{ dashboardData.wardStatus.activeAncCount }}</div>
             </div>
             <div class="p-3 bg-pink-500/10 rounded-xl">
@@ -136,7 +136,7 @@ onUnmounted(() => {
         <UCard class="border border-amber-100 dark:border-gray-800">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs font-medium text-muted uppercase tracking-wider">កំពុងសម្រាល (In Labor)</div>
+              <div class="text-xs font-medium text-muted uppercase tracking-wider">{{ t('maternity.dashboard.inLabor') }}</div>
               <div class="text-3xl font-extrabold text-amber-600 mt-1">{{ dashboardData.wardStatus.activeLaborCount }}</div>
             </div>
             <div class="p-3 bg-amber-500/10 rounded-xl">
@@ -148,7 +148,7 @@ onUnmounted(() => {
         <UCard class="border border-emerald-100 dark:border-gray-800">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs font-medium text-muted uppercase tracking-wider">សម្រាកក្រោយសម្រាល PNC</div>
+              <div class="text-xs font-medium text-muted uppercase tracking-wider">{{ t('maternity.dashboard.activePnc') }}</div>
               <div class="text-3xl font-extrabold text-emerald-600 mt-1">{{ dashboardData.wardStatus.activePncCount }}</div>
             </div>
             <div class="p-3 bg-emerald-500/10 rounded-xl">
@@ -160,10 +160,10 @@ onUnmounted(() => {
         <UCard class="border border-blue-100 dark:border-gray-800">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs font-medium text-muted uppercase tracking-wider">អត្រាប្រើប្រាស់គ្រែ (Bed Occupancy)</div>
+              <div class="text-xs font-medium text-muted uppercase tracking-wider">{{ t('maternity.dashboard.bedOccupancy') }}</div>
               <div class="text-3xl font-extrabold text-blue-600 mt-1">{{ dashboardData.wardStatus.bedOccupancyRate }}%</div>
               <div class="text-xs text-dimmed mt-0.5">
-                {{ dashboardData.wardStatus.occupiedBeds }} / {{ dashboardData.wardStatus.totalBeds }} គ្រែ
+                {{ t('maternity.dashboard.bedsCount', { occupied: dashboardData.wardStatus.occupiedBeds, total: dashboardData.wardStatus.totalBeds }) }}
               </div>
             </div>
             <div class="p-3 bg-blue-500/10 rounded-xl">
@@ -178,50 +178,50 @@ onUnmounted(() => {
     <div>
       <h2 class="text-lg font-semibold text-highlighted mb-3 flex items-center gap-2">
         <UIcon name="i-lucide-award" class="w-5 h-5 text-purple-500" />
-        សូចនាករគ្លីនិកថ្ងៃនេះ (Daily Clinical KPIs)
+        {{ t('maternity.dashboard.dailyKpis') }}
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <UCard>
-          <div class="text-xs font-medium text-muted">សម្រាលសរុបថ្ងៃនេះ</div>
+          <div class="text-xs font-medium text-muted">{{ t('maternity.dashboard.totalDeliveriesToday') }}</div>
           <div class="text-2xl font-bold text-highlighted mt-1">{{ dashboardData.dailyKpis.totalDeliveriesToday }}</div>
           <div class="text-xs text-emerald-500 mt-1 flex items-center gap-1">
             <UIcon name="i-lucide-check-circle" class="w-3.5 h-3.5" />
-            ទារករស់: {{ dashboardData.dailyKpis.liveBirthsToday }}
+            {{ t('maternity.dashboard.liveBirths', { count: dashboardData.dailyKpis.liveBirthsToday }) }}
           </div>
         </UCard>
 
         <UCard>
-          <div class="text-xs font-medium text-muted">អត្រាវះកាត់ C-Section</div>
+          <div class="text-xs font-medium text-muted">{{ t('maternity.dashboard.cSectionRate') }}</div>
           <div class="text-2xl font-bold mt-1" :class="dashboardData.dailyKpis.cSectionRate > 25 ? 'text-amber-600' : 'text-highlighted'">
             {{ dashboardData.dailyKpis.cSectionRate }}%
           </div>
           <div class="text-xs text-dimmed mt-1">
-            ចំនួន: {{ dashboardData.dailyKpis.cSectionToday }} ករណី (WHO standard &lt;20-25%)
+            {{ t('maternity.dashboard.cSectionCount', { count: dashboardData.dailyKpis.cSectionToday }) }}
           </div>
         </UCard>
 
         <UCard :class="dashboardData.dailyKpis.pphToday > 0 ? 'bg-red-500/5 border-red-300 dark:border-red-900' : ''">
-          <div class="text-xs font-medium text-muted">ករណីធ្លាក់ឈាម PPH (&ge;500ml)</div>
+          <div class="text-xs font-medium text-muted">{{ t('maternity.dashboard.pphCases') }}</div>
           <div class="text-2xl font-bold mt-1" :class="dashboardData.dailyKpis.pphToday > 0 ? 'text-red-600' : 'text-emerald-600'">
             {{ dashboardData.dailyKpis.pphToday }}
           </div>
           <div class="text-xs text-dimmed mt-1">
-            {{ dashboardData.dailyKpis.pphToday > 0 ? 'តម្រូវការតាមដានបន្ទាន់' : 'គ្មានករណីធ្ងន់ធ្ងរ' }}
+            {{ dashboardData.dailyKpis.pphToday > 0 ? t('maternity.dashboard.pphNeedsFollowUp') : t('maternity.dashboard.pphNone') }}
           </div>
         </UCard>
 
         <UCard :class="dashboardData.dailyKpis.lowApgarToday > 0 ? 'bg-amber-500/5 border-amber-300' : ''">
-          <div class="text-xs font-medium text-muted">ពិន្ទុ APGAR ទាប (&lt;7)</div>
+          <div class="text-xs font-medium text-muted">{{ t('maternity.dashboard.lowApgar') }}</div>
           <div class="text-2xl font-bold mt-1" :class="dashboardData.dailyKpis.lowApgarToday > 0 ? 'text-amber-600' : 'text-highlighted'">
             {{ dashboardData.dailyKpis.lowApgarToday }}
           </div>
           <div class="text-xs text-dimmed mt-1">
-            ទារកត្រូវការថែទាំពិសេស
+            {{ t('maternity.dashboard.lowApgarHint') }}
           </div>
         </UCard>
 
         <UCard>
-          <div class="text-xs font-medium text-muted">ចំណូលសរុប (Revenues)</div>
+          <div class="text-xs font-medium text-muted">{{ t('maternity.dashboard.revenue') }}</div>
           <div class="text-2xl font-bold text-emerald-600 mt-1">${{ dashboardData.financial.cashRevenue.toLocaleString() }}</div>
           <div class="text-xs text-dimmed mt-1">
             NSSF: ${{ dashboardData.financial.nssfClaims }} | HEF: ${{ dashboardData.financial.hefClaims }}
@@ -236,11 +236,11 @@ onUnmounted(() => {
         <div class="flex items-center justify-between">
           <h2 class="text-base font-semibold text-highlighted flex items-center gap-2">
             <UIcon name="i-lucide-line-chart" class="w-5 h-5 text-primary-500" />
-            និន្នាការសម្រាលកូន ១២ ខែចុងក្រោយ (12-Month Delivery Trends: SVD vs C-Section)
+            {{ t('maternity.dashboard.trendTitle') }}
           </h2>
           <div class="flex items-center gap-4 text-xs font-medium">
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block" /> សម្រាលធម្មតា (SVD)</span>
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-purple-500 inline-block" /> វះកាត់ (C-Section)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block" /> {{ t('maternity.dashboard.legendSvd') }}</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-purple-500 inline-block" /> {{ t('maternity.dashboard.legendCs') }}</span>
           </div>
         </div>
       </template>

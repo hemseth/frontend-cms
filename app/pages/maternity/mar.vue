@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -121,14 +121,34 @@ const fetchPatients = async () => {
   } catch (err) {}
 }
 
+const isOrderBlocked = ref(false)
+
+const selectedPatientAllergies = computed(() => {
+  const p = patientsList.value.find((pt: any) => pt._id === orderForm.value.patientId)
+  return p?.allergies || p?.drugAllergies || []
+})
+
+const onAllergyStatusChange = (status: any) => {
+  isOrderBlocked.value = status.isBlocked
+}
+
 const openOrderModal = () => {
   orderForm.value.drugName = ''
   orderForm.value.dosage = ''
   orderForm.value.isHighAlert = false
+  isOrderBlocked.value = false
   isOrderModalOpen.value = true
 }
 
 const submitOrder = async () => {
+  if (isOrderBlocked.value) {
+    toast.add({
+      title: 'CRITICAL: Contraindicated Medication',
+      description: 'The selected medication has a severe cross-allergy conflict with patient history.',
+      color: 'error'
+    })
+    return
+  }
   if (!orderForm.value.patientId || !orderForm.value.drugName || !orderForm.value.dosage) {
     toast.add({ title: 'Validation Error', description: 'Patient, Drug Name, and Dose are required / ត្រូវបំពេញព័ត៌មានចាំបាច់', color: 'error' })
     return
@@ -570,6 +590,14 @@ onMounted(() => {
               </div>
             </div>
 
+            <!-- TypeSafe Pre-Flight Allergy Sentinel Component -->
+            <ClinicalPreFlightAllergySentinel
+              :patient-id="orderForm.patientId"
+              :drug-name="orderForm.drugName || orderForm.genericName"
+              :patient-allergies="selectedPatientAllergies"
+              @status-change="onAllergyStatusChange"
+            />
+
             <div class="grid grid-cols-3 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-toned mb-1">Dose *</label>
@@ -665,7 +693,13 @@ onMounted(() => {
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
             <UButton color="neutral" variant="ghost" @click="isOrderModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="submitOrder">Place Order</UButton>
+            <UButton
+              :color="isOrderBlocked ? 'error' : 'primary'"
+              :disabled="isOrderBlocked"
+              @click="submitOrder"
+            >
+              {{ isOrderBlocked ? 'Blocked by Allergy Sentinel' : 'Place Order' }}
+            </UButton>
           </div>
         </div>
       </template>

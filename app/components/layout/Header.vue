@@ -6,6 +6,8 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const { open, toggleOpen: toggle } = useSidebar()
+const notifications = useNotifications()
+const { isNotificationsSlideoverOpen } = useDashboard()
 
 function handleToggle() {
   toggle()
@@ -28,6 +30,23 @@ function handleToggle() {
 
           <!-- Right: Menu -->
           <div class="relative flex items-center ml-auto">
+            <UChip
+              v-if="notifications.enabled.value"
+              :show="notifications.unreadCount.value > 0"
+              :text="notifications.unreadCount.value > 99 ? '99+' : notifications.unreadCount.value"
+              color="error"
+              size="3xl"
+              class="mr-2"
+            >
+              <UButton
+                color="neutral"
+                variant="ghost"
+                square
+                icon="i-lucide-bell"
+                :aria-label="t('notifications.title')"
+                @click="isNotificationsSlideoverOpen = true"
+              />
+            </UChip>
             <LanguageSwitcher class="mr-2" />
             <UColorModeButton class="mr-2" />
             <UserMenu />

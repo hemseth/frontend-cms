@@ -84,7 +84,7 @@ const fetchRequests = async () => {
     const res = await $api('/blood-bank', { query })
     requests.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'បរាជ័យក្នុងការទាញទិន្នន័យ', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.loadFailed'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -92,7 +92,7 @@ const fetchRequests = async () => {
 
 const handleCreateRequest = async () => {
   if (!requestForm.value.patientId) {
-    toast.add({ title: 'សូមជ្រើសរើសអ្នកជំងឺ', color: 'warning' })
+    toast.add({ title: t('maternity.common.selectPatientToast'), color: 'warning' })
     return
   }
 
@@ -101,11 +101,11 @@ const handleCreateRequest = async () => {
       method: 'POST',
       body: requestForm.value
     })
-    toast.add({ title: 'បានបង្កើតសំណើឈាមជោគជ័យ', color: 'success' })
+    toast.add({ title: t('maternity.bloodBank.requestCreated'), color: 'success' })
     isRequestModalOpen.value = false
     fetchRequests()
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -123,11 +123,11 @@ const handleCompleteCrossMatch = async () => {
       method: 'POST',
       body: crossMatchForm.value
     })
-    toast.add({ title: 'បានផ្ទៀងផ្ទាត់ Cross-Match ជោគជ័យ និងចេញប្លោកឈាម', color: 'success' })
+    toast.add({ title: t('maternity.bloodBank.crossMatchDone'), color: 'success' })
     isCrossMatchModalOpen.value = false
     fetchRequests()
   } catch (err: any) {
-    toast.add({ title: 'កំហុស Cross-Match', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.bloodBank.crossMatchError'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -144,11 +144,11 @@ const handleStartTransfusion = async () => {
       method: 'POST',
       body: transfusionForm.value
     })
-    toast.add({ title: 'បានផ្ទៀងផ្ទាត់គិលានុបដ្ឋាក ២ នាក់ និងចាប់ផ្តើមបញ្ចូលឈាមជោគជ័យ', color: 'success' })
+    toast.add({ title: t('maternity.bloodBank.transfusionStarted'), color: 'success' })
     isTransfusionModalOpen.value = false
     fetchRequests()
   } catch (err: any) {
-    toast.add({ title: 'ការបញ្ចូលឈាមត្រូវបានរារាំង!', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.bloodBank.transfusionBlocked'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -163,11 +163,11 @@ const handleReportReaction = async () => {
       method: 'POST',
       body: reactionForm.value
     })
-    toast.add({ title: 'បានរាយការណ៍ប្រតិកម្ម និងជូនដំណឹងគ្រូពេទ្យជាបន្ទាន់', color: 'error' })
+    toast.add({ title: t('maternity.bloodBank.reactionReported'), color: 'error' })
     isReactionModalOpen.value = false
     fetchRequests()
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -177,10 +177,10 @@ const handleCompleteTransfusion = async (req: any) => {
       method: 'POST',
       body: { volumeTransfusedMl: 450 }
     })
-    toast.add({ title: 'បានបញ្ចប់ការបញ្ចូលឈាមជោគជ័យ', color: 'success' })
+    toast.add({ title: t('maternity.bloodBank.transfusionCompleted'), color: 'success' })
     fetchRequests()
   } catch (err: any) {
-    toast.add({ title: 'កំហុស', description: err.data?.message || err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.data?.message || err.message, color: 'error' })
   }
 }
 
@@ -198,10 +198,10 @@ onMounted(() => {
       <div>
         <h1 class="text-2xl font-bold text-highlighted flex items-center gap-2">
           <UIcon name="i-lucide-droplets" class="w-7 h-7 text-red-500" />
-          ធនាគារឈាម និងការបញ្ចូលឈាម (Blood Bank &amp; Transfusion)
+          {{ t('maternity.bloodBank.title') }}
         </h1>
         <p class="text-sm text-muted mt-1">
-          ដំណើរការស្នើសុំ Cross-Match ផ្ទៀងផ្ទាត់ដោយគិលានុបដ្ឋាក ២ នាក់ (Two-Nurse Verification) និងរារាំងការបញ្ចូលឈាមខុស
+          {{ t('maternity.bloodBank.subtitle') }}
         </p>
       </div>
       <div class="flex items-center gap-3">
@@ -210,7 +210,7 @@ onMounted(() => {
           color="error"
           @click="isRequestModalOpen = true"
         >
-          ស្នើសុំឈាមថ្មី (New Blood Request)
+          {{ t('maternity.bloodBank.newRequest') }}
         </UButton>
       </div>
     </div>
@@ -221,14 +221,14 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-muted">
           <thead class="text-xs uppercase bg-muted text-default">
             <tr>
-              <th class="px-4 py-3">លេខកូដសំណើ</th>
-              <th class="px-4 py-3">អ្នកជំងឺ</th>
-              <th class="px-4 py-3">កម្រិតបន្ទាន់</th>
-              <th class="px-4 py-3">ផលិតផល &amp; បរិមាណ</th>
-              <th class="px-4 py-3">ក្រុមឈាម / Rh</th>
+              <th class="px-4 py-3">{{ t('maternity.bloodBank.colRequestCode') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.common.patient') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.bloodBank.colUrgency') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.bloodBank.colProduct') }}</th>
+              <th class="px-4 py-3">{{ t('maternity.bloodBank.colBloodGroup') }}</th>
               <th class="px-4 py-3">Cross-Match</th>
-              <th class="px-4 py-3">ស្ថានភាព</th>
-              <th class="px-4 py-3 text-right">សកម្មភាព</th>
+              <th class="px-4 py-3">{{ t('maternity.common.status') }}</th>
+              <th class="px-4 py-3 text-right">{{ t('maternity.common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
@@ -239,7 +239,7 @@ onMounted(() => {
             </tr>
             <tr v-else-if="requests.length === 0">
               <td colspan="8" class="text-center py-8 text-dimmed">
-                មិនមានសំណើឈាមឡើយ
+                {{ t('maternity.bloodBank.empty') }}
               </td>
             </tr>
             <tr v-for="req in requests" :key="req._id" class="hover:bg-muted">
@@ -262,7 +262,7 @@ onMounted(() => {
               </td>
               <td class="px-4 py-3 text-xs">
                 <div class="font-medium text-highlighted">{{ req.productType }}</div>
-                <div class="text-dimmed">{{ req.unitsRequested }} ប្លោក (Units)</div>
+                <div class="text-dimmed">{{ t('maternity.bloodBank.unitsCount', { count: req.unitsRequested }) }}</div>
               </td>
               <td class="px-4 py-3 font-bold text-red-600">
                 {{ req.bloodGroup }} {{ req.rhFactor === 'POSITIVE' ? '(Rh+)' : '(Rh-)' }}
@@ -300,7 +300,7 @@ onMounted(() => {
                     icon="i-lucide-check-circle-2"
                     @click="openTransfusion(req)"
                   >
-                    ផ្ទៀងផ្ទាត់ &amp; បញ្ចូលឈាម
+                    {{ t('maternity.bloodBank.verifyTransfuse') }}
                   </UButton>
                   <UButton
                     v-if="req.status === 'IN_TRANSFUSION'"
@@ -309,7 +309,7 @@ onMounted(() => {
                     variant="outline"
                     @click="openReaction(req)"
                   >
-                    រាយការណ៍ប្រតិកម្ម
+                    {{ t('maternity.bloodBank.reportReaction') }}
                   </UButton>
                   <UButton
                     v-if="req.status === 'IN_TRANSFUSION'"
@@ -318,7 +318,7 @@ onMounted(() => {
                     variant="soft"
                     @click="handleCompleteTransfusion(req)"
                   >
-                    បញ្ចប់
+                    {{ t('maternity.bloodBank.complete') }}
                   </UButton>
                 </div>
               </td>
@@ -329,16 +329,16 @@ onMounted(() => {
     </UCard>
 
     <!-- Modal: New Blood Request -->
-    <UModal v-model:open="isRequestModalOpen" title="បង្កើតសំណើឈាម (Blood Request)">
+    <UModal v-model:open="isRequestModalOpen" :title="t('maternity.bloodBank.requestModalTitle')">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleCreateRequest">
           <div>
-            <label class="block text-xs font-semibold mb-1">ជ្រើសរើសអ្នកជំងឺ *</label>
+            <label class="block text-xs font-semibold mb-1">{{ t('maternity.common.selectPatientRequired') }}</label>
             <select
               v-model="requestForm.patientId"
               class="w-full rounded-lg border border-accented bg-default px-3 py-2 text-sm text-highlighted"
             >
-              <option value="" disabled>-- ជ្រើសរើសអ្នកជំងឺ --</option>
+              <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
               <option v-for="p in patientsList" :key="p._id" :value="p._id">
                 {{ p.khmerName || p.englishName }} ({{ p.patientCode }})
               </option>
@@ -347,31 +347,31 @@ onMounted(() => {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">កម្រិតបន្ទាន់ (Urgency)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.urgency') }}</label>
               <select v-model="requestForm.urgency" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-                <option value="ROUTINE">ធម្មតា (Routine)</option>
-                <option value="URGENT">ប្រញាប់ (Urgent)</option>
-                <option value="EMERGENCY">សង្គ្រោះបន្ទាន់ (Emergency)</option>
+                <option value="ROUTINE">{{ t('maternity.bloodBank.urgencyRoutine') }}</option>
+                <option value="URGENT">{{ t('maternity.bloodBank.urgencyUrgent') }}</option>
+                <option value="EMERGENCY">{{ t('maternity.bloodBank.urgencyEmergency') }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ប្រភេទផលិតផលឈាម</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.productType') }}</label>
               <select v-model="requestForm.productType" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-                <option value="PACKED_RED_BLOOD_CELLS">គោលិកាឈាមក្រហម (PRBC)</option>
-                <option value="FRESH_FROZEN_PLASMA">ប្លាស្មាស្រស់កក (FFP)</option>
-                <option value="PLATELETS">ប្លាកែត (Platelets)</option>
-                <option value="WHOLE_BLOOD">ឈាមពេញលេញ (Whole Blood)</option>
+                <option value="PACKED_RED_BLOOD_CELLS">{{ t('maternity.bloodBank.productPrbc') }}</option>
+                <option value="FRESH_FROZEN_PLASMA">{{ t('maternity.bloodBank.productFfp') }}</option>
+                <option value="PLATELETS">{{ t('maternity.bloodBank.productPlatelets') }}</option>
+                <option value="WHOLE_BLOOD">{{ t('maternity.bloodBank.productWholeBlood') }}</option>
               </select>
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">ចំនួនប្លោក (Units)</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.units') }}</label>
               <UInput v-model.number="requestForm.unitsRequested" type="number" min="1" max="20" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ក្រុមឈាម ABO</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.aboGroup') }}</label>
               <select v-model="requestForm.bloodGroup" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
                 <option value="A">A</option>
                 <option value="B">B</option>
@@ -380,39 +380,39 @@ onMounted(() => {
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">កត្តា Rh</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.rhFactor') }}</label>
               <select v-model="requestForm.rhFactor" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-                <option value="POSITIVE">វិជ្ជមាន Rh+</option>
-                <option value="NEGATIVE">អវិជ្ជមាន Rh-</option>
+                <option value="POSITIVE">{{ t('maternity.bloodBank.rhPositive') }}</option>
+                <option value="NEGATIVE">{{ t('maternity.bloodBank.rhNegative') }}</option>
               </select>
             </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isRequestModalOpen = false">បោះបង់</UButton>
-            <UButton type="submit" color="error">ដាក់សំណើឈាម</UButton>
+            <UButton variant="ghost" color="neutral" @click="isRequestModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton type="submit" color="error">{{ t('maternity.bloodBank.submitRequest') }}</UButton>
           </div>
         </form>
       </template>
     </UModal>
 
     <!-- Modal: Cross-Match (Tech) -->
-    <UModal v-model:open="isCrossMatchModalOpen" title="ផ្ទៀងផ្ទាត់ Cross-Match &amp; ចេញប្លោកឈាម">
+    <UModal v-model:open="isCrossMatchModalOpen" :title="t('maternity.bloodBank.crossMatchModalTitle')">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleCompleteCrossMatch">
           <div class="p-2.5 bg-muted rounded-lg text-xs">
-            <div class="font-bold">អ្នកជំងឺ: {{ selectedRequest?.patientId?.khmerName }}</div>
-            <div class="text-dimmed">សំណើឈាម: {{ selectedRequest?.requestNumber }} ({{ selectedRequest?.unitsRequested }} units)</div>
+            <div class="font-bold">{{ t('maternity.bloodBank.patientValue', { name: selectedRequest?.patientId?.khmerName }) }}</div>
+            <div class="text-dimmed">{{ t('maternity.bloodBank.requestValue', { code: selectedRequest?.requestNumber, units: selectedRequest?.unitsRequested }) }}</div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-1">បាកូដប្លោកឈាម (Blood Unit Barcode) *</label>
+            <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.unitBarcode') }}</label>
             <UInput v-model="crossMatchForm.unitBarcode" placeholder="BLD-XXXXXX" required />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">ក្រុមឈាមប្លោកនេះ</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.unitBloodGroup') }}</label>
               <select v-model="crossMatchForm.bloodGroup" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
                 <option value="A">A</option>
                 <option value="B">B</option>
@@ -421,72 +421,72 @@ onMounted(() => {
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">លទ្ធផល Cross-Match</label>
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.crossMatchResult') }}</label>
               <select v-model="crossMatchForm.crossMatchResult" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-                <option value="COMPATIBLE">ត្រូវគ្នា (Compatible)</option>
-                <option value="INCOMPATIBLE">មិនត្រូវគ្នា (Incompatible)</option>
+                <option value="COMPATIBLE">{{ t('maternity.bloodBank.compatible') }}</option>
+                <option value="INCOMPATIBLE">{{ t('maternity.bloodBank.incompatible') }}</option>
               </select>
             </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isCrossMatchModalOpen = false">បោះបង់</UButton>
-            <UButton type="submit" color="primary">បញ្ជាក់ការចេញប្លោកឈាម</UButton>
+            <UButton variant="ghost" color="neutral" @click="isCrossMatchModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton type="submit" color="primary">{{ t('maternity.bloodBank.confirmIssue') }}</UButton>
           </div>
         </form>
       </template>
     </UModal>
 
     <!-- Modal: Bedside Two-Nurse Verification -->
-    <UModal v-model:open="isTransfusionModalOpen" title="ផ្ទៀងផ្ទាត់ដោយគិលានុបដ្ឋាក ២ នាក់ (Bedside Verification)" size="lg">
+    <UModal v-model:open="isTransfusionModalOpen" :title="t('maternity.bloodBank.transfusionModalTitle')" size="lg">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleStartTransfusion">
           <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-xl space-y-2 text-xs">
             <div class="font-bold text-red-700 dark:text-red-400 flex items-center gap-1.5">
               <UIcon name="i-lucide-shield-alert" class="w-5 h-5 text-red-500" />
-              វិធានសុវត្ថិភាពខ្ពស់: ការបញ្ចូលឈាមតម្រូវឱ្យគិលានុបដ្ឋាក ២ នាក់ផ្ទៀងផ្ទាត់ដាច់ដោយឡែក
+              {{ t('maternity.bloodBank.safetyRule') }}
             </div>
             <div class="text-toned">
-              ប្លោកឈាម: <span class="font-bold text-red-600">{{ selectedRequest?.unitBarcode }}</span>
+              {{ t('maternity.bloodBank.bloodUnit') }} <span class="font-bold text-red-600">{{ selectedRequest?.unitBarcode }}</span>
               ({{ selectedRequest?.bloodGroup }} {{ selectedRequest?.rhFactor }})
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold mb-1">ស្កេនកងដៃអ្នកជំងឺ (Wristband Code) *</label>
-              <UInput v-model="transfusionForm.scannedPatientCode" placeholder="Scan Wristband" required />
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.wristbandCode') }}</label>
+              <UInput v-model="transfusionForm.scannedPatientCode" :placeholder="t('maternity.bloodBank.scanWristband')" required />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">ស្កេនបាកូដប្លោកឈាម (Blood Barcode) *</label>
-              <UInput v-model="transfusionForm.scannedUnitBarcode" placeholder="Scan Blood Unit" required />
+              <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.bloodBarcode') }}</label>
+              <UInput v-model="transfusionForm.scannedUnitBarcode" :placeholder="t('maternity.bloodBank.scanBloodUnit')" required />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3 p-3 bg-muted rounded-xl">
             <div>
-              <label class="block text-xs font-bold text-default mb-1">គិលានុបដ្ឋាកទី ១ (Nurse 1) *</label>
+              <label class="block text-xs font-bold text-default mb-1">{{ t('maternity.bloodBank.nurse1') }}</label>
               <select v-model="transfusionForm.nurse1Id" class="w-full rounded border px-2 py-1.5 text-xs bg-default" required>
-                <option value="" disabled>-- ជ្រើសរើសគិលានុបដ្ឋាកទី ១ --</option>
+                <option value="" disabled>{{ t('maternity.bloodBank.nurse1Option') }}</option>
                 <option v-for="s in staffList" :key="s._id" :value="s._id">{{ s.nameKh || s.nameEn }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-default mb-1">គិលានុបដ្ឋាកទី ២ (Nurse 2) *</label>
+              <label class="block text-xs font-bold text-default mb-1">{{ t('maternity.bloodBank.nurse2') }}</label>
               <select v-model="transfusionForm.nurse2Id" class="w-full rounded border px-2 py-1.5 text-xs bg-default" required>
-                <option value="" disabled>-- ជ្រើសរើសគិលានុបដ្ឋាកទី ២ --</option>
+                <option value="" disabled>{{ t('maternity.bloodBank.nurse2Option') }}</option>
                 <option v-for="s in staffList" :key="s._id" :value="s._id">{{ s.nameKh || s.nameEn }}</option>
               </select>
             </div>
             <div v-if="transfusionForm.nurse1Id && transfusionForm.nurse2Id && transfusionForm.nurse1Id === transfusionForm.nurse2Id" class="col-span-2 text-xs text-red-600 font-bold">
-              ⚠️ គិលានុបដ្ឋាកទី ១ និងទី ២ មិនអាចជាមនុស្សតែម្នាក់ឡើយ! (Two distinct nurses required)
+              {{ t('maternity.bloodBank.sameNurseWarning') }}
             </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isTransfusionModalOpen = false">បោះបង់</UButton>
+            <UButton variant="ghost" color="neutral" @click="isTransfusionModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
             <UButton type="submit" color="error" :disabled="transfusionForm.nurse1Id === transfusionForm.nurse2Id">
-              បញ្ជាក់ និងចាប់ផ្តើមបញ្ចូលឈាម
+              {{ t('maternity.bloodBank.confirmStart') }}
             </UButton>
           </div>
         </form>
@@ -494,31 +494,31 @@ onMounted(() => {
     </UModal>
 
     <!-- Modal: Adverse Reaction -->
-    <UModal v-model:open="isReactionModalOpen" title="រាយការណ៍ប្រតិកម្មនៃការបញ្ចូលឈាម (Adverse Reaction)">
+    <UModal v-model:open="isReactionModalOpen" :title="t('maternity.bloodBank.reactionModalTitle')">
       <template #body>
         <form class="space-y-4" @submit.prevent="handleReportReaction">
           <div class="p-3 bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 rounded-lg text-xs font-bold">
-            ⚠️ បញ្ឈប់ការបញ្ចូលឈាមភ្លាមៗ! បិទវ៉ានសេរ៉ូម និងរក្សាខ្សែសរសៃឈាមជាមួយ Normal Saline។
+            {{ t('maternity.bloodBank.stopWarning') }}
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-1">កម្រិតធ្ងន់ធ្ងរ (Severity)</label>
+            <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.severity') }}</label>
             <select v-model="reactionForm.severity" class="w-full rounded border px-2 py-1.5 text-xs bg-default">
-              <option value="MILD">ស្រាល (Mild - Rash, Itching)</option>
-              <option value="MODERATE">មធ្យម (Moderate - Fever, Rigors)</option>
-              <option value="SEVERE">ធ្ងន់ធ្ងរ (Severe - Dyspnea, Hypotension)</option>
-              <option value="FATAL">គំរាមកំហែងអាយុជីវិត (Life Threatening)</option>
+              <option value="MILD">{{ t('maternity.bloodBank.severityMild') }}</option>
+              <option value="MODERATE">{{ t('maternity.bloodBank.severityModerate') }}</option>
+              <option value="SEVERE">{{ t('maternity.bloodBank.severitySevere') }}</option>
+              <option value="FATAL">{{ t('maternity.bloodBank.severityFatal') }}</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-1">ចំណាត់ការបានអនុវត្ត (Action Taken)</label>
+            <label class="block text-xs font-semibold mb-1">{{ t('maternity.bloodBank.actionTaken') }}</label>
             <UInput v-model="reactionForm.actionTaken" />
           </div>
 
           <div class="flex justify-end gap-2 pt-4">
-            <UButton variant="ghost" color="neutral" @click="isReactionModalOpen = false">បោះបង់</UButton>
-            <UButton type="submit" color="error">រាយការណ៍ និងជូនដំណឹងគ្រូពេទ្យ</UButton>
+            <UButton variant="ghost" color="neutral" @click="isReactionModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton type="submit" color="error">{{ t('maternity.bloodBank.submitReaction') }}</UButton>
           </div>
         </form>
       </template>

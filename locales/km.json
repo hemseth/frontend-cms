@@ -8,6 +8,7 @@
     "register": "ចុះឈ្មោះ"
   },
   "nav": {
+    "chat": "ជជែក",
     "home": "ទំព័រដើម",
     "patients": "អ្នកជំងឺ",
     "patientManagement": "គ្រប់គ្រងអ្នកជំងឺ",
@@ -830,6 +831,24 @@
     "validateDistrict": "សូមជ្រើសរើសស្រុក/回ឱ្យបានត្រឹមត្រូវ",
     "validateCommune": "សូមជ្រើសរើសឃុំ/សង្កាត់ឱ្យបានត្រឹមត្រូវ",
     "validateVillage": "សូមជ្រើសរើសភូមិឱ្យបានត្រឹមត្រូវ"
+  },
+  "chat": {
+    "title": "ការជជែក",
+    "newConversation": "ការសន្ទនាថ្មី",
+    "noConversations": "មិនទាន់មានការសន្ទនានៅឡើយ",
+    "selectConversation": "ជ្រើសរើសការសន្ទនា",
+    "typeMessage": "វាយសារ",
+    "send": "ផ្ញើ",
+    "members": "សមាជិក",
+    "groupName": "ឈ្មោះក្រុម",
+    "start": "ចាប់ផ្តើម",
+    "loadOlder": "បង្ហាញសារចាស់ៗ",
+    "offline": "កំពុងភ្ជាប់ឡើងវិញ"
+  },
+  "notifications": {
+    "title": "ការជូនដំណឹង",
+    "markAllRead": "សម្គាល់ថាបានអានទាំងអស់",
+    "empty": "គ្មានការជូនដំណឹង"
   },
   "report": {
     "reportPeriod": "រយៈពេលរបាយការណ៍",

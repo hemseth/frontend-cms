@@ -87,7 +87,7 @@ const fetchConsents = async () => {
     const res = await $api('/maternity/consents', { query })
     consents.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'Error loading consents', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.consents.loadError'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -107,7 +107,7 @@ const openCreateModal = () => {
 
 const createConsent = async () => {
   if (!createForm.value.patientId) {
-    toast.add({ title: 'Validation Error', description: 'Please select a patient / សូមជ្រើសរើសអ្នកជំងឺ', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.common.selectPatientToast'), color: 'error' })
     return
   }
   try {
@@ -115,11 +115,11 @@ const createConsent = async () => {
       method: 'POST',
       body: createForm.value
     })
-    toast.add({ title: 'Success', description: 'Clinical consent form created / បានបង្កើតទម្រង់យល់ព្រម', color: 'success' })
+    toast.add({ title: t('maternity.consents.success'), description: t('maternity.consents.created'), color: 'success' })
     isCreateModalOpen.value = false
     fetchConsents()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
@@ -136,11 +136,11 @@ const openSignModal = (consent: any) => {
 
 const submitSignature = async () => {
   if (!signForm.value.acceptTerms) {
-    toast.add({ title: 'Validation Error', description: 'Signature confirmation must be checked / ត្រូវតែបញ្ជាក់ការយល់ព្រម', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.consents.confirmRequired'), color: 'error' })
     return
   }
   if (!signForm.value.doctorName) {
-    toast.add({ title: 'Validation Error', description: 'Attending doctor name is required / ត្រូវបំពេញឈ្មោះវេជ្ជបណ្ឌិត', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.consents.doctorRequired'), color: 'error' })
     return
   }
   try {
@@ -158,11 +158,11 @@ const submitSignature = async () => {
         notes: signForm.value.notes
       }
     })
-    toast.add({ title: 'Signed & Immutable', description: 'Consent signed and locked against further edits / បានចុះហត្ថលេខា និងចាក់សោរ', color: 'success' })
+    toast.add({ title: t('maternity.consents.signedTitle'), description: t('maternity.consents.signed'), color: 'success' })
     isSignModalOpen.value = false
     fetchConsents()
   } catch (err: any) {
-    toast.add({ title: 'Signing Failed', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.consents.signingFailed'), description: err.message, color: 'error' })
   }
 }
 
@@ -175,7 +175,7 @@ const openRefuseModal = (consent: any) => {
 
 const submitRefusal = async () => {
   if (!refuseForm.value.witnessName) {
-    toast.add({ title: 'Validation Error', description: 'Clinical witness name required / ត្រូវបំពេញឈ្មោះសាក្សី', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.consents.witnessRequired'), color: 'error' })
     return
   }
   try {
@@ -183,11 +183,11 @@ const submitRefusal = async () => {
       method: 'POST',
       body: refuseForm.value
     })
-    toast.add({ title: 'Refusal Recorded', description: 'Patient refusal recorded and attending notified / បានកត់ត្រាការបដិសេធ', color: 'warning' })
+    toast.add({ title: t('maternity.consents.refusalRecordedTitle'), description: t('maternity.consents.refusalRecorded'), color: 'warning' })
     isRefuseModalOpen.value = false
     fetchConsents()
   } catch (err: any) {
-    toast.add({ title: 'Refusal Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.consents.refusalError'), description: err.message, color: 'error' })
   }
 }
 
@@ -216,8 +216,8 @@ onMounted(() => {
             <UIcon name="i-lucide-file-signature" class="w-6 h-6" />
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-highlighted">Clinical Consents Management</h1>
-            <p class="text-sm text-muted">ការគ្រប់គ្រងលិខិតយល់ព្រមផ្នែកវេជ្ជសាស្ត្រ និងសម្ភព (CONS-A/B/C/D)</p>
+            <h1 class="text-2xl font-bold text-highlighted">{{ t('maternity.consents.title') }}</h1>
+            <p class="text-sm text-muted">{{ t('maternity.consents.subtitle') }}</p>
           </div>
         </div>
       </div>
@@ -229,7 +229,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium shadow-sm hover:shadow"
           @click="openCreateModal"
         >
-          New Consent Form
+          {{ t('maternity.consents.newConsent') }}
         </UButton>
       </div>
     </div>
@@ -241,8 +241,8 @@ onMounted(() => {
           <UIcon name="i-lucide-file-text" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-xs text-muted font-medium">CONS-A: Admission</div>
-          <div class="text-xl font-bold text-highlighted">General Care</div>
+          <div class="text-xs text-muted font-medium">{{ t('maternity.consents.cardAdmission') }}</div>
+          <div class="text-xl font-bold text-highlighted">{{ t('maternity.consents.cardGeneralCare') }}</div>
         </div>
       </div>
       <div class="bg-default p-4 rounded-xl border border-default flex items-center gap-4">
@@ -250,8 +250,8 @@ onMounted(() => {
           <UIcon name="i-lucide-scissors" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-xs text-muted font-medium">CONS-B: Surgical</div>
-          <div class="text-xl font-bold text-highlighted">C-Section</div>
+          <div class="text-xs text-muted font-medium">{{ t('maternity.consents.cardSurgical') }}</div>
+          <div class="text-xl font-bold text-highlighted">{{ t('maternity.consents.cardCSection') }}</div>
         </div>
       </div>
       <div class="bg-default p-4 rounded-xl border border-default flex items-center gap-4">
@@ -259,8 +259,8 @@ onMounted(() => {
           <UIcon name="i-lucide-droplet" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-xs text-muted font-medium">CONS-C: Transfusion</div>
-          <div class="text-xl font-bold text-highlighted">Blood Product</div>
+          <div class="text-xs text-muted font-medium">{{ t('maternity.consents.cardTransfusion') }}</div>
+          <div class="text-xl font-bold text-highlighted">{{ t('maternity.consents.cardBloodProduct') }}</div>
         </div>
       </div>
       <div class="bg-default p-4 rounded-xl border border-default flex items-center gap-4">
@@ -268,8 +268,8 @@ onMounted(() => {
           <UIcon name="i-lucide-activity" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-xs text-muted font-medium">CONS-D: Anesthesia</div>
-          <div class="text-xl font-bold text-highlighted">Spinal / General</div>
+          <div class="text-xs text-muted font-medium">{{ t('maternity.consents.cardAnesthesia') }}</div>
+          <div class="text-xl font-bold text-highlighted">{{ t('maternity.consents.cardSpinalGeneral') }}</div>
         </div>
       </div>
     </div>
@@ -282,11 +282,11 @@ onMounted(() => {
           class="text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
           @change="fetchConsents"
         >
-          <option value="">All Consent Types (ទាំងអស់)</option>
-          <option value="CONS_A">CONS-A (Admission)</option>
-          <option value="CONS_B">CONS-B (C-Section Surgical)</option>
-          <option value="CONS_C">CONS-C (Blood Transfusion)</option>
-          <option value="CONS_D">CONS-D (Anesthesia)</option>
+          <option value="">{{ t('maternity.consents.allTypes') }}</option>
+          <option value="CONS_A">{{ t('maternity.consents.filterConsA') }}</option>
+          <option value="CONS_B">{{ t('maternity.consents.filterConsB') }}</option>
+          <option value="CONS_C">{{ t('maternity.consents.filterConsC') }}</option>
+          <option value="CONS_D">{{ t('maternity.consents.filterConsD') }}</option>
         </select>
 
         <select
@@ -294,10 +294,10 @@ onMounted(() => {
           class="text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
           @change="fetchConsents"
         >
-          <option value="">All Statuses (គ្រប់ស្ថានភាព)</option>
-          <option value="PENDING">Pending (រង់ចាំចុះហត្ថលេខា)</option>
-          <option value="SIGNED">Signed & Locked (បានចុះហត្ថលេខា)</option>
-          <option value="REFUSED">Refused (បានបដិសេធ)</option>
+          <option value="">{{ t('maternity.common.allStatuses') }}</option>
+          <option value="PENDING">{{ t('maternity.consents.statusPending') }}</option>
+          <option value="SIGNED">{{ t('maternity.consents.statusSigned') }}</option>
+          <option value="REFUSED">{{ t('maternity.consents.statusRefused') }}</option>
         </select>
       </div>
 
@@ -309,7 +309,7 @@ onMounted(() => {
         :loading="loading"
         @click="fetchConsents"
       >
-        Refresh
+        {{ t('maternity.common.refresh') }}
       </UButton>
     </div>
 
@@ -319,20 +319,20 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-toned">
           <thead class="bg-muted text-xs uppercase font-semibold text-muted border-b border-default">
             <tr>
-              <th class="px-6 py-4">Consent Code</th>
-              <th class="px-6 py-4">Form Type</th>
-              <th class="px-6 py-4">Patient</th>
-              <th class="px-6 py-4">Status</th>
-              <th class="px-6 py-4">Signer / Doctor</th>
-              <th class="px-6 py-4">Signed Date</th>
-              <th class="px-6 py-4 text-right">Actions</th>
+              <th class="px-6 py-4">{{ t('maternity.consents.colConsentCode') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.consents.colFormType') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.common.patient') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.common.status') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.consents.colSignerDoctor') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.consents.colSignedDate') }}</th>
+              <th class="px-6 py-4 text-right">{{ t('maternity.common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-if="consents.length === 0" class="text-center py-8">
               <td colspan="7" class="py-8 text-dimmed">
                 <UIcon name="i-lucide-file-x" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-                No clinical consent forms found.
+                {{ t('maternity.consents.empty') }}
               </td>
             </tr>
             <tr v-for="c in consents" :key="c._id" class="hover:bg-muted/50 transition">
@@ -351,7 +351,7 @@ onMounted(() => {
               </td>
               <td class="px-6 py-4">
                 <div class="font-medium text-highlighted">{{ c.patientId?.fullName || 'N/A' }}</div>
-                <div class="text-xs text-dimmed">{{ c.patientId?.patientCode }} | Tel: {{ c.patientId?.phone || 'N/A' }}</div>
+                <div class="text-xs text-dimmed">{{ c.patientId?.patientCode }} | {{ t('maternity.consents.tel', { phone: c.patientId?.phone || 'N/A' }) }}</div>
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center gap-1.5">
@@ -361,19 +361,19 @@ onMounted(() => {
                   >
                     {{ c.status }}
                   </UBadge>
-                  <UIcon v-if="c.isLocked" name="i-lucide-lock" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" title="Immutable Record" />
+                  <UIcon v-if="c.isLocked" name="i-lucide-lock" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" :title="t('maternity.consents.immutableRecord')" />
                 </div>
               </td>
               <td class="px-6 py-4">
                 <div v-if="c.status === 'SIGNED'" class="text-xs space-y-0.5">
-                  <div><span class="font-medium text-default">Signer:</span> {{ c.signerName }} ({{ c.signerType }})</div>
-                  <div><span class="font-medium text-default">Doctor:</span> {{ c.doctorName }}</div>
+                  <div><span class="font-medium text-default">{{ t('maternity.consents.signerLabel') }}</span> {{ c.signerName }} ({{ c.signerType }})</div>
+                  <div><span class="font-medium text-default">{{ t('maternity.consents.doctorLabel') }}</span> {{ c.doctorName }}</div>
                 </div>
                 <div v-else-if="c.status === 'REFUSED'" class="text-xs text-rose-600 dark:text-rose-400">
-                  Refused: {{ c.refusalReason }}
+                  {{ t('maternity.consents.refusedValue', { reason: c.refusalReason }) }}
                 </div>
                 <div v-else class="text-xs text-dimmed italic">
-                  Awaiting signatures
+                  {{ t('maternity.consents.awaitingSignatures') }}
                 </div>
               </td>
               <td class="px-6 py-4 text-xs text-muted">
@@ -387,7 +387,7 @@ onMounted(() => {
                   variant="ghost"
                   @click="openViewModal(c)"
                 >
-                  View / Print
+                  {{ t('maternity.consents.viewPrint') }}
                 </UButton>
                 <UButton
                   v-if="c.status === 'PENDING'"
@@ -396,7 +396,7 @@ onMounted(() => {
                   color="success"
                   @click="openSignModal(c)"
                 >
-                  Sign
+                  {{ t('maternity.consents.sign') }}
                 </UButton>
                 <UButton
                   v-if="c.status === 'PENDING'"
@@ -406,7 +406,7 @@ onMounted(() => {
                   variant="soft"
                   @click="openRefuseModal(c)"
                 >
-                  Refuse
+                  {{ t('maternity.consents.refuse') }}
                 </UButton>
               </td>
             </tr>
@@ -420,18 +420,18 @@ onMounted(() => {
       <template #content>
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
-            <h3 class="text-lg font-bold text-highlighted">Create Clinical Consent Form</h3>
+            <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.consents.createTitle') }}</h3>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isCreateModalOpen = false" />
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Select Patient *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.common.selectPatientRequired') }}</label>
               <select
                 v-model="createForm.patientId"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="" disabled>-- Choose Patient --</option>
+                <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
                 <option v-for="p in patientsList" :key="p._id" :value="p._id">
                   {{ p.fullName }} ({{ p.patientCode }})
                 </option>
@@ -439,21 +439,21 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Consent Form Type *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.formTypeLabel') }}</label>
               <select
                 v-model="createForm.formType"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 @change="onFormTypeChange(createForm.formType)"
               >
-                <option value="CONS_A">CONS-A: General Inpatient Admission / ចូលសម្រាកព្យាបាលទូទៅ</option>
-                <option value="CONS_B">CONS-B: C-Section Surgical Consent / វះកាត់សម្រាលកូន</option>
-                <option value="CONS_C">CONS-C: Blood Transfusion Consent / បញ្ចូលឈាម</option>
-                <option value="CONS_D">CONS-D: Obstetric Anesthesia Consent / សណ្តំ និងចាក់ស្ពឹក</option>
+                <option value="CONS_A">{{ t('maternity.consents.typeConsA') }}</option>
+                <option value="CONS_B">{{ t('maternity.consents.typeConsB') }}</option>
+                <option value="CONS_C">{{ t('maternity.consents.typeConsC') }}</option>
+                <option value="CONS_D">{{ t('maternity.consents.typeConsD') }}</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Clinical Procedure / ការព្យាបាល</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.procedureLabel') }}</label>
               <textarea
                 v-model="createForm.clinicalProcedure"
                 rows="2"
@@ -462,7 +462,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Risks Explained / ហានិភ័យ</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.risksLabel') }}</label>
               <textarea
                 v-model="createForm.risksDiscussed"
                 rows="2"
@@ -471,7 +471,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Benefits / អត្ថប្រយោជន៍</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.benefitsLabel') }}</label>
               <textarea
                 v-model="createForm.benefitsDiscussed"
                 rows="2"
@@ -480,19 +480,19 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Special Clinical Notes</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.specialNotes') }}</label>
               <input
                 v-model="createForm.specialNotes"
                 type="text"
-                placeholder="Optional notes or patient questions"
+                :placeholder="t('maternity.consents.specialNotesPlaceholder')"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               />
             </div>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="createConsent">Create Consent</UButton>
+            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="primary" @click="createConsent">{{ t('maternity.consents.createSubmit') }}</UButton>
           </div>
         </div>
       </template>
@@ -504,8 +504,8 @@ onMounted(() => {
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
             <div>
-              <h3 class="text-lg font-bold text-highlighted">Execute Digital Consent Signature</h3>
-              <p class="text-xs text-rose-500 font-semibold mt-0.5">WARNING: Once signed, this record becomes legally immutable.</p>
+              <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.consents.signTitle') }}</h3>
+              <p class="text-xs text-rose-500 font-semibold mt-0.5">{{ t('maternity.consents.signWarning') }}</p>
             </div>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isSignModalOpen = false" />
           </div>
@@ -513,21 +513,21 @@ onMounted(() => {
           <div class="space-y-3">
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Signer Type *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.signerType') }}</label>
                 <select
                   v-model="signForm.signerType"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="PATIENT">Patient (អ្នកជំងឺផ្ទាល់)</option>
-                  <option value="GUARDIAN">Guardian / Spouse (អាណាព្យាបាល / ស្វាមី)</option>
+                  <option value="PATIENT">{{ t('maternity.consents.signerPatient') }}</option>
+                  <option value="GUARDIAN">{{ t('maternity.consents.signerGuardian') }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Relationship</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.relationship') }}</label>
                 <input
                   v-model="signForm.relationshipToPatient"
                   type="text"
-                  placeholder="Self / Spouse / Mother / Father"
+                  :placeholder="t('maternity.consents.relationshipPlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
@@ -535,7 +535,7 @@ onMounted(() => {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Signer Full Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.signerFullName') }}</label>
                 <input
                   v-model="signForm.signerName"
                   type="text"
@@ -543,11 +543,11 @@ onMounted(() => {
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">National ID / Passport</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.nationalIdPassport') }}</label>
                 <input
                   v-model="signForm.signerIdCard"
                   type="text"
-                  placeholder="ID Card Number"
+                  :placeholder="t('maternity.consents.idCardPlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
@@ -555,40 +555,40 @@ onMounted(() => {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Attending Doctor Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.doctorName') }}</label>
                 <input
                   v-model="signForm.doctorName"
                   type="text"
-                  placeholder="Dr. Full Name"
+                  :placeholder="t('maternity.consents.doctorNamePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Medical License / ID</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.license') }}</label>
                 <input
                   v-model="signForm.doctorLicenseNumber"
                   type="text"
-                  placeholder="Lic. #12345"
+                  :placeholder="t('maternity.consents.licensePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
             </div>
 
             <div class="p-3 bg-muted rounded-xl border border-default text-xs text-toned space-y-2">
-              <div class="font-semibold text-highlighted">Declaration of Consent / សេចក្តីប្រកាសយល់ព្រម៖</div>
+              <div class="font-semibold text-highlighted">{{ t('maternity.consents.declarationTitle') }}</div>
               <p>
-                ខ្ញុំបានទទួលការពន្យល់យ៉ាងច្បាស់លាស់ពីគ្រូពេទ្យអំពីស្ថានភាពជំងឺ នីតិវិធីនៃការព្យាបាល ហានិភ័យ និងជម្រើសផ្សេងៗ។ ខ្ញុំយល់ព្រមទទួលការព្យាបាលនេះដោយស្ម័គ្រចិត្ត។
+                {{ t('maternity.consents.declarationText') }}
               </p>
               <label class="flex items-center gap-2 font-medium cursor-pointer pt-1 text-emerald-600 dark:text-emerald-400">
                 <input v-model="signForm.acceptTerms" type="checkbox" class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4" />
-                I confirm patient/guardian consent has been given and witnessed.
+                {{ t('maternity.consents.confirmConsent') }}
               </label>
             </div>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isSignModalOpen = false">Cancel</UButton>
-            <UButton color="success" icon="i-lucide-check-circle" @click="submitSignature">Sign & Lock Record</UButton>
+            <UButton color="neutral" variant="ghost" @click="isSignModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="success" icon="i-lucide-check-circle" @click="submitSignature">{{ t('maternity.consents.signSubmit') }}</UButton>
           </div>
         </div>
       </template>
@@ -600,67 +600,67 @@ onMounted(() => {
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
             <div>
-              <h3 class="text-lg font-bold text-rose-600">Record Patient Refusal of Care</h3>
-              <p class="text-xs text-muted">ការបដិសេធមិនទទួលការព្យាបាល ឬការវះកាត់</p>
+              <h3 class="text-lg font-bold text-rose-600">{{ t('maternity.consents.refuseTitle') }}</h3>
+              <p class="text-xs text-muted">{{ t('maternity.consents.refuseSubtitle') }}</p>
             </div>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isRefuseModalOpen = false" />
           </div>
 
           <div class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Primary Reason for Refusal *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.refusalReason') }}</label>
               <select
                 v-model="refuseForm.refusalReason"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="PERSONAL_CHOICE">Personal / Family Choice (ការសម្រេចចិត្តផ្ទាល់ខ្លួន)</option>
-                <option value="RELIGIOUS_BELIEF">Religious / Cultural Belief (ជំនឿសាសនា)</option>
-                <option value="FINANCIAL_CONCERN">Financial Constraints (បញ្ហាហិរញ្ញវត្ថុ)</option>
-                <option value="TRANSFER_REQUEST">Requested Transfer to Another Facility (ស្នើសុំផ្ទេរទៅមន្ទីរពេទ្យផ្សេង)</option>
-                <option value="OTHER">Other Reason (មូលហេតុផ្សេងទៀត)</option>
+                <option value="PERSONAL_CHOICE">{{ t('maternity.consents.reasonPersonal') }}</option>
+                <option value="RELIGIOUS_BELIEF">{{ t('maternity.consents.reasonReligious') }}</option>
+                <option value="FINANCIAL_CONCERN">{{ t('maternity.consents.reasonFinancial') }}</option>
+                <option value="TRANSFER_REQUEST">{{ t('maternity.consents.reasonTransfer') }}</option>
+                <option value="OTHER">{{ t('maternity.consents.reasonOther') }}</option>
               </select>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Clinical Witness Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.witnessName') }}</label>
                 <input
                   v-model="refuseForm.witnessName"
                   type="text"
-                  placeholder="Nurse / Midwife Name"
+                  :placeholder="t('maternity.consents.witnessNamePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Witness Role</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.witnessRole') }}</label>
                 <input
                   v-model="refuseForm.witnessRole"
                   type="text"
-                  placeholder="Duty Midwife / Staff Nurse"
+                  :placeholder="t('maternity.consents.witnessRolePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Notes & Risks Explained</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.consents.refusalNotes') }}</label>
               <textarea
                 v-model="refuseForm.notes"
                 rows="2"
-                placeholder="Details of conversation with patient explaining potential adverse outcomes including death or fetal compromise."
+                :placeholder="t('maternity.consents.refusalNotesPlaceholder')"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               ></textarea>
             </div>
 
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer text-amber-600">
               <input v-model="refuseForm.physicianAlerted" type="checkbox" class="rounded text-amber-600 focus:ring-amber-500 w-4 h-4" />
-              Immediately alert attending obstetrician on duty
+              {{ t('maternity.consents.alertObstetrician') }}
             </label>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isRefuseModalOpen = false">Cancel</UButton>
-            <UButton color="error" icon="i-lucide-alert-triangle" @click="submitRefusal">Record Refusal</UButton>
+            <UButton color="neutral" variant="ghost" @click="isRefuseModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="error" icon="i-lucide-alert-triangle" @click="submitRefusal">{{ t('maternity.consents.refuseSubmit') }}</UButton>
           </div>
         </div>
       </template>
@@ -672,14 +672,14 @@ onMounted(() => {
         <div v-if="selectedConsent" class="p-8 space-y-6 bg-white text-highlighted">
           <div class="flex justify-between items-start border-b-2 border-gray-900 pb-4">
             <div class="space-y-1">
-              <div class="text-xs uppercase tracking-wider text-muted font-semibold">Kingdom of Cambodia / ព្រះរាជាណាចក្រកម្ពុជា</div>
-              <div class="text-xs uppercase tracking-wider text-muted font-semibold">Ministry of Health / ក្រសួងសុខាភិបាល</div>
-              <h2 class="text-xl font-black mt-2">CLINICAL CONSENT FORM / លិខិតយល់ព្រមព្យាបាល</h2>
-              <div class="text-sm font-semibold text-indigo-700">Form Type: {{ selectedConsent.formType }}</div>
+              <div class="text-xs uppercase tracking-wider text-muted font-semibold">{{ t('maternity.common.kingdomOfCambodia') }}</div>
+              <div class="text-xs uppercase tracking-wider text-muted font-semibold">{{ t('maternity.common.ministryOfHealth') }}</div>
+              <h2 class="text-xl font-black mt-2">{{ t('maternity.consents.printHeading') }}</h2>
+              <div class="text-sm font-semibold text-indigo-700">{{ t('maternity.consents.formTypeValue', { type: selectedConsent.formType }) }}</div>
             </div>
             <div class="text-right">
-              <div class="text-xs font-mono font-bold">Doc ID: {{ selectedConsent.consentCode || selectedConsent._id }}</div>
-              <div class="text-xs text-muted">Facility ID: {{ selectedConsent.facilityId || 'FAC-MAIN-001' }}</div>
+              <div class="text-xs font-mono font-bold">{{ t('maternity.consents.docId', { id: selectedConsent.consentCode || selectedConsent._id }) }}</div>
+              <div class="text-xs text-muted">{{ t('maternity.consents.facilityId', { id: selectedConsent.facilityId || 'FAC-MAIN-001' }) }}</div>
               <UBadge :color="selectedConsent.status === 'SIGNED' ? 'success' : 'warning'" class="mt-2 font-bold">
                 {{ selectedConsent.status }}
               </UBadge>
@@ -687,53 +687,53 @@ onMounted(() => {
           </div>
 
           <div class="grid grid-cols-2 gap-4 text-sm bg-muted p-4 rounded-lg border border-default">
-            <div><span class="font-bold">Patient Name:</span> {{ selectedConsent.patientId?.fullName || 'N/A' }}</div>
-            <div><span class="font-bold">Patient Code:</span> {{ selectedConsent.patientId?.patientCode || 'N/A' }}</div>
-            <div><span class="font-bold">Age / Gender:</span> {{ selectedConsent.patientId?.age || 'N/A' }} yrs / Female</div>
-            <div><span class="font-bold">Phone Number:</span> {{ selectedConsent.patientId?.phone || 'N/A' }}</div>
+            <div><span class="font-bold">{{ t('maternity.common.patientNameLabel') }}</span> {{ selectedConsent.patientId?.fullName || 'N/A' }}</div>
+            <div><span class="font-bold">{{ t('maternity.common.patientCodeLabel') }}</span> {{ selectedConsent.patientId?.patientCode || 'N/A' }}</div>
+            <div><span class="font-bold">{{ t('maternity.consents.ageGenderLabel') }}</span> {{ t('maternity.consents.ageFemaleValue', { age: selectedConsent.patientId?.age || 'N/A' }) }}</div>
+            <div><span class="font-bold">{{ t('maternity.consents.phoneLabel') }}</span> {{ selectedConsent.patientId?.phone || 'N/A' }}</div>
           </div>
 
           <div class="space-y-3 text-sm">
             <div>
-              <div class="font-bold text-highlighted">1. Planned Clinical Procedure / នីតិវិធីព្យាបាល៖</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.consents.plannedProcedure') }}</div>
               <div class="p-2.5 bg-muted rounded border border-default mt-1">{{ selectedConsent.clinicalProcedure }}</div>
             </div>
             <div>
-              <div class="font-bold text-highlighted">2. Explained Clinical Risks / ហានិភ័យ៖</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.consents.explainedRisks') }}</div>
               <div class="p-2.5 bg-muted rounded border border-default mt-1">{{ selectedConsent.risksDiscussed }}</div>
             </div>
             <div>
-              <div class="font-bold text-highlighted">3. Anticipated Benefits / អត្ថប្រយោជន៍៖</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.consents.anticipatedBenefits') }}</div>
               <div class="p-2.5 bg-muted rounded border border-default mt-1">{{ selectedConsent.benefitsDiscussed }}</div>
             </div>
           </div>
 
           <div class="border-t pt-4 grid grid-cols-2 gap-8 text-sm">
             <div class="border p-4 rounded-lg bg-muted">
-              <div class="font-bold mb-2">Patient / Guardian Signature</div>
-              <div>Name: <span class="font-semibold">{{ selectedConsent.signerName || 'Pending' }}</span></div>
-              <div>Signer Type: {{ selectedConsent.signerType }}</div>
-              <div>National ID: {{ selectedConsent.signerIdCard || 'N/A' }}</div>
-              <div class="mt-4 pt-2 border-t text-xs text-muted font-mono">Digital Sig: {{ selectedConsent.signatureData || 'Pending execution' }}</div>
+              <div class="font-bold mb-2">{{ t('maternity.consents.patientSignature') }}</div>
+              <div>{{ t('maternity.consents.nameLabel') }} <span class="font-semibold">{{ selectedConsent.signerName || t('maternity.consents.pending') }}</span></div>
+              <div>{{ t('maternity.consents.signerTypeValue', { type: selectedConsent.signerType }) }}</div>
+              <div>{{ t('maternity.consents.nationalIdValue', { id: selectedConsent.signerIdCard || 'N/A' }) }}</div>
+              <div class="mt-4 pt-2 border-t text-xs text-muted font-mono">{{ t('maternity.consents.digitalSigValue', { sig: selectedConsent.signatureData || t('maternity.consents.pendingExecution') }) }}</div>
             </div>
             <div class="border p-4 rounded-lg bg-muted">
-              <div class="font-bold mb-2">Attending Obstetrician / Physician</div>
-              <div>Doctor: <span class="font-semibold">{{ selectedConsent.doctorName || 'Pending' }}</span></div>
-              <div>License #: {{ selectedConsent.doctorLicenseNumber || 'N/A' }}</div>
-              <div>Date Signed: {{ selectedConsent.signedAt ? new Date(selectedConsent.signedAt).toLocaleString() : 'Pending' }}</div>
+              <div class="font-bold mb-2">{{ t('maternity.consents.attendingPhysician') }}</div>
+              <div>{{ t('maternity.consents.doctorLabel') }} <span class="font-semibold">{{ selectedConsent.doctorName || t('maternity.consents.pending') }}</span></div>
+              <div>{{ t('maternity.consents.licenseValue', { license: selectedConsent.doctorLicenseNumber || 'N/A' }) }}</div>
+              <div>{{ t('maternity.consents.dateSignedValue', { date: selectedConsent.signedAt ? new Date(selectedConsent.signedAt).toLocaleString() : t('maternity.consents.pending') }) }}</div>
               <div class="mt-4 pt-2 border-t text-xs text-emerald-600 font-mono font-bold">
-                Verification Hash: {{ selectedConsent.digitalSignatureHash ? selectedConsent.digitalSignatureHash.substring(0, 16) + '...' : 'PENDING' }}
+                {{ t('maternity.consents.verificationHashValue', { hash: selectedConsent.digitalSignatureHash ? selectedConsent.digitalSignatureHash.substring(0, 16) + '...' : t('maternity.consents.pendingCaps') }) }}
               </div>
             </div>
           </div>
 
           <div class="flex justify-between items-center pt-4 border-t">
             <div class="text-xs text-dimmed font-mono">
-              Immutable Electronic Health Record (FRD CONS-001)
+              {{ t('maternity.consents.ehrFooter') }}
             </div>
             <div class="space-x-3">
-              <UButton color="neutral" variant="ghost" @click="isViewModalOpen = false">Close</UButton>
-              <UButton icon="i-lucide-printer" color="primary" @click="printConsent">Print Form / ទាញយក</UButton>
+              <UButton color="neutral" variant="ghost" @click="isViewModalOpen = false">{{ t('maternity.common.close') }}</UButton>
+              <UButton icon="i-lucide-printer" color="primary" @click="printConsent">{{ t('maternity.consents.printForm') }}</UButton>
             </div>
           </div>
         </div>

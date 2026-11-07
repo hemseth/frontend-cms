@@ -53,7 +53,7 @@ const fetchFacilities = async () => {
     const res = await $api('/maternity/facilities', { query })
     facilities.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'Error loading facilities', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.facilities.loadError'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -78,7 +78,7 @@ const openCreateModal = () => {
 
 const submitFacility = async () => {
   if (!facilityForm.value.code || !facilityForm.value.nameKm || !facilityForm.value.nameEn) {
-    toast.add({ title: 'Validation Error', description: 'Facility Code, Khmer Name, and English Name required / សូមបំពេញព័ត៌មានចាំបាច់', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.facilities.requiredFields'), color: 'error' })
     return
   }
   try {
@@ -86,17 +86,17 @@ const submitFacility = async () => {
       method: 'POST',
       body: facilityForm.value
     })
-    toast.add({ title: 'Facility Created', description: 'Healthcare facility registered in network / បានបង្កើតមន្ទីរពេទ្យក្នុងបណ្តាញ', color: 'success' })
+    toast.add({ title: t('maternity.facilities.createdTitle'), description: t('maternity.facilities.created'), color: 'success' })
     isCreateModalOpen.value = false
     fetchFacilities()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
 const checkDuplicates = async () => {
   if (!dedupQuery.value.name && !dedupQuery.value.phone && !dedupQuery.value.nssfCardNumber && !dedupQuery.value.idPoorCardNumber) {
-    toast.add({ title: 'Input Required', description: 'Enter Name, Phone, NSSF, or IDPoor card to run deduplication check', color: 'warning' })
+    toast.add({ title: t('maternity.facilities.inputRequired'), description: t('maternity.facilities.dedupInputRequired'), color: 'warning' })
     return
   }
   loading.value = true
@@ -108,7 +108,7 @@ const checkDuplicates = async () => {
     duplicateCandidates.value = res.data?.matches || []
     dedupSearched.value = true
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -128,8 +128,8 @@ onMounted(() => {
           <UIcon name="i-lucide-building-2" class="w-6 h-6" />
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-highlighted">Healthcare Facilities & Multi-Facility Isolation</h1>
-          <p class="text-sm text-muted">បណ្តាញមូលដ្ឋានសុខាភិបាល ការកំណត់សិទ្ធិ និងឧបករណ៍ស្វែងរកអ្នកជំងឺត្រួតគ្នា (Patient Deduplication)</p>
+          <h1 class="text-2xl font-bold text-highlighted">{{ t('maternity.facilities.title') }}</h1>
+          <p class="text-sm text-muted">{{ t('maternity.facilities.subtitle') }}</p>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium"
           @click="isDedupModalOpen = true"
         >
-          Check Duplicate Patients
+          {{ t('maternity.facilities.checkDuplicates') }}
         </UButton>
         <UButton
           icon="i-lucide-plus"
@@ -149,7 +149,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium"
           @click="openCreateModal"
         >
-          Add Facility
+          {{ t('maternity.facilities.addFacility') }}
         </UButton>
       </div>
     </div>
@@ -161,13 +161,13 @@ onMounted(() => {
           <UIcon name="i-lucide-shield-alert" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-sm font-bold text-highlighted">Strict Facility-Level Data Isolation Enforced</div>
+          <div class="text-sm font-bold text-highlighted">{{ t('maternity.facilities.isolationTitle') }}</div>
           <div class="text-xs text-muted">
-            Cross-facility clinical queries are strictly filtered by user session facility authorization to guarantee patient privacy and data sovereignty.
+            {{ t('maternity.facilities.isolationText') }}
           </div>
         </div>
       </div>
-      <UBadge color="info" variant="subtle" class="font-bold">Active Isolation</UBadge>
+      <UBadge color="info" variant="subtle" class="font-bold">{{ t('maternity.facilities.activeIsolation') }}</UBadge>
     </div>
 
     <!-- Filters Bar -->
@@ -178,16 +178,16 @@ onMounted(() => {
           class="text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
           @change="fetchFacilities"
         >
-          <option value="">All Facility Types (គ្រប់ប្រភេទ)</option>
-          <option value="NATIONAL_HOSPITAL">National Hospital (មន្ទីរពេទ្យជាតិ)</option>
-          <option value="REFERRAL_HOSPITAL">Referral Hospital (មន្ទីរពេទ្យបង្អែក)</option>
-          <option value="HEALTH_CENTER">Health Center (មណ្ឌលសុខភាព)</option>
-          <option value="PRIVATE_CLINIC">Private Clinic (គ្លីនិកឯកជន)</option>
+          <option value="">{{ t('maternity.facilities.allTypes') }}</option>
+          <option value="NATIONAL_HOSPITAL">{{ t('maternity.facilities.nationalHospital') }}</option>
+          <option value="REFERRAL_HOSPITAL">{{ t('maternity.facilities.referralHospital') }}</option>
+          <option value="HEALTH_CENTER">{{ t('maternity.facilities.healthCenter') }}</option>
+          <option value="PRIVATE_CLINIC">{{ t('maternity.facilities.privateClinic') }}</option>
         </select>
       </div>
 
       <UButton icon="i-lucide-refresh-cw" color="neutral" variant="ghost" size="sm" :loading="loading" @click="fetchFacilities">
-        Refresh
+        {{ t('maternity.common.refresh') }}
       </UButton>
     </div>
 
@@ -197,20 +197,20 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-toned">
           <thead class="bg-muted text-xs uppercase font-semibold text-muted border-b border-default">
             <tr>
-              <th class="px-6 py-4">Facility Code</th>
-              <th class="px-6 py-4">Khmer Name</th>
-              <th class="px-6 py-4">English Name</th>
-              <th class="px-6 py-4">Facility Type</th>
-              <th class="px-6 py-4">Location</th>
-              <th class="px-6 py-4">Contact</th>
-              <th class="px-6 py-4 text-right">Status</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colCode') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colKhmerName') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colEnglishName') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colType') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colLocation') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.facilities.colContact') }}</th>
+              <th class="px-6 py-4 text-right">{{ t('maternity.common.status') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-if="facilities.length === 0" class="text-center py-8">
               <td colspan="7" class="py-8 text-dimmed">
                 <UIcon name="i-lucide-building" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-                No facilities registered in this network.
+                {{ t('maternity.facilities.empty') }}
               </td>
             </tr>
             <tr v-for="f in facilities" :key="f._id" class="hover:bg-muted/50 transition">
@@ -241,7 +241,7 @@ onMounted(() => {
               </td>
               <td class="px-6 py-4 text-right">
                 <UBadge :color="f.isActive ? 'success' : 'neutral'" class="font-bold text-xs">
-                  {{ f.isActive ? 'Active' : 'Inactive' }}
+                  {{ f.isActive ? t('maternity.facilities.active') : t('maternity.facilities.inactive') }}
                 </UBadge>
               </td>
             </tr>
@@ -255,51 +255,51 @@ onMounted(() => {
       <template #content>
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
-            <h3 class="text-lg font-bold text-highlighted">Register Health Facility</h3>
+            <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.facilities.registerTitle') }}</h3>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isCreateModalOpen = false" />
           </div>
 
           <div class="space-y-3">
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Facility Code *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.codeRequired') }}</label>
                 <input
                   v-model="facilityForm.code"
                   type="text"
-                  placeholder="e.g. FAC-NMCHC-01"
+                  :placeholder="t('maternity.facilities.codePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted font-mono"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Facility Type</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.type') }}</label>
                 <select
                   v-model="facilityForm.type"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="NATIONAL_HOSPITAL">National Hospital (មន្ទីរពេទ្យជាតិ)</option>
-                  <option value="REFERRAL_HOSPITAL">Referral Hospital (មន្ទីរពេទ្យបង្អែក)</option>
-                  <option value="HEALTH_CENTER">Health Center (មណ្ឌលសុខភាព)</option>
-                  <option value="PRIVATE_CLINIC">Private Clinic (គ្លីនិកឯកជន)</option>
+                  <option value="NATIONAL_HOSPITAL">{{ t('maternity.facilities.nationalHospital') }}</option>
+                  <option value="REFERRAL_HOSPITAL">{{ t('maternity.facilities.referralHospital') }}</option>
+                  <option value="HEALTH_CENTER">{{ t('maternity.facilities.healthCenter') }}</option>
+                  <option value="PRIVATE_CLINIC">{{ t('maternity.facilities.privateClinic') }}</option>
                 </select>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Khmer Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.khmerNameRequired') }}</label>
                 <input
                   v-model="facilityForm.nameKm"
                   type="text"
-                  placeholder="ឈ្មោះមន្ទីរពេទ្យជាភាសាខ្មែរ"
+                  :placeholder="t('maternity.facilities.khmerNamePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">English Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.englishNameRequired') }}</label>
                 <input
                   v-model="facilityForm.nameEn"
                   type="text"
-                  placeholder="Hospital Name in English"
+                  :placeholder="t('maternity.facilities.englishNamePlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
@@ -307,7 +307,7 @@ onMounted(() => {
 
             <div class="grid grid-cols-3 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Province</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.province') }}</label>
                 <select
                   v-model="facilityForm.province"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
@@ -316,7 +316,7 @@ onMounted(() => {
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">District / Khan</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.district') }}</label>
                 <input
                   v-model="facilityForm.district"
                   type="text"
@@ -324,7 +324,7 @@ onMounted(() => {
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Phone</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.phone') }}</label>
                 <input
                   v-model="facilityForm.contactPhone"
                   type="text"
@@ -335,8 +335,8 @@ onMounted(() => {
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="submitFacility">Save Facility</UButton>
+            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="primary" @click="submitFacility">{{ t('maternity.facilities.saveFacility') }}</UButton>
           </div>
         </div>
       </template>
@@ -348,8 +348,8 @@ onMounted(() => {
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
             <div>
-              <h3 class="text-lg font-bold text-highlighted">Patient Deduplication Surveillance</h3>
-              <p class="text-xs text-muted">ស្វែងរកកំណត់ត្រាអ្នកជំងឺត្រួតគ្នា (Matches across Name, DOB, NSSF, IDPoor)</p>
+              <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.facilities.dedupTitle') }}</h3>
+              <p class="text-xs text-muted">{{ t('maternity.facilities.dedupSubtitle') }}</p>
             </div>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isDedupModalOpen = false" />
           </div>
@@ -357,20 +357,20 @@ onMounted(() => {
           <div class="p-4 bg-muted rounded-xl border border-default space-y-3">
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Full Name</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.fullName') }}</label>
                 <input
                   v-model="dedupQuery.name"
                   type="text"
-                  placeholder="Patient Name"
+                  :placeholder="t('maternity.facilities.fullNamePlaceholder')"
                   class="w-full text-sm p-2 rounded border border-accented"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Phone Number</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.phoneNumber') }}</label>
                 <input
                   v-model="dedupQuery.phone"
                   type="text"
-                  placeholder="e.g. 012 345 678"
+                  :placeholder="t('maternity.facilities.phonePlaceholder')"
                   class="w-full text-sm p-2 rounded border border-accented"
                 />
               </div>
@@ -378,20 +378,20 @@ onMounted(() => {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">NSSF Card Number</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.nssfCard') }}</label>
                 <input
                   v-model="dedupQuery.nssfCardNumber"
                   type="text"
-                  placeholder="NSSF Identifier"
+                  :placeholder="t('maternity.facilities.nssfPlaceholder')"
                   class="w-full text-sm p-2 rounded border border-accented font-mono"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">IDPoor Card Number</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.facilities.idPoorCard') }}</label>
                 <input
                   v-model="dedupQuery.idPoorCardNumber"
                   type="text"
-                  placeholder="IDPoor Number"
+                  :placeholder="t('maternity.facilities.idPoorPlaceholder')"
                   class="w-full text-sm p-2 rounded border border-accented font-mono"
                 />
               </div>
@@ -399,7 +399,7 @@ onMounted(() => {
 
             <div class="flex justify-end pt-1">
               <UButton icon="i-lucide-search" color="primary" size="sm" :loading="loading" @click="checkDuplicates">
-                Scan for Duplicates
+                {{ t('maternity.facilities.scan') }}
               </UButton>
             </div>
           </div>
@@ -407,12 +407,12 @@ onMounted(() => {
           <!-- Results -->
           <div v-if="dedupSearched" class="space-y-2">
             <div class="text-xs font-bold text-default uppercase">
-              Potential Duplicate Match Candidates ({{ duplicateCandidates.length }})
+              {{ t('maternity.facilities.candidates', { count: duplicateCandidates.length }) }}
             </div>
 
             <div v-if="duplicateCandidates.length === 0" class="p-6 text-center text-xs text-dimmed bg-muted rounded-xl">
               <UIcon name="i-lucide-check-circle-2" class="w-8 h-8 mx-auto mb-1 text-emerald-500" />
-              No duplicate records found. Patient identity appears unique.
+              {{ t('maternity.facilities.noDuplicates') }}
             </div>
 
             <div v-else class="space-y-2 max-h-60 overflow-y-auto">
@@ -423,16 +423,16 @@ onMounted(() => {
               >
                 <div>
                   <div class="font-bold text-highlighted">{{ c.fullName }} ({{ c.patientCode }})</div>
-                  <div class="text-muted">Phone: {{ c.phone }} | NSSF: {{ c.nssfCardNumber || 'N/A' }}</div>
-                  <div class="text-amber-700 font-semibold mt-0.5">Matched on: {{ c.matchReason || 'Identifier overlap' }}</div>
+                  <div class="text-muted">{{ t('maternity.facilities.phoneValue', { phone: c.phone }) }} | {{ t('maternity.facilities.nssfValue', { nssf: c.nssfCardNumber || 'N/A' }) }}</div>
+                  <div class="text-amber-700 font-semibold mt-0.5">{{ t('maternity.facilities.matchedOn', { reason: c.matchReason || t('maternity.facilities.identifierOverlap') }) }}</div>
                 </div>
-                <UBadge color="warning" class="font-bold">Duplicate Warning</UBadge>
+                <UBadge color="warning" class="font-bold">{{ t('maternity.facilities.duplicateWarning') }}</UBadge>
               </div>
             </div>
           </div>
 
           <div class="flex justify-end pt-3 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isDedupModalOpen = false">Close</UButton>
+            <UButton color="neutral" variant="ghost" @click="isDedupModalOpen = false">{{ t('maternity.common.close') }}</UButton>
           </div>
         </div>
       </template>

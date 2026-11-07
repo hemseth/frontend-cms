@@ -33,6 +33,8 @@ watch(
   { immediate: true }
 )
 
+const chat = useChat()
+
 const links = computed(() => {
   const auth = useAuth()
   const menu: any[][] = [[
@@ -45,6 +47,12 @@ const links = computed(() => {
       label: t('nav.patients'),
       icon: 'i-lucide-users',
       to: '/patients'
+    },
+    {
+      label: t('nav.chat'),
+      icon: 'i-lucide-messages-square',
+      to: '/chat',
+      badge: chat.totalUnread.value ? String(chat.totalUnread.value) : undefined
     },
     {
       label: t('workstation.nav'),
@@ -131,7 +139,7 @@ const links = computed(() => {
       label: t('nav.maternityCare'),
       icon: 'i-lucide-baby',
       value: 'maternity',
-      defaultOpen: false,
+      // defaultOpen: false,
       children: [{
         label: t('nav.maternityDashboard'),
         to: '/maternity/dashboard',
@@ -482,6 +490,7 @@ const links = computed(() => {
 
   const resourceForPath = (path: string) => {
     if (path.startsWith('/users')) return 'user'
+    if (path.startsWith('/chat')) return 'chat'
     if (path.startsWith('/reports')) return 'report'
     // Device sessions belong to the signed-in user, so every user sees that entry.
     if (path.startsWith('/settings/devices')) return null

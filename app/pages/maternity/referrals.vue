@@ -65,7 +65,7 @@ const fetchReferrals = async () => {
     const res = await $api('/maternity/referrals', { query })
     referrals.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'Error fetching referrals', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.referrals.loadError'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -90,7 +90,7 @@ const openCreateModal = () => {
 
 const submitReferral = async () => {
   if (!createForm.value.patientId || !createForm.value.destinationFacilityName) {
-    toast.add({ title: 'Validation Error', description: 'Patient and Destination Facility required / សូមបំពេញព័ត៌មានចាំបាច់', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.referrals.requiredFields'), color: 'error' })
     return
   }
   try {
@@ -98,11 +98,11 @@ const submitReferral = async () => {
       method: 'POST',
       body: createForm.value
     })
-    toast.add({ title: 'Referral Created', description: 'Outgoing clinical referral issued with auto-populated GPAL / បានបង្កើតលិខិតបញ្ជូន', color: 'success' })
+    toast.add({ title: t('maternity.referrals.createdTitle'), description: t('maternity.referrals.created'), color: 'success' })
     isCreateModalOpen.value = false
     fetchReferrals()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
@@ -121,11 +121,11 @@ const submitOutcome = async () => {
       method: 'PUT',
       body: outcomeForm.value
     })
-    toast.add({ title: 'Feedback Recorded', description: 'Referral outcome updated / បានកត់ត្រាលទ្ធផលបញ្ជូន', color: 'success' })
+    toast.add({ title: t('maternity.referrals.feedbackRecordedTitle'), description: t('maternity.referrals.feedbackRecorded'), color: 'success' })
     isOutcomeModalOpen.value = false
     fetchReferrals()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
@@ -153,8 +153,8 @@ onMounted(() => {
           <UIcon name="i-lucide-send" class="w-6 h-6" />
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-highlighted">Obstetric Referral & Transfer Network</h1>
-          <p class="text-sm text-muted">ប្រព័ន្ធបញ្ជូនស្ត្រីមានផ្ទៃពោះ និងតាមដានមតិកែលម្អ (48-Hour Head Nurse Alert)</p>
+          <h1 class="text-2xl font-bold text-highlighted">{{ t('maternity.referrals.title') }}</h1>
+          <p class="text-sm text-muted">{{ t('maternity.referrals.subtitle') }}</p>
         </div>
       </div>
 
@@ -165,7 +165,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium"
           @click="openCreateModal"
         >
-          New Outgoing Referral
+          {{ t('maternity.referrals.newReferral') }}
         </UButton>
       </div>
     </div>
@@ -177,13 +177,13 @@ onMounted(() => {
           <UIcon name="i-lucide-clock" class="w-5 h-5" />
         </div>
         <div>
-          <div class="text-sm font-bold text-amber-900 dark:text-amber-200">48-Hour Referral Feedback Surveillance</div>
+          <div class="text-sm font-bold text-amber-900 dark:text-amber-200">{{ t('maternity.referrals.surveillanceTitle') }}</div>
           <div class="text-xs text-amber-700 dark:text-amber-300">
-            Emergency transfers pending feedback for more than 48 hours trigger an automated high-priority alert to the Head Nurse.
+            {{ t('maternity.referrals.surveillanceText') }}
           </div>
         </div>
       </div>
-      <UBadge color="warning" variant="subtle" class="font-bold">Protocol Active</UBadge>
+      <UBadge color="warning" variant="subtle" class="font-bold">{{ t('maternity.referrals.protocolActive') }}</UBadge>
     </div>
 
     <!-- Filters Bar -->
@@ -194,11 +194,11 @@ onMounted(() => {
           class="text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
           @change="fetchReferrals"
         >
-          <option value="">All Statuses</option>
-          <option value="PENDING">Pending (រង់ចាំការឆ្លើយតប)</option>
-          <option value="ACCEPTED">Accepted (បានទទួល)</option>
-          <option value="COMPLETED">Completed (បានបញ្ចប់)</option>
-          <option value="REJECTED">Refused / Rejected (បដិសេធ)</option>
+          <option value="">{{ t('maternity.common.allStatuses') }}</option>
+          <option value="PENDING">{{ t('maternity.referrals.statusPending') }}</option>
+          <option value="ACCEPTED">{{ t('maternity.referrals.statusAccepted') }}</option>
+          <option value="COMPLETED">{{ t('maternity.referrals.statusCompleted') }}</option>
+          <option value="REJECTED">{{ t('maternity.referrals.statusRejected') }}</option>
         </select>
 
         <select
@@ -206,15 +206,15 @@ onMounted(() => {
           class="text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
           @change="fetchReferrals"
         >
-          <option value="">All Referral Types</option>
-          <option value="EMERGENCY">Emergency Transfer (បន្ទាន់)</option>
-          <option value="ELECTIVE">Elective / Scheduled (តាមការគ្រោងទុក)</option>
-          <option value="RETURN">Return Referral (បញ្ជូនត្រឡប់មកវិញ)</option>
+          <option value="">{{ t('maternity.referrals.allTypes') }}</option>
+          <option value="EMERGENCY">{{ t('maternity.referrals.typeEmergency') }}</option>
+          <option value="ELECTIVE">{{ t('maternity.referrals.typeElective') }}</option>
+          <option value="RETURN">{{ t('maternity.referrals.typeReturn') }}</option>
         </select>
       </div>
 
       <UButton icon="i-lucide-refresh-cw" color="neutral" variant="ghost" size="sm" :loading="loading" @click="fetchReferrals">
-        Refresh
+        {{ t('maternity.common.refresh') }}
       </UButton>
     </div>
 
@@ -224,20 +224,20 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-toned">
           <thead class="bg-muted text-xs uppercase font-semibold text-muted border-b border-default">
             <tr>
-              <th class="px-6 py-4">Ref Code</th>
-              <th class="px-6 py-4">Patient & GPAL</th>
-              <th class="px-6 py-4">Destination Facility</th>
-              <th class="px-6 py-4">Diagnosis & Reason</th>
-              <th class="px-6 py-4">Status & Feedback</th>
-              <th class="px-6 py-4">Transport</th>
-              <th class="px-6 py-4 text-right">Actions</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colRefCode') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colPatientGpal') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colDestination') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colDiagnosis') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colStatusFeedback') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.referrals.colTransport') }}</th>
+              <th class="px-6 py-4 text-right">{{ t('maternity.common.actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-if="referrals.length === 0" class="text-center py-8">
               <td colspan="7" class="py-8 text-dimmed">
                 <UIcon name="i-lucide-inbox" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-                No outgoing referral records found.
+                {{ t('maternity.referrals.empty') }}
               </td>
             </tr>
             <tr v-for="r in referrals" :key="r._id" class="hover:bg-muted/50 transition">
@@ -249,14 +249,14 @@ onMounted(() => {
               </td>
               <td class="px-6 py-4">
                 <div class="font-semibold text-highlighted">{{ r.patientId?.fullName || 'N/A' }}</div>
-                <div class="text-xs text-dimmed">{{ r.patientId?.patientCode }} | GA: {{ r.gestationalAgeWeeks }} wks</div>
+                <div class="text-xs text-dimmed">{{ r.patientId?.patientCode }} | {{ t('maternity.referrals.gaWeeks', { weeks: r.gestationalAgeWeeks }) }}</div>
                 <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">
                   GPAL: G{{ r.gpal?.g || 0 }} P{{ r.gpal?.p || 0 }} A{{ r.gpal?.a || 0 }} L{{ r.gpal?.l || 0 }}
                 </div>
               </td>
               <td class="px-6 py-4">
                 <div class="font-medium text-highlighted">{{ r.destinationFacilityName }}</div>
-                <div class="text-xs text-dimmed">{{ r.destinationType }} | Tel: {{ r.destinationContactPhone || 'N/A' }}</div>
+                <div class="text-xs text-dimmed">{{ r.destinationType }} | {{ t('maternity.referrals.tel', { phone: r.destinationContactPhone || 'N/A' }) }}</div>
               </td>
               <td class="px-6 py-4">
                 <div class="text-xs font-semibold text-rose-600 dark:text-rose-400">{{ r.diagnosisCode }}: {{ r.diagnosisDescription }}</div>
@@ -268,20 +268,20 @@ onMounted(() => {
                     {{ r.status }}
                   </UBadge>
                   <UBadge v-if="isOverdue48h(r.createdAt, r.status)" color="error" class="animate-pulse">
-                    > 48h Overdue
+                    {{ t('maternity.referrals.overdue') }}
                   </UBadge>
                 </div>
                 <div v-if="r.patientOutcome" class="text-xs font-medium text-default mt-1">
-                  Outcome: {{ r.patientOutcome }}
+                  {{ t('maternity.referrals.outcomeValue', { outcome: r.patientOutcome }) }}
                 </div>
               </td>
               <td class="px-6 py-4 text-xs text-muted">
-                <div>Mode: {{ r.transportMode }}</div>
-                <div>Staff: {{ r.accompanyingStaffName }}</div>
+                <div>{{ t('maternity.referrals.modeValue', { mode: r.transportMode }) }}</div>
+                <div>{{ t('maternity.referrals.staffValue', { name: r.accompanyingStaffName }) }}</div>
               </td>
               <td class="px-6 py-4 text-right space-x-2">
                 <UButton icon="i-lucide-file-text" size="xs" color="neutral" variant="ghost" @click="openViewModal(r)">
-                  Letter
+                  {{ t('maternity.referrals.letter') }}
                 </UButton>
                 <UButton
                   v-if="r.status !== 'COMPLETED'"
@@ -290,7 +290,7 @@ onMounted(() => {
                   color="primary"
                   @click="openOutcomeModal(r)"
                 >
-                  Feedback
+                  {{ t('maternity.referrals.feedback') }}
                 </UButton>
               </td>
             </tr>
@@ -304,51 +304,51 @@ onMounted(() => {
       <template #content>
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
-            <h3 class="text-lg font-bold text-highlighted">Create Outgoing Obstetric Referral Letter</h3>
+            <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.referrals.createTitle') }}</h3>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isCreateModalOpen = false" />
           </div>
 
           <div class="space-y-3">
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Select Patient *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.common.selectPatientRequired') }}</label>
                 <select
                   v-model="createForm.patientId"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="" disabled>-- Choose Patient --</option>
+                  <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
                   <option v-for="p in patientsList" :key="p._id" :value="p._id">
                     {{ p.fullName }} ({{ p.patientCode }})
                   </option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Referral Urgency</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.urgency') }}</label>
                 <select
                   v-model="createForm.referralType"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="EMERGENCY">Emergency (បន្ទាន់ - ភ្លាមៗ)</option>
-                  <option value="ELECTIVE">Elective / Routine (ធម្មតា)</option>
-                  <option value="RETURN">Return Referral (បញ្ជូនត្រឡប់)</option>
+                  <option value="EMERGENCY">{{ t('maternity.referrals.urgencyEmergency') }}</option>
+                  <option value="ELECTIVE">{{ t('maternity.referrals.urgencyElective') }}</option>
+                  <option value="RETURN">{{ t('maternity.referrals.urgencyReturn') }}</option>
                 </select>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Destination Facility Type</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.destinationType') }}</label>
                 <select
                   v-model="createForm.destinationType"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="NATIONAL_HOSPITAL">National Hospital (មន្ទីរពេទ្យជាតិ)</option>
-                  <option value="REFERRAL_HOSPITAL">Provincial / District Referral Hospital (មន្ទីរពេទ្យបង្អែក)</option>
-                  <option value="HEALTH_CENTER">Health Center (មណ្ឌលសុខភាព)</option>
+                  <option value="NATIONAL_HOSPITAL">{{ t('maternity.referrals.nationalHospital') }}</option>
+                  <option value="REFERRAL_HOSPITAL">{{ t('maternity.referrals.referralHospital') }}</option>
+                  <option value="HEALTH_CENTER">{{ t('maternity.referrals.healthCenter') }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Destination Facility Name *</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.destinationName') }}</label>
                 <input
                   v-model="createForm.destinationFacilityName"
                   type="text"
@@ -360,27 +360,27 @@ onMounted(() => {
             <!-- Clinical GPAL Snapshot -->
             <div class="p-3 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-xl space-y-2">
               <div class="text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase">
-                Obstetric Profile Snapshot (Auto-populated GPAL)
+                {{ t('maternity.referrals.profileSnapshot') }}
               </div>
               <div class="grid grid-cols-5 gap-2 text-xs">
                 <div>
-                  <label class="text-muted font-semibold">GA (Weeks)</label>
+                  <label class="text-muted font-semibold">{{ t('maternity.referrals.gaWeeksLabel') }}</label>
                   <input v-model.number="createForm.gestationalAgeWeeks" type="number" class="w-full text-xs p-1.5 rounded border border-accented" />
                 </div>
                 <div>
-                  <label class="text-muted font-semibold">Gravida (G)</label>
+                  <label class="text-muted font-semibold">{{ t('maternity.referrals.gravida') }}</label>
                   <input v-model.number="createForm.gpal.g" type="number" class="w-full text-xs p-1.5 rounded border border-accented" />
                 </div>
                 <div>
-                  <label class="text-muted font-semibold">Para (P)</label>
+                  <label class="text-muted font-semibold">{{ t('maternity.referrals.para') }}</label>
                   <input v-model.number="createForm.gpal.p" type="number" class="w-full text-xs p-1.5 rounded border border-accented" />
                 </div>
                 <div>
-                  <label class="text-muted font-semibold">Abortions (A)</label>
+                  <label class="text-muted font-semibold">{{ t('maternity.referrals.abortions') }}</label>
                   <input v-model.number="createForm.gpal.a" type="number" class="w-full text-xs p-1.5 rounded border border-accented" />
                 </div>
                 <div>
-                  <label class="text-muted font-semibold">Living (L)</label>
+                  <label class="text-muted font-semibold">{{ t('maternity.referrals.living') }}</label>
                   <input v-model.number="createForm.gpal.l" type="number" class="w-full text-xs p-1.5 rounded border border-accented" />
                 </div>
               </div>
@@ -388,16 +388,16 @@ onMounted(() => {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">ICD-10 Code</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.icdCode') }}</label>
                 <input
                   v-model="createForm.diagnosisCode"
                   type="text"
-                  placeholder="e.g. O72.1"
+                  :placeholder="t('maternity.referrals.icdPlaceholder')"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Diagnosis Description</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.diagnosisDescription') }}</label>
                 <input
                   v-model="createForm.diagnosisDescription"
                   type="text"
@@ -407,7 +407,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Reason for Referral & Indication</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.reason') }}</label>
               <textarea
                 v-model="createForm.reasonForReferral"
                 rows="2"
@@ -416,18 +416,18 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Treatment & Medications Given Before Departure</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.treatmentGiven') }}</label>
               <textarea
                 v-model="createForm.treatmentGivenBeforeReferral"
                 rows="2"
-                placeholder="e.g. Loading dose Magnesium Sulfate 4g IV, Oxytocin 10 IU IM, IV fluids..."
+                :placeholder="t('maternity.referrals.treatmentPlaceholder')"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               ></textarea>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Accompanying Midwife / Nurse</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.accompanyingStaff') }}</label>
                 <input
                   v-model="createForm.accompanyingStaffName"
                   type="text"
@@ -435,22 +435,22 @@ onMounted(() => {
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Transport Mode</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.transportMode') }}</label>
                 <select
                   v-model="createForm.transportMode"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="AMBULANCE">Hospital Ambulance (រថយន្តសង្គ្រោះបន្ទាន់)</option>
-                  <option value="TAXI">Taxi / Private Vehicle</option>
-                  <option value="OTHER">Other</option>
+                  <option value="AMBULANCE">{{ t('maternity.referrals.transportAmbulance') }}</option>
+                  <option value="TAXI">{{ t('maternity.referrals.transportTaxi') }}</option>
+                  <option value="OTHER">{{ t('maternity.referrals.transportOther') }}</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="submitReferral">Issue Referral</UButton>
+            <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="primary" @click="submitReferral">{{ t('maternity.referrals.issueReferral') }}</UButton>
           </div>
         </div>
       </template>
@@ -461,60 +461,60 @@ onMounted(() => {
       <template #content>
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
-            <h3 class="text-lg font-bold text-highlighted">Record Receiving Facility Outcome Feedback</h3>
+            <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.referrals.outcomeTitle') }}</h3>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isOutcomeModalOpen = false" />
           </div>
 
           <div class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Referral Status *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.referralStatus') }}</label>
               <select
                 v-model="outcomeForm.status"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="ACCEPTED">Accepted at Receiving Hospital</option>
-                <option value="COMPLETED">Completed Treatment & Feedback Closed</option>
-                <option value="REJECTED">Rejected / Refused Admission</option>
+                <option value="ACCEPTED">{{ t('maternity.referrals.outcomeAccepted') }}</option>
+                <option value="COMPLETED">{{ t('maternity.referrals.outcomeCompleted') }}</option>
+                <option value="REJECTED">{{ t('maternity.referrals.outcomeRejected') }}</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Patient Clinical Outcome</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.patientOutcome') }}</label>
               <select
                 v-model="outcomeForm.patientOutcome"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="ADMITTED">Admitted to ICU / Maternity Ward</option>
-                <option value="TREATED_AND_DISCHARGED">Treated and Discharged Home</option>
-                <option value="DECEASED">Deceased (Maternal / Fetal Death)</option>
-                <option value="REFUSED">Refused Admission by Patient Family</option>
+                <option value="ADMITTED">{{ t('maternity.referrals.outcomeAdmitted') }}</option>
+                <option value="TREATED_AND_DISCHARGED">{{ t('maternity.referrals.outcomeDischarged') }}</option>
+                <option value="DECEASED">{{ t('maternity.referrals.outcomeDeceased') }}</option>
+                <option value="REFUSED">{{ t('maternity.referrals.outcomeRefused') }}</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Receiving Doctor Name</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.receivingDoctor') }}</label>
               <input
                 v-model="outcomeForm.receivingDoctorName"
                 type="text"
-                placeholder="Dr. Name at Referral Hospital"
+                :placeholder="t('maternity.referrals.receivingDoctorPlaceholder')"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Feedback Clinical Notes</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.referrals.feedbackNotes') }}</label>
               <textarea
                 v-model="outcomeForm.feedbackNotes"
                 rows="2"
-                placeholder="Interventions performed at tertiary hospital, blood units transfused, surgical outcomes..."
+                :placeholder="t('maternity.referrals.feedbackNotesPlaceholder')"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               ></textarea>
             </div>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isOutcomeModalOpen = false">Cancel</UButton>
-            <UButton color="success" @click="submitOutcome">Save Feedback</UButton>
+            <UButton color="neutral" variant="ghost" @click="isOutcomeModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="success" @click="submitOutcome">{{ t('maternity.referrals.saveFeedback') }}</UButton>
           </div>
         </div>
       </template>
@@ -526,63 +526,63 @@ onMounted(() => {
         <div v-if="selectedReferral" class="p-8 space-y-6 bg-white text-highlighted">
           <div class="flex justify-between items-start border-b-2 border-gray-900 pb-4">
             <div class="space-y-1">
-              <div class="text-xs uppercase tracking-wider text-muted font-bold">Kingdom of Cambodia / ព្រះរាជាណាចក្រកម្ពុជា</div>
-              <div class="text-xs uppercase tracking-wider text-muted font-bold">Ministry of Health / ក្រសួងសុខាភិបាល</div>
-              <h2 class="text-xl font-black mt-2">OFFICIAL OBSTETRIC REFERRAL LETTER / លិខិតបញ្ជូនអ្នកជំងឺ</h2>
-              <div class="text-xs font-semibold text-sky-700">Ref Code: {{ selectedReferral.referralCode || selectedReferral._id }}</div>
+              <div class="text-xs uppercase tracking-wider text-muted font-bold">{{ t('maternity.common.kingdomOfCambodia') }}</div>
+              <div class="text-xs uppercase tracking-wider text-muted font-bold">{{ t('maternity.common.ministryOfHealth') }}</div>
+              <h2 class="text-xl font-black mt-2">{{ t('maternity.referrals.letterHeading') }}</h2>
+              <div class="text-xs font-semibold text-sky-700">{{ t('maternity.referrals.refCodeValue', { code: selectedReferral.referralCode || selectedReferral._id }) }}</div>
             </div>
             <div class="text-right">
               <UBadge :color="selectedReferral.referralType === 'EMERGENCY' ? 'error' : 'info'" class="font-bold text-sm">
-                {{ selectedReferral.referralType }} TRANSFER
+                {{ t('maternity.referrals.transferType', { type: selectedReferral.referralType }) }}
               </UBadge>
-              <div class="text-xs text-muted mt-1">Date: {{ new Date(selectedReferral.createdAt).toLocaleString() }}</div>
+              <div class="text-xs text-muted mt-1">{{ t('maternity.common.dateValue', { date: new Date(selectedReferral.createdAt).toLocaleString() }) }}</div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4 text-sm bg-muted p-4 rounded-lg border border-default">
-            <div><span class="font-bold">Patient Name:</span> {{ selectedReferral.patientId?.fullName }}</div>
-            <div><span class="font-bold">Patient Code:</span> {{ selectedReferral.patientId?.patientCode }}</div>
-            <div><span class="font-bold">Destination Facility:</span> {{ selectedReferral.destinationFacilityName }}</div>
-            <div><span class="font-bold">Obstetric Profile:</span> G{{ selectedReferral.gpal?.g }} P{{ selectedReferral.gpal?.p }} A{{ selectedReferral.gpal?.a }} L{{ selectedReferral.gpal?.l }} (GA: {{ selectedReferral.gestationalAgeWeeks }} wks)</div>
+            <div><span class="font-bold">{{ t('maternity.common.patientNameLabel') }}</span> {{ selectedReferral.patientId?.fullName }}</div>
+            <div><span class="font-bold">{{ t('maternity.common.patientCodeLabel') }}</span> {{ selectedReferral.patientId?.patientCode }}</div>
+            <div><span class="font-bold">{{ t('maternity.referrals.destinationLabel') }}</span> {{ selectedReferral.destinationFacilityName }}</div>
+            <div><span class="font-bold">{{ t('maternity.referrals.profileLabel') }}</span> G{{ selectedReferral.gpal?.g }} P{{ selectedReferral.gpal?.p }} A{{ selectedReferral.gpal?.a }} L{{ selectedReferral.gpal?.l }} ({{ t('maternity.referrals.gaWeeks', { weeks: selectedReferral.gestationalAgeWeeks }) }})</div>
           </div>
 
           <div class="space-y-3 text-sm">
             <div>
-              <div class="font-bold text-highlighted">Provisional Diagnosis (ICD-10):</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.referrals.provisionalDiagnosis') }}</div>
               <div class="p-2.5 bg-rose-50 border border-rose-200 rounded text-rose-800 font-semibold mt-1">
                 {{ selectedReferral.diagnosisCode }} - {{ selectedReferral.diagnosisDescription }}
               </div>
             </div>
             <div>
-              <div class="font-bold text-highlighted">Reason for Transfer & Clinical Summary:</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.referrals.transferReason') }}</div>
               <div class="p-2.5 bg-muted border border-default rounded mt-1">{{ selectedReferral.reasonForReferral }}</div>
             </div>
             <div>
-              <div class="font-bold text-highlighted">Pre-Transfer Resuscitation & Medications Administered:</div>
+              <div class="font-bold text-highlighted">{{ t('maternity.referrals.preTransfer') }}</div>
               <div class="p-2.5 bg-muted border border-default rounded mt-1">{{ selectedReferral.treatmentGivenBeforeReferral }}</div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4 border-t pt-4 text-sm">
             <div>
-              <div class="font-bold">Referring Clinician:</div>
-              <div>Dr. {{ selectedReferral.referringDoctorName || 'Duty Obstetrician' }}</div>
-              <div class="text-xs text-muted">Accompanying Staff: {{ selectedReferral.accompanyingStaffName }} ({{ selectedReferral.transportMode }})</div>
+              <div class="font-bold">{{ t('maternity.referrals.referringClinician') }}</div>
+              <div>{{ t('maternity.referrals.drName', { name: selectedReferral.referringDoctorName || t('maternity.referrals.dutyObstetrician') }) }}</div>
+              <div class="text-xs text-muted">{{ t('maternity.referrals.accompanyingStaffValue', { name: selectedReferral.accompanyingStaffName, mode: selectedReferral.transportMode }) }}</div>
             </div>
             <div class="text-right">
-              <div class="font-bold">Receiving Hospital Feedback:</div>
-              <div>Status: <span class="font-semibold">{{ selectedReferral.status }}</span></div>
-              <div class="text-xs text-muted">Outcome: {{ selectedReferral.patientOutcome || 'Pending 48h loop' }}</div>
+              <div class="font-bold">{{ t('maternity.referrals.receivingFeedback') }}</div>
+              <div>{{ t('maternity.referrals.statusLabel') }} <span class="font-semibold">{{ selectedReferral.status }}</span></div>
+              <div class="text-xs text-muted">{{ t('maternity.referrals.outcomeValue', { outcome: selectedReferral.patientOutcome || t('maternity.referrals.pending48h') }) }}</div>
             </div>
           </div>
 
           <div class="flex justify-between items-center pt-4 border-t">
             <div class="text-xs text-dimmed font-mono">
-              National Health Information System (FRD REF-001)
+              {{ t('maternity.referrals.footer') }}
             </div>
             <div class="space-x-3">
-              <UButton color="neutral" variant="ghost" @click="isViewModalOpen = false">Close</UButton>
-              <UButton icon="i-lucide-printer" color="primary" @click="printReferral">Print Referral Letter</UButton>
+              <UButton color="neutral" variant="ghost" @click="isViewModalOpen = false">{{ t('maternity.common.close') }}</UButton>
+              <UButton icon="i-lucide-printer" color="primary" @click="printReferral">{{ t('maternity.referrals.printLetter') }}</UButton>
             </div>
           </div>
         </div>

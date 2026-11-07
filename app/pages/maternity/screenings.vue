@@ -186,7 +186,7 @@ const fetchEpds = async () => {
     const res = await $api('/maternity/screenings/epds', { query: { limit: 50 } })
     epdsList.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'Error fetching EPDS', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.screenings.epdsLoadError'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -198,7 +198,7 @@ const fetchNewbornScreenings = async () => {
     const res = await $api('/maternity/screenings/newborn', { query: { limit: 50 } })
     newbornScreeningsList.value = res.data || []
   } catch (err: any) {
-    toast.add({ title: 'Error fetching newborn screenings', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.screenings.newbornLoadError'), description: err.message, color: 'error' })
   } finally {
     loading.value = false
   }
@@ -220,7 +220,7 @@ const openEpdsModal = () => {
 
 const submitEpds = async () => {
   if (!selectedEpdsPatientId.value) {
-    toast.add({ title: 'Validation Error', description: 'Select patient for EPDS screening / សូមជ្រើសរើសអ្នកជំងឺ', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.screenings.epdsPatientRequired'), color: 'error' })
     return
   }
   try {
@@ -235,11 +235,11 @@ const submitEpds = async () => {
         screenedByName: 'Duty Midwife / Clinician'
       }
     })
-    toast.add({ title: 'EPDS Saved', description: 'Depression screening scored and recorded / បានកត់ត្រាការវាយតម្លៃ EPDS', color: 'success' })
+    toast.add({ title: t('maternity.screenings.epdsSavedTitle'), description: t('maternity.screenings.epdsSaved'), color: 'success' })
     isEpdsModalOpen.value = false
     fetchEpds()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
@@ -251,7 +251,7 @@ const openNewbornModal = () => {
 
 const submitNewbornScreening = async () => {
   if (!newbornForm.value.patientId) {
-    toast.add({ title: 'Validation Error', description: 'Mother / Baby reference required / សូមជ្រើសរើសអ្នកជំងឺ', color: 'error' })
+    toast.add({ title: t('maternity.common.validationError'), description: t('maternity.screenings.newbornPatientRequired'), color: 'error' })
     return
   }
   try {
@@ -259,11 +259,11 @@ const submitNewbornScreening = async () => {
       method: 'POST',
       body: newbornForm.value
     })
-    toast.add({ title: 'Screening Saved', description: 'Newborn clinical test recorded / បានកត់ត្រាការពិនិត្យទារកទើបនឹងកើត', color: 'success' })
+    toast.add({ title: t('maternity.screenings.newbornSavedTitle'), description: t('maternity.screenings.newbornSaved'), color: 'success' })
     isNewbornModalOpen.value = false
     fetchNewbornScreenings()
   } catch (err: any) {
-    toast.add({ title: 'Error', description: err.message, color: 'error' })
+    toast.add({ title: t('maternity.common.error'), description: err.message, color: 'error' })
   }
 }
 
@@ -283,8 +283,8 @@ onMounted(() => {
           <UIcon name="i-lucide-clipboard-check" class="w-6 h-6" />
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-highlighted">Obstetric & Newborn Clinical Screenings</h1>
-          <p class="text-sm text-muted">ការពិនិត្យសុខភាពផ្លូវចិត្តមាតា (EPDS) និងការពិនិត្យពិការភាពទារក (Hearing & CCHD Pulse Ox)</p>
+          <h1 class="text-2xl font-bold text-highlighted">{{ t('maternity.screenings.title') }}</h1>
+          <p class="text-sm text-muted">{{ t('maternity.screenings.subtitle') }}</p>
         </div>
       </div>
 
@@ -296,7 +296,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium"
           @click="openEpdsModal"
         >
-          New EPDS Assessment
+          {{ t('maternity.screenings.newEpds') }}
         </UButton>
         <UButton
           v-if="activeTab === 'newborn'"
@@ -305,7 +305,7 @@ onMounted(() => {
           class="rounded-xl px-4 py-2 font-medium"
           @click="openNewbornModal"
         >
-          New Baby Screening
+          {{ t('maternity.screenings.newBabyScreening') }}
         </UButton>
       </div>
     </div>
@@ -318,7 +318,7 @@ onMounted(() => {
         @click="activeTab = 'epds'; fetchEpds()"
       >
         <UIcon name="i-lucide-brain" class="w-4 h-4" />
-        Edinburgh Postnatal Depression Scale (EPDS)
+        {{ t('maternity.screenings.epdsTitle') }}
       </button>
       <button
         class="pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2"
@@ -326,37 +326,37 @@ onMounted(() => {
         @click="activeTab = 'newborn'; fetchNewbornScreenings()"
       >
         <UIcon name="i-lucide-baby" class="w-4 h-4" />
-        Newborn Screenings (Hearing OAE & CCHD Pulse Oximetry)
+        {{ t('maternity.screenings.newbornTab') }}
       </button>
     </div>
 
     <!-- TAB 1: EPDS -->
     <div v-if="activeTab === 'epds'" class="space-y-4">
       <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
-        <div class="font-bold text-sm">EPDS Clinical Scoring Protocol:</div>
-        <div>&bull; Score 0 - 9: Low probability of depression (Routine care).</div>
-        <div>&bull; Score 10 - 12: Possible mild depression (Repeat in 2 weeks, supportive counseling).</div>
-        <div>&bull; Score &ge; 13: High depression alert (Formal clinical/psychiatric evaluation required).</div>
-        <div class="text-rose-600 dark:text-rose-400 font-bold">&bull; Question 10 &gt; 0: Immediate Red Alert for suicidal ideation/self-harm.</div>
+        <div class="font-bold text-sm">{{ t('maternity.screenings.protocolTitle') }}</div>
+        <div>&bull; {{ t('maternity.screenings.protocolLow') }}</div>
+        <div>&bull; {{ t('maternity.screenings.protocolMild') }}</div>
+        <div>&bull; {{ t('maternity.screenings.protocolHigh') }}</div>
+        <div class="text-rose-600 dark:text-rose-400 font-bold">&bull; {{ t('maternity.screenings.protocolQ10') }}</div>
       </div>
 
       <div class="bg-default rounded-2xl shadow-sm border border-default overflow-hidden">
         <table class="w-full text-left text-sm text-toned">
           <thead class="bg-muted text-xs uppercase font-semibold text-muted border-b border-default">
             <tr>
-              <th class="px-6 py-4">Screening Date</th>
-              <th class="px-6 py-4">Patient</th>
-              <th class="px-6 py-4">Period</th>
-              <th class="px-6 py-4">Total Score (0-30)</th>
-              <th class="px-6 py-4">Q10 Self-Harm Risk</th>
-              <th class="px-6 py-4">Action Plan</th>
+              <th class="px-6 py-4">{{ t('maternity.common.screeningDate') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.common.patient') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colPeriod') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colTotalScore') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colQ10') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colActionPlan') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-if="epdsList.length === 0" class="text-center py-8">
               <td colspan="6" class="py-8 text-dimmed">
                 <UIcon name="i-lucide-clipboard-x" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-                No EPDS screening assessments recorded.
+                {{ t('maternity.screenings.emptyEpds') }}
               </td>
             </tr>
             <tr v-for="e in epdsList" :key="e._id" class="hover:bg-muted/50 transition">
@@ -375,17 +375,17 @@ onMounted(() => {
                   class="px-2.5 py-1 rounded-full text-xs font-bold"
                   :class="e.totalScore >= 13 ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300' : e.totalScore >= 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'"
                 >
-                  Score: {{ e.totalScore }} / 30
+                  {{ t('maternity.screenings.scoreValue', { score: e.totalScore }) }}
                 </span>
               </td>
               <td class="px-6 py-4">
                 <span v-if="e.responses && e.responses[9] > 0" class="px-2.5 py-1 bg-rose-600 text-white rounded-md text-xs font-bold animate-pulse flex items-center gap-1 w-fit">
-                  <UIcon name="i-lucide-alert-triangle" class="w-3.5 h-3.5" /> High Self-Harm Alert
+                  <UIcon name="i-lucide-alert-triangle" class="w-3.5 h-3.5" /> {{ t('maternity.screenings.selfHarmAlert') }}
                 </span>
-                <span v-else class="text-xs text-emerald-600 font-semibold">Negative (0)</span>
+                <span v-else class="text-xs text-emerald-600 font-semibold">{{ t('maternity.screenings.q10Negative') }}</span>
               </td>
               <td class="px-6 py-4 text-xs text-toned max-w-xs truncate">
-                {{ e.actionPlan || 'Routine PNC monitoring' }}
+                {{ e.actionPlan || t('maternity.screenings.routinePnc') }}
               </td>
             </tr>
           </tbody>
@@ -401,8 +401,8 @@ onMounted(() => {
             <UIcon name="i-lucide-headphones" class="w-5 h-5" />
           </div>
           <div>
-            <div class="text-sm font-bold text-highlighted">Otoacoustic Emissions (OAE) Hearing Screening</div>
-            <div class="text-xs text-muted mt-1">Universal newborn hearing test conducted before hospital discharge. "Refer" requires audiology diagnostic follow-up within 1 month.</div>
+            <div class="text-sm font-bold text-highlighted">{{ t('maternity.screenings.oaeTitle') }}</div>
+            <div class="text-xs text-muted mt-1">{{ t('maternity.screenings.oaeText') }}</div>
           </div>
         </div>
         <div class="p-4 bg-default rounded-xl border border-default flex items-start gap-3">
@@ -410,8 +410,8 @@ onMounted(() => {
             <UIcon name="i-lucide-heart-pulse" class="w-5 h-5" />
           </div>
           <div>
-            <div class="text-sm font-bold text-highlighted">Pulse Oximetry CCHD Screening (&ge; 24h of life)</div>
-            <div class="text-xs text-muted mt-1">Evaluates pre-ductal (Right Hand) and post-ductal (Either Foot) oxygen saturation to detect Critical Congenital Heart Defects.</div>
+            <div class="text-sm font-bold text-highlighted">{{ t('maternity.screenings.pulseOxTitle') }}</div>
+            <div class="text-xs text-muted mt-1">{{ t('maternity.screenings.pulseOxText') }}</div>
           </div>
         </div>
       </div>
@@ -420,19 +420,19 @@ onMounted(() => {
         <table class="w-full text-left text-sm text-toned">
           <thead class="bg-muted text-xs uppercase font-semibold text-muted border-b border-default">
             <tr>
-              <th class="px-6 py-4">Screening Date</th>
-              <th class="px-6 py-4">Mother / Baby</th>
-              <th class="px-6 py-4">Screening Type</th>
-              <th class="px-6 py-4">Age (Hours)</th>
-              <th class="px-6 py-4">Clinical Readings</th>
-              <th class="px-6 py-4">Interpretation</th>
+              <th class="px-6 py-4">{{ t('maternity.common.screeningDate') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colMotherBaby') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colScreeningType') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colAgeHours') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colReadings') }}</th>
+              <th class="px-6 py-4">{{ t('maternity.screenings.colInterpretation') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-default">
             <tr v-if="newbornScreeningsList.length === 0" class="text-center py-8">
               <td colspan="6" class="py-8 text-dimmed">
                 <UIcon name="i-lucide-baby" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-                No newborn screening records found.
+                {{ t('maternity.screenings.emptyNewborn') }}
               </td>
             </tr>
             <tr v-for="s in newbornScreeningsList" :key="s._id" class="hover:bg-muted/50 transition">
@@ -449,14 +449,14 @@ onMounted(() => {
                 </UBadge>
               </td>
               <td class="px-6 py-4 text-xs font-semibold">
-                {{ s.hoursAfterBirth }} hrs
+                {{ t('maternity.screenings.hoursValue', { hours: s.hoursAfterBirth }) }}
               </td>
               <td class="px-6 py-4 text-xs">
                 <div v-if="s.pulseOximetryDetails">
-                  Hand: {{ s.pulseOximetryDetails.rightHandSpo2 }}% | Foot: {{ s.pulseOximetryDetails.footSpo2 }}% (Diff: {{ s.pulseOximetryDetails.differenceSpo2 }}%)
+                  {{ t('maternity.screenings.handValue', { value: s.pulseOximetryDetails.rightHandSpo2 }) }} | {{ t('maternity.screenings.footValue', { value: s.pulseOximetryDetails.footSpo2 }) }} {{ t('maternity.screenings.diffValue', { value: s.pulseOximetryDetails.differenceSpo2 }) }}
                 </div>
                 <div v-else-if="s.hearingDetails">
-                  Side: {{ s.hearingDetails.earSide }} ({{ s.hearingDetails.result }})
+                  {{ t('maternity.screenings.sideValue', { side: s.hearingDetails.earSide, result: s.hearingDetails.result }) }}
                 </div>
               </td>
               <td class="px-6 py-4">
@@ -479,12 +479,12 @@ onMounted(() => {
         <div class="p-6 space-y-4 max-h-[85vh] overflow-y-auto">
           <div class="flex items-center justify-between pb-3 border-b border-default sticky top-0 bg-default z-10">
             <div>
-              <h3 class="text-lg font-bold text-highlighted">Edinburgh Postnatal Depression Scale (EPDS)</h3>
-              <p class="text-xs text-muted">ការធ្វើតេស្តសុខភាពផ្លូវចិត្ត និងជំងឺបាក់ទឹកចិត្តក្រោយសម្រាល</p>
+              <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.screenings.epdsTitle') }}</h3>
+              <p class="text-xs text-muted">{{ t('maternity.screenings.epdsSubtitle') }}</p>
             </div>
             <div class="flex items-center gap-3">
               <span class="text-sm font-bold px-3 py-1 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 rounded-lg">
-                Score: {{ epdsTotalScore }} / 30
+                {{ t('maternity.screenings.scoreValue', { score: epdsTotalScore }) }}
               </span>
               <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isEpdsModalOpen = false" />
             </div>
@@ -493,32 +493,32 @@ onMounted(() => {
           <!-- Q10 Alert Banner -->
           <div v-if="isQ10Positive" class="p-3 bg-rose-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 animate-bounce">
             <UIcon name="i-lucide-alert-octagon" class="w-5 h-5" />
-            CRITICAL SAFETY ALERT: Patient expressed suicidal/self-harm ideation (Question 10 positive). Immediate attending psychiatric evaluation required.
+            {{ t('maternity.screenings.criticalAlert') }}
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Select Patient *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.common.selectPatientRequired') }}</label>
               <select
                 v-model="selectedEpdsPatientId"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="" disabled>-- Choose Patient --</option>
+                <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
                 <option v-for="p in patientsList" :key="p._id" :value="p._id">
                   {{ p.fullName }} ({{ p.patientCode }})
                 </option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Screening Timepoint</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.screenings.timepoint') }}</label>
               <select
                 v-model="selectedScreeningPeriod"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="ANC_THIRD_TRIMESTER">ANC 3rd Trimester</option>
-                <option value="PNC_POSTPARTUM_WARD">Postpartum Ward (Day 1-3)</option>
-                <option value="PNC_6_WEEKS">PNC 6-Week Checkup</option>
-                <option value="ROUTINE">Routine Follow-up</option>
+                <option value="ANC_THIRD_TRIMESTER">{{ t('maternity.screenings.timepointAnc3') }}</option>
+                <option value="PNC_POSTPARTUM_WARD">{{ t('maternity.screenings.timepointWard') }}</option>
+                <option value="PNC_6_WEEKS">{{ t('maternity.screenings.timepointPnc6') }}</option>
+                <option value="ROUTINE">{{ t('maternity.screenings.timepointRoutine') }}</option>
               </select>
             </div>
           </div>
@@ -548,25 +548,25 @@ onMounted(() => {
                     :value="opt.score"
                     class="text-purple-600 focus:ring-purple-500"
                   />
-                  <span>{{ opt.textKm }} <span class="text-dimmed">({{ opt.score }} pts)</span></span>
+                  <span>{{ opt.textKm }} <span class="text-dimmed">({{ t('maternity.screenings.pointsValue', { score: opt.score }) }})</span></span>
                 </label>
               </div>
             </div>
           </div>
 
           <div class="space-y-2 pt-2">
-            <label class="block text-xs font-semibold text-toned">Action Plan & Clinical Follow-up</label>
+            <label class="block text-xs font-semibold text-toned">{{ t('maternity.screenings.actionPlan') }}</label>
             <textarea
               v-model="epdsActionPlan"
               rows="2"
-              placeholder="Referral to counseling, psychiatric consultation, close family support..."
+              :placeholder="t('maternity.screenings.actionPlanPlaceholder')"
               class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
             ></textarea>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default sticky bottom-0 bg-default">
-            <UButton color="neutral" variant="ghost" @click="isEpdsModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="submitEpds">Save Assessment (Score: {{ epdsTotalScore }})</UButton>
+            <UButton color="neutral" variant="ghost" @click="isEpdsModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="primary" @click="submitEpds">{{ t('maternity.screenings.saveAssessment', { score: epdsTotalScore }) }}</UButton>
           </div>
         </div>
       </template>
@@ -577,18 +577,18 @@ onMounted(() => {
       <template #content>
         <div class="p-6 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-default">
-            <h3 class="text-lg font-bold text-highlighted">Record Newborn Screening</h3>
+            <h3 class="text-lg font-bold text-highlighted">{{ t('maternity.screenings.newbornModalTitle') }}</h3>
             <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" @click="isNewbornModalOpen = false" />
           </div>
 
           <div class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-toned mb-1">Select Mother / Infant *</label>
+              <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.screenings.selectMotherInfant') }}</label>
               <select
                 v-model="newbornForm.patientId"
                 class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
               >
-                <option value="" disabled>-- Choose Patient --</option>
+                <option value="" disabled>{{ t('maternity.common.choosePatientOption') }}</option>
                 <option v-for="p in patientsList" :key="p._id" :value="p._id">
                   {{ p.fullName }} ({{ p.patientCode }})
                 </option>
@@ -597,17 +597,17 @@ onMounted(() => {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Screening Test</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.screenings.screeningTest') }}</label>
                 <select
                   v-model="newbornForm.screeningType"
                   class="w-full text-sm border-default rounded-lg bg-muted px-3 py-2 text-highlighted"
                 >
-                  <option value="PULSE_OXIMETRY_CCHD">Pulse Oximetry (Critical Congenital Heart Disease)</option>
-                  <option value="HEARING_OAE">Hearing Screening (Otoacoustic Emissions - OAE)</option>
+                  <option value="PULSE_OXIMETRY_CCHD">{{ t('maternity.screenings.testPulseOx') }}</option>
+                  <option value="HEARING_OAE">{{ t('maternity.screenings.testHearing') }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-toned mb-1">Hours After Birth</label>
+                <label class="block text-xs font-semibold text-toned mb-1">{{ t('maternity.screenings.hoursAfterBirth') }}</label>
                 <input
                   v-model.number="newbornForm.hoursAfterBirth"
                   type="number"
@@ -619,10 +619,10 @@ onMounted(() => {
 
             <!-- Pulse Ox Fields -->
             <div v-if="newbornForm.screeningType === 'PULSE_OXIMETRY_CCHD'" class="p-4 bg-muted rounded-xl border border-default space-y-3">
-              <div class="text-xs font-bold text-default uppercase">Pre- and Post-Ductal SpO2 Saturation</div>
+              <div class="text-xs font-bold text-default uppercase">{{ t('maternity.screenings.saturationTitle') }}</div>
               <div class="grid grid-cols-3 gap-3">
                 <div>
-                  <label class="block text-xs text-muted mb-1">Right Hand SpO2 (%)</label>
+                  <label class="block text-xs text-muted mb-1">{{ t('maternity.screenings.rightHandSpo2') }}</label>
                   <input
                     v-model.number="newbornForm.pulseOximetryDetails.rightHandSpo2"
                     type="number"
@@ -633,7 +633,7 @@ onMounted(() => {
                   />
                 </div>
                 <div>
-                  <label class="block text-xs text-muted mb-1">Either Foot SpO2 (%)</label>
+                  <label class="block text-xs text-muted mb-1">{{ t('maternity.screenings.footSpo2') }}</label>
                   <input
                     v-model.number="newbornForm.pulseOximetryDetails.footSpo2"
                     type="number"
@@ -644,7 +644,7 @@ onMounted(() => {
                   />
                 </div>
                 <div>
-                  <label class="block text-xs text-muted mb-1">Difference (%)</label>
+                  <label class="block text-xs text-muted mb-1">{{ t('maternity.screenings.difference') }}</label>
                   <input
                     :value="newbornForm.pulseOximetryDetails.differenceSpo2"
                     readonly
@@ -653,7 +653,7 @@ onMounted(() => {
                 </div>
               </div>
               <div class="flex items-center gap-2 pt-1">
-                <span class="text-xs font-semibold">Interpretation:</span>
+                <span class="text-xs font-semibold">{{ t('maternity.screenings.interpretationLabel') }}</span>
                 <UBadge
                   :color="newbornForm.pulseOximetryDetails.interpretation === 'PASS' ? 'success' : 'error'"
                   class="font-bold"
@@ -665,22 +665,22 @@ onMounted(() => {
 
             <!-- Hearing OAE Fields -->
             <div v-if="newbornForm.screeningType === 'HEARING_OAE'" class="p-4 bg-muted rounded-xl border border-default space-y-3">
-              <div class="text-xs font-bold text-default uppercase">OAE Hearing Screening Results</div>
+              <div class="text-xs font-bold text-default uppercase">{{ t('maternity.screenings.oaeResultsTitle') }}</div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs text-muted mb-1">Ear Tested</label>
+                  <label class="block text-xs text-muted mb-1">{{ t('maternity.screenings.earTested') }}</label>
                   <select v-model="newbornForm.hearingDetails.earSide" class="w-full text-sm p-2 rounded border border-accented">
-                    <option value="BOTH">Both Ears (ត្រចៀកទាំងសងខាង)</option>
-                    <option value="LEFT">Left Ear (ត្រចៀកឆ្វេង)</option>
-                    <option value="RIGHT">Right Ear (ត្រចៀកស្តាំ)</option>
+                    <option value="BOTH">{{ t('maternity.screenings.earBoth') }}</option>
+                    <option value="LEFT">{{ t('maternity.screenings.earLeft') }}</option>
+                    <option value="RIGHT">{{ t('maternity.screenings.earRight') }}</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs text-muted mb-1">Result</label>
+                  <label class="block text-xs text-muted mb-1">{{ t('maternity.screenings.result') }}</label>
                   <select v-model="newbornForm.hearingDetails.result" class="w-full text-sm p-2 rounded border border-accented">
-                    <option value="PASS">PASS (ឆ្លងកាត់)</option>
-                    <option value="REFER">REFER / RE-TEST (ត្រូវពិនិត្យឡើងវិញ)</option>
-                    <option value="INCONCLUSIVE">INCONCLUSIVE (មិនច្បាស់លាស់)</option>
+                    <option value="PASS">{{ t('maternity.screenings.resultPass') }}</option>
+                    <option value="REFER">{{ t('maternity.screenings.resultRefer') }}</option>
+                    <option value="INCONCLUSIVE">{{ t('maternity.screenings.resultInconclusive') }}</option>
                   </select>
                 </div>
               </div>
@@ -688,8 +688,8 @@ onMounted(() => {
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-default">
-            <UButton color="neutral" variant="ghost" @click="isNewbornModalOpen = false">Cancel</UButton>
-            <UButton color="primary" @click="submitNewbornScreening">Save Screening</UButton>
+            <UButton color="neutral" variant="ghost" @click="isNewbornModalOpen = false">{{ t('maternity.common.cancel') }}</UButton>
+            <UButton color="primary" @click="submitNewbornScreening">{{ t('maternity.screenings.saveScreening') }}</UButton>
           </div>
         </div>
       </template>
